@@ -12,6 +12,8 @@ const Header = () => {
 	const navigate = useNavigate();
   let [activeLink, setActiveLink] = useState('');
   const location = useLocation();
+  const [username, setUsername] = useState('');
+  const [userimage, setUserimage] = useState('');
 
 
   let handleNavLinkClick = (link) => {
@@ -28,14 +30,24 @@ const Header = () => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    // Extract the link name from the current path
     const link = currentPath.substring(1);
     setActiveLink(link);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (user) {
+      const userRef = firebase.database().ref(`users/${user.uid}`);
+      userRef.on('value', (snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+          setUsername(userData.username || '');
+          setUserimage(userData.image || 'pikachu');
+        }
+      });
+    }
+  }, [user]);
 
   const handleSearch = () => {
-    
     eventBus.publish('searchPokemon', document.getElementById('pokemonNameInputSearch').value);
   }
 
@@ -51,13 +63,11 @@ const Header = () => {
 
       Swal.fire({
 				icon: 'success',
-				// title: 'Oops...',
 				text: 'Successfully Logout.',
 				footer: '<a href="">Why do I have this issue?</a>'
 			})
 
-
-  		navigate('/');
+  	navigate('/');
 		} catch (error) {
       Swal.fire({
 				icon: 'error',
@@ -137,9 +147,9 @@ const Header = () => {
                   aria-expanded="false"
                 >
                   <span className={`nav-link text-white  ${activeLink === 'login' ? 'active' : ''}`}>
-                    {user.displayName}
+                  {username !== '' ? username : user.displayName}
                   </span>
-                  <div class="rounded-circle bg-secondary ms-3"><img class="m-1" width="30px" src="./assets/images/userIcons/pikachu.png"/></div>
+                  <div className="rounded-circle bg-secondary ms-3"><img className="m-1" width="30px" src={`./assets/images/userIcons/${userimage}.png`}/></div>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                   <li>

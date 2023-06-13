@@ -25,7 +25,13 @@ const Register = () => {
 			username,
 			image
 		});
-		
+
+		Swal.fire({
+			icon: 'success',
+			text: 'Successfully create an account.',
+			footer: '<a href="">Why do I have this issue?</a>'
+		})
+
 		// User successfully registered
 		navigate('/');
 		} catch (error) {
@@ -45,6 +51,12 @@ const Register = () => {
 		const userRef = firebase.database().ref(`users/${userId}`);
 		userRef.set({ username });
 		// User successfully registered
+		
+		Swal.fire({
+			icon: 'success',
+			text: 'Successfully create an account.',
+			footer: '<a href="">Why do I have this issue?</a>'
+		})
 		navigate('/');
 		} catch (error) {
 			Swal.fire({
