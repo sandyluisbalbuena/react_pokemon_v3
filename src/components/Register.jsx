@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import firebase from 'firebase/compat/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/database';
 import { useNavigate } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
 const Register = () => {
 	const [email, setEmail] = useState('');
@@ -112,7 +112,7 @@ const Register = () => {
 
 								<button className="btn btn-primary btn-block btn-dark"  onClick={handleRegister}>Register</button>
 								<button className="btn btn-primary btn-block btn-dark"  onClick={signInWithGoogle}>Sign in with Google</button>
-								{/* <button className="btn btn-primary btn-block btn-dark"  onClick={signInWithFacebook}>Sign in with Facebook</button> */}
+								<button className="btn btn-primary btn-block btn-dark"  onClick={signInWithFacebook}>Sign in with Facebook</button>
 							</div>
 						</div>
 

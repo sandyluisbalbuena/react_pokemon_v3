@@ -115,8 +115,6 @@ const Header = () => {
             </li>
           </ul>
 
-          
-
           {activeLink === 'pokedex' && (
             <div id="pokemonSearchBar" className="d-flex input-group w-auto me-5">
               <input id="pokemonNameInputSearch" type="search" className="form-control rounded" placeholder="Pokemon Name" aria-label="Search" aria-describedby="search-addon" onKeyPress={handleKeyPress} required/>

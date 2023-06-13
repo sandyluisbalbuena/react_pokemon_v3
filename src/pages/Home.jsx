@@ -1,8 +1,44 @@
 import React, { useEffect } from 'react'
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import 'firebase/compat/database';
 
 const Home = () => {
 
 	let splide;
+
+	function storePokemonNames(){
+
+		let RAPIDAPI_API_URL = 'https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0';
+
+		axios.get(`${RAPIDAPI_API_URL}`)
+		.then(response => {
+
+			const pokemons = response.data.results;
+
+			pokemons.forEach((pokemon) => {
+
+				const pokemonRef = firebase.database().ref('pokemon');
+				const newPokemonRef = pokemonRef.push();
+				newPokemonRef.set({
+					name: pokemon.name
+				});
+
+				console.log(pokemon.name);
+			});
+			
+		})
+		.catch(error => console.error('On get pokemon error', error))
+		.then(() => { 
+	
+
+		})
+
+
+	}
+
+
+
 
 	useEffect(()=>{
 		if (window.innerWidth <= 768) {
@@ -104,6 +140,7 @@ const Home = () => {
 									<i className="fas fa-search text-white"></i>
 								</button>
 							</form>
+							{/* <button className="btn bg-dark my-5 text-white" onClick={storePokemonNames}>Start</button> */}
 						</div>
 					</div>
 				</div>

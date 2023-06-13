@@ -165,6 +165,48 @@ const Pokedex = () => {
 		});
 	}
 
+	function pagboboUser(pokemonName){
+
+
+		axios.get('/getpokemonnames')
+		.then(response2 => {
+	
+			let guest = checkSimilarity(pokemonName,response2.data)
+	
+			axios.get('/getonepokemon/'+guest)
+			.then(response => {
+				// id = response.data.pokemonId;
+	
+				Swal.fire({
+					icon: 'info',
+					html:
+						'<p>Are you refering to ' +
+						'<a href="#" onclick="pokemonSearch(`'+guest+'`)">'+guest+'</a></p>'+
+						'<p><img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/'+response.data.pokemonId+'.png"></p>'+
+						'<button class="btn bg-dark text-white m-1" onclick="pokemonSearch(`'+guest+'`)">Yes</button>',
+						// '<p><img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/'+response.data.pokemonName.toLowerCase()+'.png"></p>',
+					buttons: false,
+					showCancelButton: false,
+					showConfirmButton: false
+					// focusConfirm: false,
+					// footer: '<a href="#" onclick="pokemonSearch(`'+guest+'`)">Are you reffering to '+guest+'?</a>'
+				})
+			})
+			.catch(() => { 
+				Swal.fire({
+					icon: 'error',
+					title:'Ooops...',
+					focusConfirm: false,
+				})
+			})
+			.then(() => { 
+			})
+	
+		})
+	
+		
+	}
+
 
 	return (
 		<div className="container">
@@ -190,6 +232,7 @@ const Pokedex = () => {
 						<div className="row">
 							<div className="card my-1 px-1 animate__animated animate__fadeInUp" id="secondCard">
 								<div className="card-body container-fluid">
+
 									<div className="row">
 										<div className="col-12 col-lg-4">
 											<h6 className="card-title">Abilities</h6>
@@ -211,8 +254,8 @@ const Pokedex = () => {
 												<PokemonDisadvantages pokemonTyping={pokemonTypes}/>
 											</div>
 										</div>
-
 									</div>
+
 								</div>
 							</div>
 						</div>
