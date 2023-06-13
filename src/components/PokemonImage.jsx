@@ -33,12 +33,12 @@ const PokemonImage = (props) => {
 
 			<div id="backgroundColor" className="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
 				{(loading == true)?(
-				<img id="pokemonImage" className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid" src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${props.pokemonId.toString().padStart(3, "0")}.png`} width="100%" height="100%"/>
-				// <img id="pokemonImage" className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid" src={`https://img.pokemondb.net/artwork/avif/${props.flavor_text.name}.avif`} width="100%" height="100%"/>
+					<img id="pokemonImage" className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid" src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${props.pokemonId.toString().padStart(3, "0")}.png`} width="100%" height="100%"/>
 				):
 				(
 					<img id="pokemonImage" className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid" src="../assets/images/misc/loader.gif" width="100%" height="100%"/>
 				)}
+
 				
 				<a href="#!">
 					<div className="mask pokedex-mask"></div>

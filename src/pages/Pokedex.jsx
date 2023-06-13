@@ -11,6 +11,10 @@ import PokemonRelated from '../components/PokemonRelated';
 import eventBus from '../eventBus';
 import PokemonVideos from '../components/PokemonVideos';
 import queryString from 'query-string';
+import 'firebase/compat/firestore';
+import 'firebase/compat/database';
+import firebase from 'firebase/compat/app';
+import { renderToString } from 'react-dom/server';
 
 
 const Pokedex = () => {
@@ -26,7 +30,7 @@ const Pokedex = () => {
 	let [pokemonId, setpokemonId] = useState([]);
 	// let [isLoading, setIsLoading] = useState(false);
 	let pokemonName2;
-
+	const [pokemonNamesCollection, setPokemonNamesCollection] = useState([]);
 
 	useEffect(()=>{
 		const parsed = queryString.parse(window.location.search);
@@ -50,10 +54,29 @@ const Pokedex = () => {
 		};
 	}, []);
 
+	// useEffect(() => {
+	// 	const pokemonRef = firebase.database().ref('pokemon');
+	
+	// 	pokemonRef.on('value', (snapshot) => {
+	// 	  const data = snapshot.val();
+	// 	  if (data) {
+	// 		const names = Object.values(data).map((pokemon) => pokemon.name);
+	// 		setPokemonNamesCollection(names);
+	// 	  }
+	// 	});
+
+	// 	return () => pokemonRef.off();
+	// }, []);
+
+	console.log(pokemonNamesCollection)
+
 	const pokemonSearch = (pokemonNameName) =>{
 		// setIsLoading(true);
 
+		console.log('yeye');
+
 		swal.close();
+
 		if(pokemonNameName == undefined && pokemonNameName == null){
 			var pname = document.getElementById('pokemonName');
 			var pokemonName = pname.value;
@@ -87,54 +110,10 @@ const Pokedex = () => {
 		collapseExample2.classList.remove('show');
 		let pokemonImage = document.getElementById('pokemonImage');
 
-
-		let splider = document.getElementById('splide1');
-		splider.innerHTML = '';
-
-
-
-		new Promise((resolve) => {
-			new Promise((resolve) => {
-				pokemonImage.classList.remove('animate__fadeIn');
-				pokemonImage.classList.add('animate__fadeOut');
-				setTimeout(() => resolve(), 2000);
-			}).then(() => {
-				pokemonImage.classList.remove('animate__fadeOut');
-				pokemonImage.setAttribute('src','/assets/images/misc/loader.gif');
-				pokemonImage.classList.add('animate__animated', 'animate__fadeIn');
-			});
-			setTimeout(() => resolve(), 3000);
-		}).then(() => {
-	
-			pokemonImage.classList.remove('animate__fadeIn');
-			pokemonImage.classList.add('animate__fadeIn');
-			
-
-			// let relatedTo = document.getElementById('relatedTo');
-			let cardTitlePokemonName = document.getElementById('cardTitlePokemonName');
-			let pokemonDescription = document.getElementById('pokemonDescription');
-			let pokemonAbilities = document.getElementById('pokemonAbilities');
-			let pokemonTypes = document.getElementById('pokemonTypes');
-			let pokemonAdvantage = document.getElementById('pokemonAdvantage');
-			let pokemonDisadvantage = document.getElementById('pokemonDisadvantage');
-			// let myTable = document.getElementById("myTable");
-			// let tbody = myTable.getElementsByTagName("tbody")[0];
-	
-			// tbody.innerHTML = `<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// cardTitlePokemonName.innerHTML = `<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// pokemonDescription.innerHTML = `<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// pokemonAbilities.innerHTML=`<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// pokemonTypes.innerHTML=`<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// pokemonAdvantage.innerHTML=`<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// pokemonDisadvantage.innerHTML=`<div class="spinner-border spinner-border-sm mt-2" role="status"></div>`;
-			// console.log(pokemonName);
-	
 			axios.get('https://pokeapi.co/api/v2/pokemon/'+pokemonName)
 			.then(response => {
-				// pokemonName.value="";
-				// document.getElementById('pokemonName').value="";
+		
 				console.log(response.data)
-				// pokemonrelatedtobutton.setAttribute('onClick', get_pokemon_related('+JSON.stringify(response.data.types)+'));
 				setflavor_text(response.data.species);   
 				setmoves(response.data.moves);   
 				setstats(response.data.stats);   
@@ -144,72 +123,139 @@ const Pokedex = () => {
 				setevolution(response.data.species);
 				setrelated(response.data.types);
 				setpokemonId(response.data.id);
-				// pokemon_evolution_trigger(response.data.pokemonSpecies);
-				// relatedTo.innerHTML='Pokemon related to '+response.data.pokemonName;
 			})
 			.catch(() => { 
-				tbody.innerHTML = ``;
-				cardTitlePokemonName.innerHTML = ``;
-				pokemonDescription.innerHTML = ``;
-				pokemonAbilities.innerHTML=``;
-				pokemonTypes.innerHTML=``;
-				pokemonAdvantage.innerHTML=``;
-				pokemonDisadvantage.innerHTML=``;
-				// pagboboUser(pokemonName);
+	
+				pagboboUser(pokemonName);
 			})
 			.then(() => { 
 			})
-		})
-		.finally(() => {
-			// setIsLoading(false);
-		});
+		
 	}
 
-	function pagboboUser(pokemonName){
+	function checkSimilarity(enteredValue, nameCollection) {
 
+		console.log(enteredValue, nameCollection);
 
-		axios.get('/getpokemonnames')
-		.then(response2 => {
+		enteredValue = enteredValue.toLowerCase(); // Convert entered value to lowercase for case-insensitive comparison
+		for (var i = 0; i < nameCollection.length; i++) {
+		var name = nameCollection[i].toLowerCase(); // Convert name from the collection to lowercase for case-insensitive comparison
+		if (name.includes(enteredValue)) {
+			return name; // Entered value is similar to at least one name in the collection
+		}
+		// Calculate the Levenshtein distance between the entered value and the name
+		var distance = calculateLevenshteinDistance(enteredValue, name);
+		// Define a threshold for similarity (adjust as needed)
+		var similarityThreshold = 2;
+			if (distance <= similarityThreshold) {
+				return name; // Entered value is similar to at least one name in the collection (based on Levenshtein distance)
+			}
+		}
+		return false; // Entered value is not similar to any names in the collection
+	}
+
+	function calculateLevenshteinDistance(a, b) {
+		if (a.length === 0) return b.length;
+		if (b.length === 0) return a.length;
+		var matrix = [];
 	
-			let guest = checkSimilarity(pokemonName,response2.data)
+		for (var i = 0; i <= b.length; i++) {
+		matrix[i] = [i];
+		}
 	
-			axios.get('/getonepokemon/'+guest)
-			.then(response => {
-				// id = response.data.pokemonId;
+		for (var j = 0; j <= a.length; j++) {
+		matrix[0][j] = j;
+		}
 	
-				Swal.fire({
-					icon: 'info',
-					html:
-						'<p>Are you refering to ' +
-						'<a href="#" onclick="pokemonSearch(`'+guest+'`)">'+guest+'</a></p>'+
-						'<p><img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/'+response.data.pokemonId+'.png"></p>'+
-						'<button class="btn bg-dark text-white m-1" onclick="pokemonSearch(`'+guest+'`)">Yes</button>',
-						// '<p><img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/'+response.data.pokemonName.toLowerCase()+'.png"></p>',
-					buttons: false,
-					showCancelButton: false,
-					showConfirmButton: false
-					// focusConfirm: false,
-					// footer: '<a href="#" onclick="pokemonSearch(`'+guest+'`)">Are you reffering to '+guest+'?</a>'
+		for (var i = 1; i <= b.length; i++) {
+			for (var j = 1; j <= a.length; j++) {
+				if (b.charAt(i - 1) === a.charAt(j - 1)) {
+				matrix[i][j] = matrix[i - 1][j - 1];
+				} else {
+				matrix[i][j] = Math.min(
+					matrix[i - 1][j - 1] + 1, // substitution
+					matrix[i][j - 1] + 1, // insertion
+					matrix[i - 1][j] + 1 // deletion
+				);
+				}
+			}
+		}
+	
+		return matrix[b.length][a.length];
+	}
+
+	function pagboboUser(pName){
+
+		const pokemonRef = firebase.database().ref('pokemon');
+	
+		pokemonRef.on('value', (snapshot) => {
+			const data = snapshot.val();
+			if (data) {
+				const names = Object.values(data).map((pokemon) => pokemon.name);
+
+				let guest = checkSimilarity(pName,names)
+
+				console.log(guest);
+
+				axios.get('https://pokeapi.co/api/v2/pokemon/'+guest)
+				.then(response => {
+					// id = response.data.pokemonId;
+
+					Swal.fire({
+						icon: 'info',
+						html: `
+						<p>Are you referring to 
+							<a href="#" id="pokemonLink">${guest}</a>
+						</p>
+						<p>
+							<img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${response.data.id.toString().padStart(3, "0")}.png" />
+						</p>
+						<button class="btn bg-dark text-white m-1" id="yesButton">Yes</button>
+						`,
+						showCancelButton: false,
+						showConfirmButton: false,
+						didOpen: () => {
+						const pokemonLink = document.getElementById('pokemonLink');
+						const yesButton = document.getElementById('yesButton');
+						if (pokemonLink && yesButton) {
+							pokemonLink.addEventListener('click', () =>
+							pokemonSearch(guest)
+							);
+							yesButton.addEventListener('click', () =>
+							pokemonSearch(guest)
+							);
+						}
+						},
+						willClose: () => {
+						const pokemonLink = document.getElementById('pokemonLink');
+						const yesButton = document.getElementById('yesButton');
+						if (pokemonLink && yesButton) {
+							pokemonLink.removeEventListener('click', () =>
+							pokemonSearch(guest)
+							);
+							yesButton.removeEventListener('click', () =>
+							pokemonSearch(guest)
+							);
+						}
+						},
+					});
 				})
-			})
-			.catch(() => { 
-				Swal.fire({
-					icon: 'error',
-					title:'Ooops...',
-					focusConfirm: false,
+				.catch((error) => { 
+					Swal.fire({
+						icon: 'error',
+						title:'Ooops...',
+						text:error,
+						focusConfirm: false,
+					})
 				})
-			})
-			.then(() => { 
-			})
-	
-		})
-	
-		
+			}
+		});
 	}
 
 
 	return (
 		<div className="container">
+
 			{/* {isLoading && (
 				<div className="maskForPokemonSearch">
 				</div>
@@ -309,11 +355,11 @@ const Pokedex = () => {
 			</section>
 
 			<section className="row">
-				<CardSplide pokemonName={pokemonNameForCard}/>
+				{/* <CardSplide pokemonName={pokemonNameForCard}/> */}
 			</section>
 
 			<section className="row mb-5">
-				<PokemonVideos pokemonName={pokemonNameForCard}/>
+				{/* <PokemonVideos pokemonName={pokemonNameForCard}/> */}
 			</section>
 		</div>
 	)

@@ -7,7 +7,7 @@ const PokemonMoves = (props) => {
 
 	function reinitializeDataTable() {
 		if ($.fn.DataTable.isDataTable(myTable)) {
-		  $(myTable).DataTable().destroy();
+			$(myTable).DataTable().destroy();
 		}
 	}
 	reinitializeDataTable();
