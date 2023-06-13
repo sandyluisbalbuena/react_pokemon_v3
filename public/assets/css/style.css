@@ -1,0 +1,296 @@
+/* html, body {
+    overflow-x: hidden;
+} */
+
+body {
+    background-color: #c8c8c8;
+}
+
+/* Customize the scrollbar track */
+::-webkit-scrollbar {
+    width: 6px; /* Set the width of the scrollbar */
+    height: 12px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #949494; /* Set the color of the scrollbar handle */
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #949494; /* Set the color of the scrollbar handle on hover */
+}
+
+::-webkit-scrollbar-track {
+    background-color: #ececec;
+    border-radius: 5px;
+}
+
+#preloader-background {
+    background: #c8c8c8;
+    background-size: 10%;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+}
+
+#preloader {
+    background: no-repeat center center url(../images/misc/pokeball_loader.png);
+    animation: rotate-infinite 2s linear infinite;background-size: 10%;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 20;
+    top:0%;
+    left:0%;
+}
+
+@keyframes rotate-infinite {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+section{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    padding: 5px;
+    background-color: #cae8ca;
+    border: 2px solid #4CAF50;
+}
+
+.cardloader{
+    background-image: url(../images/misc/cardloader.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.scroll-button {
+    /* Add CSS styles for the scroll button */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    /* ... */
+}
+
+
+/* ---------------------------------------------------------- */
+
+pokemonBackroundColor {
+    background: linear-gradient(to right, #ff0000 0%, #00ff00 50%, #0000ff 100%);
+}
+
+.swal2-title {
+    font-family: Roboto, sans-serif !important;
+    font-size: 20px !important;
+    font-weight: lighter !important;
+    /* font-style: italic !important; */
+}
+
+
+
+@media (max-width:768px) {
+    html, body{
+        overflow-x: hidden;
+    }
+
+    .cardForThread {
+        width:100% !important;
+    }
+
+    .notfound {
+        font-size: 5em !important;
+    }
+
+    .summernote_container {
+        padding: 0 !important; 
+    }
+}
+
+.cardForThread {
+    width:50%;
+}
+
+.hvr-underline-from-center:before {
+    background-color: rgb(133, 133, 133); /* New color */
+}
+
+
+.summernote_container {
+    padding: 0 200px 0 200px;
+ }
+
+
+
+.grid-item { 
+    width: 100px;
+    padding: 5px;
+}
+/* .grid-item--width2 { width: 50%; } */
+
+
+
+.cardId {
+    font-size: 13px;
+}
+
+.leftNavCard {
+    align-items: center;
+}
+
+.cardNav {
+    align-items: center;
+}
+
+.cardFooter {
+    bottom: 0;
+    /* position: absolute; */
+    /* width: 70%; */
+}
+
+
+
+/* ZOOM */
+
+* {
+    box-sizing: border-box;
+}
+
+.img-zoom-container {
+    position: relative;
+}
+
+.img-zoom-lens {
+    position: absolute;
+}
+
+.img-zoom-lens:hover {
+    border: 1px solid #d4d4d4;
+    border-radius: 5px;
+}
+
+.img-zoom-result {
+    border: 1px solid #d4d4d4;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    z-index: 2;
+}
+
+.showZoom {
+    visibility: none;
+}
+
+.hideZoom {
+    visibility: hidden;
+}
+
+a {
+    color: black;
+}
+
+
+.list-group-item:hover {
+    background-color: #c0c0c0;
+}
+.note-modal-footer {
+padding: 6px;
+}
+
+.note-form-control {
+border: 2px solid rgb(208, 208, 208) !important;
+border-radius: 5px !important;
+}
+
+.card {
+border-top:#332c2c solid 4px;
+}
+
+.footer-end{
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.mask {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.pokedex-mask {
+    background-color: rgba(251, 251, 251, 0.15);
+}
+
+.hero {
+    background-image: url('../images/hero/hero.jpg'); height: 80vh; top:0;
+}
+
+.pokedex-card-section {
+    border-radius: 5px; height: 100%;
+}
+
+.pokedex-sidenav {
+    height: 99.7%;
+}
+
+.pokedexCard1 {
+    border-radius: 5px; 
+    position: -webkit-sticky; 
+    position: sticky;
+    top: 70px;
+}
+
+.pokedexCard2 {
+    border-radius: 5px; 
+    height: 100%;
+}
+
+.pokedexCard3 {
+    border-radius: 5px;
+    height: 100%;
+}
+
+.pokedexTable {
+    width:100%;
+}
+
+#pokemonStatscanvas {
+    width: 100%; 
+    height: 520px;
+}
+
+.ripple {
+    border-radius: 5px;
+}
+
+.notfound {
+    font-size: 10em;
+}
+
+.img-pokemon {
+    width: 150px;
+}
+
+.pokemonTypes {
+    width:50px;
+}
+
+.maskForPokemonSearch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+    z-index: 9999; /* Make sure the mask appears on top of other content */
+}
