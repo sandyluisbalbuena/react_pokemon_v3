@@ -1,18 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import PokedexContext from '../PokedexContext';
 import eventBus from '../eventBus';
 import  { useAuthState } from 'react-firebase-hooks/auth';
 import firebase from 'firebase/compat/app';
-
+import { useNavigate } from 'react-router-dom';
 
 
 const Header = () => {
 
-  const pokemonSearch = useContext(PokedexContext);
   const [user] = useAuthState(firebase.auth());
-
-
+	const navigate = useNavigate();
   let [activeLink, setActiveLink] = useState('');
   const location = useLocation();
 
@@ -51,8 +48,23 @@ const Header = () => {
   async function handleLogout (){
 		try {
 			await firebase.auth().signOut();
-		} catch (error) {
 
+      Swal.fire({
+				icon: 'success',
+				// title: 'Oops...',
+				text: 'Successfully Logout.',
+				footer: '<a href="">Why do I have this issue?</a>'
+			})
+
+
+  		navigate('/');
+		} catch (error) {
+      Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: error,
+				footer: '<a href="">Why do I have this issue?</a>'
+			})
 		}
 	};
 
@@ -115,18 +127,31 @@ const Header = () => {
 
           {user ? (
             <>
-              <div className="navbar-nav mb-2 mb-lg-0  input-group w-auto me-5">
-                <li className="nav-item">
-                  <span className={`nav-link hvr-underline-from-center ${activeLink === 'login' ? 'active' : ''}`}>
+              <div className="dropdown">
+                <a
+                  className="dropdown-toggle d-flex align-items-center hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuAvatar"
+                  role="button"
+                  data-mdb-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <span className={`nav-link text-white  ${activeLink === 'login' ? 'active' : ''}`}>
                     {user.displayName}
                   </span>
-                </li>
-                <li className="nav-item">
-                  {/* <button className={`nav-link btn hvr-underline-from-center ${activeLink === 'register' ? 'active' : ''}`} > */}
-                  <span className={`nav-link hvr-underline-from-center ${activeLink === 'register' ? 'active' : ''}`} onClick={handleLogout}>
-                    Logout
-                  </span>
-                </li>
+                  <div class="rounded-circle bg-secondary ms-3"><img class="m-1" width="30px" src="./assets/images/userIcons/pikachu.png"/></div>
+                </a>
+                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                  <li>
+                    <a className="dropdown-item" href="#">My profile</a>
+                  </li>
+                  {/* <li>
+                    <a className="dropdown-item" href="#">Settings</a>
+                  </li> */}
+                  <li>
+                    <a className="dropdown-item" onClick={handleLogout} href="#">Logout</a>
+                  </li>
+                </ul>
               </div>
             </>
           ) : (
