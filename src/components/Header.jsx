@@ -2,10 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PokedexContext from '../PokedexContext';
 import eventBus from '../eventBus';
+import  { useAuthState } from 'react-firebase-hooks/auth';
+import firebase from 'firebase/compat/app';
+
+
 
 const Header = () => {
 
   const pokemonSearch = useContext(PokedexContext);
+  const [user] = useAuthState(firebase.auth());
+
 
   let [activeLink, setActiveLink] = useState('');
   const location = useLocation();
@@ -41,6 +47,14 @@ const Header = () => {
       handleSearch();
     }
   };
+
+  async function handleLogout (){
+		try {
+			await firebase.auth().signOut();
+		} catch (error) {
+
+		}
+	};
 
 
   return (
@@ -79,22 +93,61 @@ const Header = () => {
             </li>
           </ul>
 
+          
+
           {activeLink === 'pokedex' && (
-          <div id="pokemonSearchBar" className="d-flex input-group w-auto me-5">
-            <input id="pokemonNameInputSearch" type="search" className="form-control rounded" placeholder="Pokemon Name" aria-label="Search" aria-describedby="search-addon" onKeyPress={handleKeyPress} required/>
-            <button className="btn bg-dark" onClick={handleSearch}>
-              <i className="fas fa-search text-white"></i>
-            </button>
-          </div>
+            <div id="pokemonSearchBar" className="d-flex input-group w-auto me-5">
+              <input id="pokemonNameInputSearch" type="search" className="form-control rounded" placeholder="Pokemon Name" aria-label="Search" aria-describedby="search-addon" onKeyPress={handleKeyPress} required/>
+              <button className="btn bg-dark" onClick={handleSearch}>
+                <i className="fas fa-search text-white"></i>
+              </button>
+            </div>
           )}
 
           {activeLink === 'pokecard' && (
-            <div id="pokemonSearchBar" className="d-flex input-group w-auto me-5">
-            <input id="pokemonName" type="search" className="form-control rounded" placeholder="Pokemon Card Name" aria-label="Search" aria-describedby="search-addon" required/>
-            <button className="btn bg-dark">
-              <i className="fas fa-search text-white"></i>
-            </button>
+            <div id="pokemonCardSearchBar" className="d-flex input-group w-auto me-5">
+              <input id="pokemonName" type="search" className="form-control rounded" placeholder="Pokemon Card Name" aria-label="Search" aria-describedby="search-addon" required/>
+              <button className="btn bg-dark">
+                <i className="fas fa-search text-white"></i>
+              </button>
             </div>
+          )}
+
+          {user ? (
+            <>
+              <div className="navbar-nav mb-2 mb-lg-0  input-group w-auto me-5">
+                <li className="nav-item">
+                  <span className={`nav-link hvr-underline-from-center ${activeLink === 'login' ? 'active' : ''}`}>
+                    {user.displayName}
+                  </span>
+                </li>
+                <li className="nav-item">
+                  {/* <button className={`nav-link btn hvr-underline-from-center ${activeLink === 'register' ? 'active' : ''}`} > */}
+                  <span className={`nav-link hvr-underline-from-center ${activeLink === 'register' ? 'active' : ''}`} onClick={handleLogout}>
+                    Logout
+                  </span>
+                </li>
+              </div>
+            </>
+          ) : (
+            <ul className="navbar-nav mb-2 mb-lg-0  input-group w-auto me-5">
+              <li className="nav-item">
+                <Link
+                  to="/login"
+                  className={`nav-link hvr-underline-from-center ${activeLink === 'login' ? 'active' : ''}`}
+                >
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to="/register"
+                  className={`nav-link hvr-underline-from-center ${activeLink === 'register' ? 'active' : ''}`}
+                >
+                  Register
+                </Link>
+              </li>
+            </ul>
           )}
 
         </div>
