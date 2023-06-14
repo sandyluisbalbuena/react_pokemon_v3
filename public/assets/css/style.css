@@ -188,6 +188,7 @@ pokemonBackroundColor {
     height: 400px;
     position: absolute;
     z-index: 2;
+    visibility: hidden;
 }
 
 .showZoom {
@@ -293,4 +294,8 @@ border-top:#332c2c solid 4px;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
     z-index: 9999; /* Make sure the mask appears on top of other content */
+}
+
+#table2 {
+    width: 100%;
 }

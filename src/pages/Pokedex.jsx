@@ -14,7 +14,6 @@ import queryString from 'query-string';
 import 'firebase/compat/firestore';
 import 'firebase/compat/database';
 import firebase from 'firebase/compat/app';
-import { renderToString } from 'react-dom/server';
 
 
 const Pokedex = () => {
@@ -252,7 +251,6 @@ const Pokedex = () => {
 		});
 	}
 
-
 	return (
 		<div className="container">
 
@@ -352,6 +350,7 @@ const Pokedex = () => {
 
 					</div>
 				</div>
+
 			</section>
 
 			<section className="row">

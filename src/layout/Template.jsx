@@ -4,13 +4,13 @@ import Header from '../components/Header'
 import { Outlet } from 'react-router-dom'
 
 const Template = () => {
-  return (
-	<div>
-		<Header />
-		<Outlet />
-		<Footer />
-	</div>
-  )
+	return (
+		<div>
+			<Header />
+			<Outlet />
+			<Footer />
+		</div>
+	)
 }
 
 export default Template
