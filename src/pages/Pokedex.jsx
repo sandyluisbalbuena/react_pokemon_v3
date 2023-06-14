@@ -67,13 +67,7 @@ const Pokedex = () => {
 	// 	return () => pokemonRef.off();
 	// }, []);
 
-	console.log(pokemonNamesCollection)
-
 	const pokemonSearch = (pokemonNameName) =>{
-		// setIsLoading(true);
-
-		console.log('yeye');
-
 		swal.close();
 
 		if(pokemonNameName == undefined && pokemonNameName == null){
@@ -112,7 +106,6 @@ const Pokedex = () => {
 			axios.get('https://pokeapi.co/api/v2/pokemon/'+pokemonName)
 			.then(response => {
 		
-				console.log(response.data)
 				setflavor_text(response.data.species);   
 				setmoves(response.data.moves);   
 				setstats(response.data.stats);   
@@ -193,8 +186,6 @@ const Pokedex = () => {
 				const names = Object.values(data).map((pokemon) => pokemon.name);
 
 				let guest = checkSimilarity(pName,names)
-
-				console.log(guest);
 
 				axios.get('https://pokeapi.co/api/v2/pokemon/'+guest)
 				.then(response => {

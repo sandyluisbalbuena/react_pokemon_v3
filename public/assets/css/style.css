@@ -118,6 +118,17 @@ pokemonBackroundColor {
     .summernote_container {
         padding: 0 !important; 
     }
+
+    .cardIconTypes {
+        width: 25px !important;
+        height: 25px !important;
+    }
+}
+
+.cardIconTypes {
+    width: 35px;
+    height: 35px;
+
 }
 
 .cardForThread {
@@ -131,17 +142,12 @@ pokemonBackroundColor {
 
 .summernote_container {
     padding: 0 200px 0 200px;
- }
-
-
+}
 
 .grid-item { 
     width: 100px;
     padding: 5px;
 }
-/* .grid-item--width2 { width: 50%; } */
-
-
 
 .cardId {
     font-size: 13px;
@@ -157,11 +163,7 @@ pokemonBackroundColor {
 
 .cardFooter {
     bottom: 0;
-    /* position: absolute; */
-    /* width: 70%; */
 }
-
-
 
 /* ZOOM */
 
@@ -298,4 +300,8 @@ border-top:#332c2c solid 4px;
 
 #table2 {
     width: 100%;
+}
+
+#filterbtnrow {
+    overflow-y: auto;
 }

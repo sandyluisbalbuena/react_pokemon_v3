@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import ReactDOMServer from 'react-dom/server';
+import eventBus from '../eventBus';
+
 
 const CardInfo = () => {
 
@@ -12,35 +13,15 @@ const CardInfo = () => {
 		// }
 	}, []);
 
-	// initializeDataTable();
+	useEffect(() => {
+		eventBus.subscribe('getDataOneCard', getDataOneCard);
 
+		return () => {
+			eventBus.unsubscribe('getDataOneCard', getDataOneCard);
+		};
+	}, []);
 
-	// function initializeDataTable() {
-	// 	const table2 = $('#myTable2').DataTable({
-	// 	searching: false,
-	// 	paging: false,
-	// 	info: false,
-	// 	columns: [
-	// 		{ title: 'Name', width: '30%', render: 'display' },
-	// 		{ title: 'Cost', width: '30%', render: 'display' },
-	// 		{ title: 'Damage', width: '40%', render: 'display' },
-	// 	],
-	// 	});
-	
-	// 	$('#myTable2 tbody').on('click', 'button', function () {
-	// 		const attackName = table2.row($(this).closest('tr')).data()[0];
-	// 		const attackDesc = getAttackDescription(attackName);
-	// 		Swal.fire({
-	// 			icon: 'info',
-	// 			html: `<p>${attackDesc}</p>`,
-	// 		});
-	// 	});
-	
-	// 	return table2;
-	// }
-
-
-	function getDataOneCard(Id){
+	const getDataOneCard = (Id) => {
 		axios.get(`https://api.pokemontcg.io/v1/cards?id=`+Id)
 		.then(response => {
 			// console.log(response.data.cards);
@@ -89,13 +70,13 @@ const CardInfo = () => {
 				},
 				},
 				{ 
-					title: 'Cost', 
+					title: 'Damage', 
 					width: '30%', 
 					render: function (data) {
 					return data;
 				}, },
 				{ 
-					title: 'Damage', 
+					title: 'Cost', 
 					width: '40%', 
 					render: function (data) {
 						return data;
@@ -106,7 +87,7 @@ const CardInfo = () => {
 
 		$('#myTable2 tbody').on('click', 'button', function () {
 			const attackName = $(this).data('attack-description');
-  			const attackDesc = getAttackDescription(attackName);
+			const attackDesc = getAttackDescription(attackName);
 			Swal.fire({
 				icon: 'info',
 				html: `<p>${attackDesc}</p>`,
@@ -153,24 +134,24 @@ const CardInfo = () => {
 		}
 	
 		if('types' in cardData){
-			cardType.innerHTML = '<img class="rounded" width="40px" src="./assets/images/pokemonCardTypes/'+cardData.types[0].toLowerCase()+'.png" />';
+			cardType.innerHTML = '<img class="rounded cardIconTypes" width="40px" src="./assets/images/pokemonCardTypes/'+cardData.types[0].toLowerCase()+'.png" />';
 		}
 	
 		if('weaknesses' in cardData){
 			cardData.weaknesses.forEach(weakness => {
-				cardWeakness.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="./assets/images/pokemonCardTypes/'+weakness.type.toLowerCase()+'.png" /><p>&nbsp;&nbsp;'+weakness.value+'</p></span><br/>';
+				cardWeakness.innerHTML += '<span class="d-flex"><img class="rounded cardIconTypes" width="40px" src="./assets/images/pokemonCardTypes/'+weakness.type.toLowerCase()+'.png" /><p>&nbsp;&nbsp;'+weakness.value+'</p></span><br/>';
 			});
 		}
 	
 		if('retreatCost' in cardData){
 			cardData.retreatCost.forEach(retreat => {
-				cardRetreatCost.innerHTML += '<img class="rounded" width="40px" src="./assets/images/pokemonCardTypes/'+retreat.toLowerCase()+'.png" />';
+				cardRetreatCost.innerHTML += '<img class="rounded cardIconTypes" width="40px" src="./assets/images/pokemonCardTypes/'+retreat.toLowerCase()+'.png" />';
 			});
 		}
 	
 		if('resistances' in cardData){
 			cardData.resistances.forEach(resistance => {
-				cardResistance.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="./assets/images/pokemonCardTypes/'+resistance.type.toLowerCase()+'.png" /><p>&nbsp;&nbsp;'+resistance.value+'</p></span><br/>';
+				cardResistance.innerHTML += '<span class="d-flex"><img class="rounded cardIconTypes" width="40px" src="./assets/images/pokemonCardTypes/'+resistance.type.toLowerCase()+'.png" /><p>&nbsp;&nbsp;'+resistance.value+'</p></span><br/>';
 			});
 		}
 	
@@ -180,15 +161,14 @@ const CardInfo = () => {
 	
 		if ('attacks' in cardData) {
 			cardData.attacks.forEach(attack => {
-				console.log(attack);
 				let cost = "";
 				attack.cost.forEach(ct => {
 					if (ct != "Free") {
-					cost += '<img width="35px" class="me-1" src="./assets/images/pokemonCardTypes/' + ct.toLowerCase() + '.png"/>';
+					cost += '<img class="me-1 cardIconTypes" src="./assets/images/pokemonCardTypes/' + ct.toLowerCase() + '.png"/>';
 					}
 				});
 				attackName = `<button style="width:100%;" data-attack-description="`+attack.text+`" class="btn btn-dark bg-dark">${attack.name}</button>`;
-				let newRowData = [attackName, cost, attack.damage];
+				let newRowData = [attackName, attack.damage, cost];
 				table2.row.add(newRowData).draw().node();
 			});
 		}
@@ -343,8 +323,8 @@ const CardInfo = () => {
 							<thead>
 								<tr>
 									<th>Name</th>
-									<th>Cost</th>
 									<th>Damage</th>
+									<th>Cost</th>
 								</tr>
 							</thead>
 							<tbody>
