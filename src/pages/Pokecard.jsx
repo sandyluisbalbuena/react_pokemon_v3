@@ -4,10 +4,7 @@ import CardGrid from '../components/CardGrid'
 
 const Pokecard = () => {
 
-	let [pokemonNameName, setpokemonNameName] = useState('charmander');
-
-	// let pokemonNameName = "charizard"
-
+	let [pokemonNameName, setpokemonNameName] = useState('charizard');
 
 	return (
 		<div className="container">

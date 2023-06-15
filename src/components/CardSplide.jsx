@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 
 const CardSplide = (props) => {
 
 	get_pokemon_cards(props.pokemonName)
+	const navigate = useNavigate();
+
 
 	function get_pokemon_cards(pokemonName){
 
@@ -65,13 +69,34 @@ const CardSplide = (props) => {
 	function forCards(image, id){
 
 		Swal.fire({
-			html: '<img width="90%" src="'+image+'" class="rounded my-1"><button onclick="redirectToPokeCard(`'+id+'`)" class="btn btn-dark my-2">More Details</button>',
+			html: '<img width="90%" src="'+image+'" class="rounded my-1"><button id="buttonToRedirectToCard" class="btn btn-dark my-2">More Details</button>',
 			customClass: {
 			image: 'swal2-image',
 			},
 			imageAlt: 'Custom image',
 			showConfirmButton: false,
+			didOpen: () => {
+				const buttonToRedirectToCard = document.getElementById('buttonToRedirectToCard');
+				if (buttonToRedirectToCard) {
+					buttonToRedirectToCard.addEventListener('click', () =>
+						redirectToPokeCard(id)
+					);
+				}
+				},
+				willClose: () => {
+				const buttonToRedirectToCard = document.getElementById('buttonToRedirectToCard');
+				if (buttonToRedirectToCard) {
+					buttonToRedirectToCard.removeEventListener('click', () =>
+						redirectToPokeCard(id)
+					);
+				}
+			},
 		})
+	}
+
+	function redirectToPokeCard(id){
+		swal.close();
+		navigate('/pokecard?cardId='+id);
 	}
 
 

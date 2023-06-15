@@ -1,16 +1,26 @@
 import React, { useEffect } from 'react'
 import eventBus from '../eventBus';
+import queryString from 'query-string';
+
 
 
 const CardInfo = () => {
 
 	useEffect(()=>{
-		getDataOneCard('swsh45sv-SV107');
-		// if (urlParams.has('id')) {
-		// 	cardId = urlParams.get('id');
-		// const table2 = initializeDataTable();
-			// getDataOneCard(cardId);
-		// }
+		const parsed = queryString.parse(window.location.search);
+  		var cardTobeSearchFromUrl = parsed.cardId;
+
+		if(cardTobeSearchFromUrl == undefined && cardTobeSearchFromUrl == null){
+			getDataOneCard('swsh45sv-SV107');
+
+		}
+		else{
+			getDataOneCard(cardTobeSearchFromUrl);
+		}
+
+
+
+		
 	}, []);
 
 	useEffect(() => {

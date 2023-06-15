@@ -29,7 +29,7 @@ const Pokedex = () => {
 	let [pokemonId, setpokemonId] = useState([]);
 	// let [isLoading, setIsLoading] = useState(false);
 	let pokemonName2;
-	const [pokemonNamesCollection, setPokemonNamesCollection] = useState([]);
+	// const [pokemonNamesCollection, setPokemonNamesCollection] = useState([]);
 
 	useEffect(()=>{
 		const parsed = queryString.parse(window.location.search);
@@ -345,7 +345,7 @@ const Pokedex = () => {
 			</section>
 
 			<section className="row">
-				{/* <CardSplide pokemonName={pokemonNameForCard}/> */}
+				<CardSplide pokemonName={pokemonNameForCard}/>
 			</section>
 
 			<section className="row mb-5">
