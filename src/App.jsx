@@ -31,7 +31,7 @@ function App() {
 
 	return (
 		<>
-			<BrowserRouter basename='/'>
+			<BrowserRouter basename='/react_pokemon_v3'>
 				<Routes>
 					<Route element={<Template />}>
 						<Route path='/' element={<Home />}/>
