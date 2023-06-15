@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Template from './layout/Template'
 import Home from './pages/Home'
 import Pokedex from './pages/Pokedex'
@@ -31,16 +31,18 @@ function App() {
 
 	return (
 		<>
-			<Routes>
-				<Route element={<Template />}>
-					<Route path='/' element={<Home />}/>
-					<Route path='/pokedex' element={<Pokedex />}/>
-					<Route path='/pokecard' element={<Pokecard />}/>
-					<Route path='/login' element={<Login />}/>
-					<Route path='/register' element={<Register />}/>
-				</Route>
-				<Route path='*' element={<Notfound />}/>
-			</Routes>
+			<BrowserRouter basename='/'>
+				<Routes>
+					<Route element={<Template />}>
+						<Route path='/' element={<Home />}/>
+						<Route path='/pokedex' element={<Pokedex />}/>
+						<Route path='/pokecard' element={<Pokecard />}/>
+						<Route path='/login' element={<Login />}/>
+						<Route path='/register' element={<Register />}/>
+					</Route>
+					<Route path='*' element={<Notfound />}/>
+				</Routes>
+			</BrowserRouter>
 		</>
 	)
 }
