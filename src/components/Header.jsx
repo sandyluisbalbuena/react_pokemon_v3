@@ -57,7 +57,7 @@ const Header = () => {
 
   const handleKeyPress = (event) => {
 
-    if(document.getElementById('pokemonNameInputSearch').value != ''){
+    if(document.getElementById('pokemonNameInputSearch')){
       if (event.key === 'Enter') {
         handleSearch();
       }
@@ -67,8 +67,6 @@ const Header = () => {
         handleCardSearch();
       }
     }
-   
-
     
   };
 

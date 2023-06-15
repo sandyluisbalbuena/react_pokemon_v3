@@ -51,42 +51,40 @@ const Register = () => {
 		}
 	};
 
-	const signInWithGoogle = async () => {
-		try {
-		await signInWithPopup(firebase.auth(), googleProvider);
-		const userId = firebase.auth().currentUser.uid;
-		const userRef = firebase.database().ref(`users/${userId}`);
-		userRef.set({ 
-			username,
-			image
-		});
-		// User successfully registered
+		const signInWithGoogle = async () => {
+			try {
+			await signInWithPopup(firebase.auth(), googleProvider);
+			const user = firebase.auth().currentUser;
+			const userId = user.uid;
+			const email = user.email; // Retrieve the user's email
+			const userRef = firebase.database().ref(`users/${userId}`);
+			userRef.set({ 
+				username,
+				image,
+				email // Save the user's email in the database
+			});
 		
-		Swal.fire({
-			icon: 'success',
-			text: 'Successfully create an account.',
-			footer: '<a href="">Why do I have this issue?</a>'
-
-		})
-
-		let templateParams = {
-			from_name: 'Pokemon',
-			to_name: email,
-			message: 'This is a test email message.'
+			// Rest of your code...
+		
+			let templateParams = {
+				from_name: 'Pokemon',
+				to_name: email,
+				message: 'This is a test email message.'
+			};
+		
+			emailjs.send("service_cyqrhaq", "template_9ghriyi", templateParams);
+			navigate('/');
+			} catch (error) {
+			// Handle the error
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: error,
+					footer: '<a href="">Why do I have this issue?</a>'
+				})
+			}
 		};
-		
-
-		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
-		navigate('/');
-		} catch (error) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: error,
-				footer: '<a href="">Why do I have this issue?</a>'
-			})
-		}
-	};
+	  
 
 	const signInWithFacebook = async () => {
 		try {

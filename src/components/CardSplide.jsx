@@ -50,7 +50,7 @@ const CardSplide = (props) => {
 				newImg.className = 'cardloader';
 
 				newImg.addEventListener('click', () =>
-					forCards(response.data.cards[i].imageUrlHiRes, response.data.cards[i].id)
+					forCards(response.data.cards[i].imageUrlHiRes, response.data.cards[i].id, response.data.cards[i].name)
 				);
 
 				newImg.classList.add('hvr-grow-shadow', 'rounded')
@@ -66,7 +66,7 @@ const CardSplide = (props) => {
 		})
 	}
 
-	function forCards(image, id){
+	function forCards(image, id, cardName){
 
 		Swal.fire({
 			html: '<img width="90%" src="'+image+'" class="rounded my-1"><button id="buttonToRedirectToCard" class="btn btn-dark my-2">More Details</button>',
@@ -79,7 +79,7 @@ const CardSplide = (props) => {
 				const buttonToRedirectToCard = document.getElementById('buttonToRedirectToCard');
 				if (buttonToRedirectToCard) {
 					buttonToRedirectToCard.addEventListener('click', () =>
-						redirectToPokeCard(id)
+						redirectToPokeCard(id, cardName)
 					);
 				}
 				},
@@ -87,16 +87,16 @@ const CardSplide = (props) => {
 				const buttonToRedirectToCard = document.getElementById('buttonToRedirectToCard');
 				if (buttonToRedirectToCard) {
 					buttonToRedirectToCard.removeEventListener('click', () =>
-						redirectToPokeCard(id)
+						redirectToPokeCard(id, cardName)
 					);
 				}
 			},
 		})
 	}
 
-	function redirectToPokeCard(id){
+	function redirectToPokeCard(id, cardName){
 		swal.close();
-		navigate('/pokecard?cardId='+id);
+		navigate('/pokecard?cardId='+id+'&cardName='+cardName);
 	}
 
 

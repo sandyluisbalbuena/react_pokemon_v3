@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import eventBus from '../eventBus';
 import queryString from 'query-string';
 
-
-
 const CardInfo = () => {
 
 	useEffect(()=>{
@@ -12,14 +10,10 @@ const CardInfo = () => {
 
 		if(cardTobeSearchFromUrl == undefined && cardTobeSearchFromUrl == null){
 			getDataOneCard('swsh45sv-SV107');
-
 		}
 		else{
 			getDataOneCard(cardTobeSearchFromUrl);
 		}
-
-
-
 		
 	}, []);
 
