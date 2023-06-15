@@ -2,10 +2,14 @@ import React, { useEffect } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/database';
+import { useNavigate } from 'react-router-dom';
+
 
 const Home = () => {
 
 	let splide;
+	const navigate = useNavigate();
+
 
 	function storePokemonNames(){
 
@@ -101,7 +105,15 @@ const Home = () => {
 				newImg.classList.add('hvr-grow');
 
 				let newAnchor = document.createElement('a');
-				newAnchor.setAttribute('href', '/pokedex?pokemonName='+pokemon.name);
+				// newAnchor.setAttribute('href', '/pokedex?pokemonName='+pokemon.name);
+
+
+				// const buttonToRedirectToCard = document.getElementById('buttonToRedirectToCard');
+				// if (buttonToRedirectToCard) {
+					newAnchor.addEventListener('click', () =>
+						redirectToPokeDex(pokemon.name)
+					);
+				// }
 
 				newAnchor.appendChild(newImg);
 
@@ -123,6 +135,10 @@ const Home = () => {
 	
 
 		})
+	}
+
+	function redirectToPokeDex(id){
+		navigate('/pokedex?pokemonName='+id);
 	}
 
 
