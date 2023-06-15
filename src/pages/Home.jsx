@@ -34,15 +34,8 @@ const Home = () => {
 		})
 		.catch(error => console.error('On get pokemon error', error))
 		.then(() => { 
-	
-
 		})
-
-
 	}
-
-
-
 
 	useEffect(()=>{
 		if (window.innerWidth <= 768) {
