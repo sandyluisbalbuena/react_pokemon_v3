@@ -56,7 +56,10 @@ const Register = () => {
 		await signInWithPopup(firebase.auth(), googleProvider);
 		const userId = firebase.auth().currentUser.uid;
 		const userRef = firebase.database().ref(`users/${userId}`);
-		userRef.set({ username });
+		userRef.set({ 
+			username,
+			image
+		});
 		// User successfully registered
 		
 		Swal.fire({
@@ -129,7 +132,7 @@ const Register = () => {
 
 								<button className="btn btn-primary btn-block btn-dark"  onClick={handleRegister}>Register</button>
 								<button className="btn btn-primary btn-block btn-dark"  onClick={signInWithGoogle}>Sign in with Google</button>
-								<button className="btn btn-primary btn-block btn-dark"  onClick={signInWithFacebook}>Sign in with Facebook</button>
+								{/* <button className="btn btn-primary btn-block btn-dark"  onClick={signInWithFacebook}>Sign in with Facebook</button> */}
 							</div>
 						</div>
 
