@@ -51,10 +51,25 @@ const Header = () => {
     eventBus.publish('searchPokemon', document.getElementById('pokemonNameInputSearch').value);
   }
 
+  const handleCardSearch = () => {
+    eventBus.publish('getonecard', document.getElementById('pokemonCardNameInputSearch').value);
+  }
+
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
+
+    if(document.getElementById('pokemonNameInputSearch').value != ''){
+      if (event.key === 'Enter') {
+        handleSearch();
+      }
     }
+    else {
+      if (event.key === 'Enter') {
+        handleCardSearch();
+      }
+    }
+   
+
+    
   };
 
   async function handleLogout (){
@@ -126,8 +141,8 @@ const Header = () => {
 
           {activeLink === 'pokecard' && (
             <div id="pokemonCardSearchBar" className="d-flex input-group w-auto me-5">
-              <input id="pokemonName" type="search" className="form-control rounded" placeholder="Pokemon Card Name" aria-label="Search" aria-describedby="search-addon" required/>
-              <button className="btn bg-dark">
+              <input id="pokemonCardNameInputSearch" type="search" className="form-control rounded" placeholder="Pokemon Card Name" aria-label="Search" aria-describedby="search-addon" onKeyPress={handleKeyPress} required/>
+              <button className="btn bg-dark" onClick={handleCardSearch}>
                 <i className="fas fa-search text-white"></i>
               </button>
             </div>

@@ -8,7 +8,7 @@ const CardInfo = () => {
 
 	useEffect(()=>{
 		const parsed = queryString.parse(window.location.search);
-  		var cardTobeSearchFromUrl = parsed.cardId;
+		var cardTobeSearchFromUrl = parsed.cardId;
 
 		if(cardTobeSearchFromUrl == undefined && cardTobeSearchFromUrl == null){
 			getDataOneCard('swsh45sv-SV107');
@@ -59,6 +59,11 @@ const CardInfo = () => {
 	}
 
 	function forCardView(cardData){
+
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
 
 		table2.destroy();
 	
@@ -183,10 +188,7 @@ const CardInfo = () => {
 			});
 		}
 	
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth'
-		});
+		
 	
 		setTimeout(function() {
 			imageZoom("tobeZoom", "myresult");

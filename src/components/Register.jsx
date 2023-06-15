@@ -12,6 +12,12 @@ const Register = () => {
 	const [image, setImage] = useState('pikachu');
 	const navigate = useNavigate();
 
+	var templateParams = {
+		from_name: 'Pokemon',
+		to_name: email,
+		message: 'This is a test email message.'
+	};
+
 	
 	const googleProvider = new GoogleAuthProvider();	
 	const facebookProvider = new FacebookAuthProvider();	
@@ -31,8 +37,10 @@ const Register = () => {
 			text: 'Successfully create an account.',
 			footer: '<a href="">Why do I have this issue?</a>'
 		})
+		
 
-		// User successfully registered
+		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
+
 		navigate('/');
 		} catch (error) {
 			Swal.fire({
@@ -56,7 +64,11 @@ const Register = () => {
 			icon: 'success',
 			text: 'Successfully create an account.',
 			footer: '<a href="">Why do I have this issue?</a>'
+
 		})
+		
+
+		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
 		navigate('/');
 		} catch (error) {
 			Swal.fire({

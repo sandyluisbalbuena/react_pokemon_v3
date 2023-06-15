@@ -11,18 +11,28 @@ const CardGrid = (props) => {
 			itemSelector: '.grid-item',
 			layoutMode: 'fitRows'
 		});
-		getonecard();
+
+		getonecard(props.pokemonName);
 	});
 
-	// var myGrid = document.getElementById("myGrid");
+	useEffect(() => {
+		eventBus.subscribe('getonecard', getonecard);
 
-	function getonecard(){
+		return () => {
+			eventBus.unsubscribe('getonecard', getonecard);
+		};
+	}, []);
+
+
+	const getonecard = (cardName) => {
+		var myGrid = document.getElementById("myGrid");
+
 
 
 		// let pokemonName = 'charizard';
 	
 		iso.isotope('destroy');
-		// myGrid.innerHTML = "";
+		myGrid.innerHTML = "";
 	
 		iso.isotope({
 			itemSelector: '.grid-item',
@@ -30,11 +40,12 @@ const CardGrid = (props) => {
 		});
 	
 	
-		axios.get(`https://api.pokemontcg.io/v1/cards?name=`+props.pokemonName)
+		axios.get(`https://api.pokemontcg.io/v1/cards?name=`+cardName)
 		.then(response => {
 	
 	
 			let filterbuttons = [];
+			filterbtns.innerHTML = '';
 			filterbtns.innerHTML = `<button id="All" type="button" class="btn btn-dark text-sm btn-filter-cards">ALL</button>`;
 	
 			response.data.cards.forEach(function(pokecard){
