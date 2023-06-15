@@ -204,8 +204,8 @@ const CardInfo = () => {
 	
 		let lensSize = 75;
 	
-		// lens.style.width = lensSize + "px";
-		// lens.style.height = lensSize + "px";
+		lens.style.width = lensSize + "px";
+		lens.style.height = lensSize + "px";
 	
 	
 		img.parentElement.insertBefore(lens, img);
@@ -215,9 +215,9 @@ const CardInfo = () => {
 		cx = result.offsetWidth / lens.offsetWidth;
 		cy = result.offsetHeight / lens.offsetHeight;
 		/*set background properties for the result DIV:*/
-		// result.style.backgroundImage = "url('" + img.src + "')";
+		result.style.backgroundImage = "url('" + img.src + "')";
 	
-		// result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+		result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
 	
 		// result.style.display = "none";
 	
@@ -258,10 +258,10 @@ const CardInfo = () => {
 				y = 0;
 			}
 			/*set the position of the lens:*/
-			// lens.style.left = x + "px";
-			// lens.style.top = y + "px";
+			lens.style.left = x + "px";
+			lens.style.top = y + "px";
 			/*display what the lens "sees":*/
-			// result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
+			result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
 		}
 	
 		function getCursorPos(e) {
@@ -281,18 +281,38 @@ const CardInfo = () => {
 				y: y
 			};
 		}
+	
+		// function resizeLens(e) {
+		//     e.preventDefault();
+	
+		//     var lensSizeOnScroll = calculateLensSizeOnScroll();
+		//     lens.style.width = lensSizeOnScroll + "px";
+		//     lens.style.height = lensSizeOnScroll + "px";
+		// }
+		
+		// function calculateLensSizeOnScroll() {
+	
+		//     console.log('wew');
+		//     // Adjust the lens size based on your desired logic for scrolling
+		//     // For example, you can reduce the lens size by a fixed value when scrolling occurs
+		//     var scrollOffset = window.pageYOffset || document.documentElement.scrollTop;
+		//     var newLensSize = lensSize - scrollOffset * 1; // Adjust the factor as needed
+		//     return Math.max(newLensSize, 0); // Ensure the lens size is never negative
+		// }
+	
 		
 	}
-	
+
+
 	function showResult() {
-		// document.getElementById('myresult').setAttribute("visible", "true");
-		// document.getElementById('myresult').style.visibility = "";
-		// document.getElementById('myresult').classList.add("showZoom");
+		document.getElementById('myresult').style.setProperty('visibility', 'visible', 'important');
 	}
 	
+	
 	function hideResult() {
+		// console.log('wewwew');
 		// document.getElementById('myresult').setAttribute("visible", "false");
-		// document.getElementById('myresult').style.visibility = "hidden";
+		document.getElementById('myresult').style.visibility = "hidden";
 	}
 
 	return (
@@ -310,7 +330,7 @@ const CardInfo = () => {
 										
 			<div className="col-12 col-lg-3">
 
-				<div id="cardImage"  onMouseOver={showResult()} onMouseOut={hideResult()}  className="img-zoom-container">
+				<div id="cardImage"  onMouseOver={()=>showResult()} onMouseOut={()=>hideResult()}  className="img-zoom-container">
 				</div>
 
 				{/* @if(auth()->check()) */}
