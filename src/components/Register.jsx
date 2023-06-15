@@ -12,13 +12,6 @@ const Register = () => {
 	const [image, setImage] = useState('pikachu');
 	const navigate = useNavigate();
 
-	var templateParams = {
-		from_name: 'Pokemon',
-		to_name: email,
-		message: 'This is a test email message.'
-	};
-
-	
 	const googleProvider = new GoogleAuthProvider();	
 	const facebookProvider = new FacebookAuthProvider();	
 
@@ -37,6 +30,12 @@ const Register = () => {
 			text: 'Successfully create an account.',
 			footer: '<a href="">Why do I have this issue?</a>'
 		})
+
+		let templateParams = {
+			from_name: 'Pokemon',
+			to_name: email,
+			message: 'This is a test email message.'
+		};
 		
 
 		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
@@ -66,6 +65,12 @@ const Register = () => {
 			footer: '<a href="">Why do I have this issue?</a>'
 
 		})
+
+		let templateParams = {
+			from_name: 'Pokemon',
+			to_name: email,
+			message: 'This is a test email message.'
+		};
 		
 
 		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
