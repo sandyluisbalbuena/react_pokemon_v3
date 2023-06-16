@@ -8,6 +8,8 @@ import ForumLatest from '../components/ForumLatest';
 
 const Pokeforum = () => {
 
+	let [userdata,setuserdata] = useState([]);
+
 	const [user] = useAuthState(firebase.auth());
 	const [username, setUsername] = useState('');
 	const [userimage, setUserimage] = useState('');
@@ -18,8 +20,9 @@ const Pokeforum = () => {
 		userRef.on('value', (snapshot) => {
 			const userData = snapshot.val();
 			if (userData) {
-			setUsername(userData.username || '');
-			setUserimage(userData.image || 'pikachu');
+				setUsername(userData.username || '');
+				setUserimage(userData.image || 'pikachu');
+				setuserdata(userData);
 			}
 		});
 		}
@@ -35,13 +38,13 @@ const Pokeforum = () => {
 			<section className="row d-flex mt-4" id="pokedexSectionResult">
 				<div className="col-12 col-lg-9">
 					<div id="forumLatest">
-						<ForumLatest />
+						<ForumLatest  user={userdata} />
 					</div>
 				</div>
 
 				<div className="d-none d-lg-block col-lg-3">
 					<div style={{height:'98%'}}>
-						<div style={{ position: '-webkit-sticky', position: 'sticky', top: '70px'}}>
+						<div style={{ position: 'sticky', top: '70px'}}>
 
 							<div className="row">
 								<div className="card my-4 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{borderRadius: '5px', height: '100%'}} id="secondCard">
@@ -54,14 +57,14 @@ const Pokeforum = () => {
 
 										<button className="btn btn-dark my-2" style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
 											<i className="far fa-pen-to-square me-1"></i>
-											Post
+											Create Thread
 										</button>
 									</div>
 								</div>
 							</div>
 
 							<div className="row">
-								<ForumCategories />
+								<ForumCategories/>
 							</div>
 
 							<div className="row">

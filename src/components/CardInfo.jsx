@@ -299,11 +299,9 @@ const CardInfo = () => {
 		
 	}
 
-
 	function showResult() {
 		document.getElementById('myresult').style.setProperty('visibility', 'visible', 'important');
 	}
-	
 	
 	function hideResult() {
 		// console.log('wewwew');
@@ -313,7 +311,6 @@ const CardInfo = () => {
 
 	return (
 		<>
-
 		<div className="navbar navbar-dark bg-dark rounded cardNav">
 			<h6 id="cardName" className="ms-3 text-white"></h6>
 			<div className="me-3 d-flex leftNavCard">
@@ -341,6 +338,7 @@ const CardInfo = () => {
 			</div>
 
 			<div className="col-12 col-lg-9">
+				
 				<div className="row">
 					<div id="myresult" className="img-zoom-result rounded"></div>
 					<div id="cardTyping">
@@ -363,10 +361,12 @@ const CardInfo = () => {
 						</table>
 					</div>
 				</div>
+
 				<div className="row">
 					<h6 id="abilityName"></h6>
 					<p id="abilityDescription"></p>
 				</div>
+
 				<div className="row">
 					<p id="textInfo"></p>
 				</div>
@@ -387,11 +387,9 @@ const CardInfo = () => {
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-
 		</div>
-
 		</>
 
 	)

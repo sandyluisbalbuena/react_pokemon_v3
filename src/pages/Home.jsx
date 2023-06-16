@@ -53,17 +53,15 @@ const Home = () => {
 				// newcategoriesRef.set({
 				// 	name: 'samples',
 				// 	slug: 'samples',
-				// });
+				// });https://console.firebase.google.com/u/0/project/pokemon-react-450b4/database/pokemon-react-450b4-default-rtdb/data/~2Fthreads~2F-NY0Xi71HKDa_3BHo7Mw
 
-				const categoriesRef = firebase.database().ref('threads');
+				const categoriesRef = firebase.database().ref('messages');
 				const newcategoriesRef = categoriesRef.push();
 				newcategoriesRef.set({
-					categoryId: '-NY09vnKnlq-rP_dYN7L',
-					// categoryId: '-NY09qsAZhynFQBPXtMI',
-					title: 'Best Pokemon Cards for Competitive Play',
-					slug: 'best-pokemon-cards-for-competitive-play',
+					threadId: '-NY0Xi71HKDa_3BHo7Mw',
 					userId: 'fqDbUPCZu4em2dWhaMYPVdITouw2',
-					content:'I want to build a competitive Pokemon card deck. Any suggestions on the best cards to include?',
+					parentID: null,
+					content:'I like Rayquaza the most.',
 					createdAt:'2023-06-03 19:11:07',
 					updatedAt:'2023-06-03 19:11:07',
 				});
