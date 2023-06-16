@@ -210,7 +210,7 @@ const Home = () => {
 								</button>
 							</form>
 							{/* <button className="btn bg-dark my-5 text-white" onClick={storePokemonNames}>Start</button> */}
-							<button className="btn bg-dark my-5 text-white" onClick={storeCategories}>Create a new Thread</button>
+							{/* <button className="btn bg-dark my-5 text-white" onClick={storeCategories}>Create a new Thread</button> */}
 						</div>
 					</div>
 				</div>
@@ -222,7 +222,6 @@ const Home = () => {
 						<div className="splide">
 							<div className="splide__track">
 								<ul className="splide__list">
-									
 								</ul>
 							</div>
 						</div>
