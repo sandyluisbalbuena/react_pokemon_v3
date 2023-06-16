@@ -57,6 +57,7 @@ const Register = () => {
 			const user = firebase.auth().currentUser;
 			const userId = user.uid;
 			const email = user.email; // Retrieve the user's email
+			const username = user.displayName; // Retrieve the user's email
 			const userRef = firebase.database().ref(`users/${userId}`);
 			userRef.set({ 
 				username,

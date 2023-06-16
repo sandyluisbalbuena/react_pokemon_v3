@@ -11,6 +11,8 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/database';
 import Register from './components/Register';
 import Login from './components/Login';
+import Pokeforum from './pages/Pokeforum'
+import About from './pages/About'
 
 
 const firebaseConfig = {
@@ -37,6 +39,8 @@ function App() {
 						<Route path='/' element={<Home />}/>
 						<Route path='/pokedex' element={<Pokedex />}/>
 						<Route path='/pokecard' element={<Pokecard />}/>
+						<Route path='/pokeforum' element={<Pokeforum />}/>
+						<Route path='/about' element={<About />}/>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
 					</Route>

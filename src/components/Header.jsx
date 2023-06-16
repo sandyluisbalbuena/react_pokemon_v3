@@ -15,7 +15,6 @@ const Header = () => {
   const [username, setUsername] = useState('');
   const [userimage, setUserimage] = useState('');
 
-
   let handleNavLinkClick = (link) => {
     setActiveLink(link);
     localStorage.setItem('activeLink', link);
@@ -46,6 +45,7 @@ const Header = () => {
       });
     }
   }, [user]);
+  // console.log(user);
 
   const handleSearch = () => {
     eventBus.publish('searchPokemon', document.getElementById('pokemonNameInputSearch').value);
@@ -116,6 +116,7 @@ const Header = () => {
               loading="lazy"
             />
           </a>
+
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link to='/' onClick={() => handleNavLinkClick('home')} className="nav-link hvr-underline-from-center {activeLink === 'pokedex' ? 'active' : ''}">Home</Link>
@@ -125,6 +126,25 @@ const Header = () => {
             </li>
             <li className="nav-item">
               <Link to='/pokecard' onClick={() => handleNavLinkClick('pokecard')} className="nav-link hvr-underline-from-center {activeLink === 'pokedex' ? 'active' : ''}">Pokecard</Link>
+            </li>
+            {user ? (
+                <Link
+                  to="/pokeforum"
+                  onClick={() => handleNavLinkClick('pokeforum')}
+                  className={`nav-link hvr-underline-from-center ${activeLink === 'pokeforum' ? 'active' : ''}`}
+                >
+                  Pokeforum
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className={`nav-link hvr-underline-from-center ${activeLink === 'login' ? 'active' : ''}`}
+                >
+                  Pokeforum
+                </Link>
+              )}
+              <li className="nav-item">
+                <Link to='/about' onClick={() => handleNavLinkClick('about')} className="nav-link hvr-underline-from-center {activeLink === 'pokedex' ? 'active' : ''}">About</Link>
             </li>
           </ul>
 
