@@ -80,17 +80,46 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
     <!-- isotope -->
 	  <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+    <!-- emailjs -->
     <script type="text/javascript"
         src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
     </script>
-
     <script type="text/javascript">
       (function(){
           emailjs.init("tydrbp8moynjLWMd-");
       })();
     </script>
+    <!-- tinymce -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js" integrity="sha512-sWydClczl0KPyMWlARx1JaxJo2upoMYb9oh5IHwudGfICJ/8qaCyqhNTP5aa9Xx0aCRBwh71eZchgz0a4unoyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    
 
     <!-- main -->
     <script type="module" src="/src/main.jsx"></script>
+
+
+    <script>
+      tinymce.init({
+        selector: 'textarea#summernote',
+        height: 350,
+        // plugins: [
+        //     'advlist', 'autolink', 'lists', 'link',  'charmap', 'preview',
+        //     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        //     'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        // ],
+        toolbar: 'undo redo | blocks | ' +
+        'bold italic backcolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | help',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+        image_class_list: [
+        { title: 'Small', value: 'custom-small' },
+        { title: 'Medium', value: 'custom-medium' },
+        { title: 'Large', value: 'custom-large' }
+        ],
+        image_dimensions: true,
+      });
+    </script>
   </body>
 </html>

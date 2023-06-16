@@ -58,13 +58,37 @@ const Home = () => {
 				const categoriesRef = firebase.database().ref('messages');
 				const newcategoriesRef = categoriesRef.push();
 				newcategoriesRef.set({
-					threadId: '-NY0Xi71HKDa_3BHo7Mw',
+					threadId: '-NY4f4pWkYnL1y4KVK8o',
 					userId: 'fqDbUPCZu4em2dWhaMYPVdITouw2',
 					parentID: null,
 					content:'I like Rayquaza the most.',
 					createdAt:'2023-06-03 19:11:07',
 					updatedAt:'2023-06-03 19:11:07',
 				});
+
+				// const categoriesRef = firebase.database().ref('threads');
+				// const newcategoriesRef = categoriesRef.push();
+				// newcategoriesRef.set({
+				// 	categoryId: '-NY09vnKnlq-rP_dYN7L',
+				// 	title: 'Favorite Legendary Pokemon',
+				// 	slug: 'favorite-legendary-pokemon',
+				// 	userId: 'fqDbUPCZu4em2dWhaMYPVdITouw2',
+				// 	content:'Which legendary Pokemon is your favorite and why?',
+				// 	createdAt:'2023-06-03 19:11:07',
+				// 	updatedAt:'2023-06-03 19:11:07',
+				// });
+
+				// const categoriesRef = firebase.database().ref('threads');
+				// const newcategoriesRef = categoriesRef.push();
+				// newcategoriesRef.set({
+				// 	categoryId: '-NY09qsAZhynFQBPXtMI',
+				// 	title: 'Best Pokemon Cards for Competitive Play',
+				// 	slug: 'best-pokemon-cards-for-competitive-play',
+				// 	userId: 'fqDbUPCZu4em2dWhaMYPVdITouw2',
+				// 	content:'I want to build a competitive Pokemon card deck. Any suggestions on the best cards to include?',
+				// 	createdAt:'2023-06-05 19:11:07',
+				// 	updatedAt:'2023-06-05 19:11:07',
+				// });
 
 				// console.log(pokemon.name);https://console.firebase.google.com/u/0/project/pokemon-react-450b4/database/pokemon-react-450b4-default-rtdb/data/~2Fusers~2FAsU7wLz6pGhiZZlTdiTtIHChMi53
 			// });
@@ -186,7 +210,7 @@ const Home = () => {
 								</button>
 							</form>
 							{/* <button className="btn bg-dark my-5 text-white" onClick={storePokemonNames}>Start</button> */}
-							{/* <button className="btn bg-dark my-5 text-white" onClick={storeCategories}>Create a new Thread</button> */}
+							<button className="btn bg-dark my-5 text-white" onClick={storeCategories}>Create a new Thread</button>
 						</div>
 					</div>
 				</div>

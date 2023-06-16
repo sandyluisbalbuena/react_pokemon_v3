@@ -13,6 +13,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Pokeforum from './pages/Pokeforum'
 import About from './pages/About'
+import CreateThreadModal from './components/CreateThreadModal'
 
 
 const firebaseConfig = {
@@ -47,6 +48,8 @@ function App() {
 					<Route path='*' element={<Notfound />}/>
 				</Routes>
 			</BrowserRouter>
+
+			<CreateThreadModal />
 		</>
 	)
 }
