@@ -36,10 +36,30 @@ const Pokeforum = () => {
 			</section>
 
 			<section className="row d-flex mt-4" id="pokedexSectionResult">
+
 				<div className="col-12 col-lg-9">
+
+					<div className="d-lg-none">
+						<div className="card my-4 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{borderRadius: '5px', height: '100%'}} id="secondCard">
+							<div className="card-body container-fluid">
+
+								<div className="navbar rounded" style={{backgroundColor: '#D1CFC9'}}>
+									<h6 className="m-auto">{user && (username !== '' ? username : user.displayName)}</h6>
+									{/* <img className="me-4" width="15%" src={`./assets/images/userIcons/${user && (userimage)}.png`} alt=""/> */}
+								</div>
+
+								<button className="btn btn-dark my-2" style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
+									<i className="far fa-pen-to-square me-1"></i>
+									Create Thread
+								</button>
+							</div>
+						</div>
+					</div>
+
 					<div id="forumLatest">
 						<ForumLatest  user={userdata} />
 					</div>
+
 				</div>
 
 				<div className="d-none d-lg-block col-lg-3">
