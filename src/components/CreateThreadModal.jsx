@@ -93,9 +93,6 @@ const CreateThreadModal = () => {
 			tinymce.activeEditor.setContent('');
 		});
 	}
-	
-
-	
 
 	return (
 		<>
@@ -116,9 +113,9 @@ const CreateThreadModal = () => {
 							</select>
 
 							<div id="titleError" className="text-danger text-sm"></div>
-							<div className="form-outline mb-4">
-								<input name="title" type="text" id="title" className="form-control" placeholder='Title' style={{border:"gray 1px solid"}}/>
-							</div>
+							{/* <div className="form-outline mb-4"> */}
+								<input name="title" type="text" id="title" className="form-control mb-4" placeholder='Title'/>
+							{/* </div> */}
 
 							<div id="contentError" className="text-danger text-sm"></div>
 							<div className="form-outline mb-4">

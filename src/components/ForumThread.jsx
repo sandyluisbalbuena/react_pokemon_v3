@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useParams } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const ForumThread = () => {
 
 	const [threadData, setThreadData] = useState(null);
 	const { slug } = useParams();
+	const [user] = useAuthState(firebase.auth());
+
 	
 	useEffect(() => {
 		fetchThreadBySlug(slug)
 		.then((thread) => {
 			if (thread) {
-			// Thread found, update the state with the thread data
-			setThreadData(thread);
+				setThreadData(thread);
 			} else {
-			// No thread found with the given slug
-			console.log('Thread not found');
+				console.log('Thread not found');
 			}
 		})
 		.catch((error) => {
@@ -31,89 +32,165 @@ const ForumThread = () => {
 		const threadsRef = firebase.database().ref('threads');
 		const messagesRef = firebase.database().ref('messages');
 		const usersRef = firebase.database().ref('users');
-	
+
 		threadsRef
-			.orderByChild('slug')
-			.equalTo(slug)
-			.once('value')
-			.then((snapshot) => {
+		.orderByChild('slug')
+		.equalTo(slug)
+		.on('value', (snapshot) => {
 			const threadData = snapshot.val();
-	
+
 			if (threadData) {
-				const threadId = Object.keys(threadData)[0];
-				const thread = { threadId, ...threadData[threadId] };
-	
-				messagesRef
+			const threadId = Object.keys(threadData)[0];
+			const thread = { threadId, ...threadData[threadId] };
+
+			messagesRef
 				.orderByChild('threadId')
 				.equalTo(threadId)
-				.once('value')
-				.then((messagesSnapshot) => {
-					const messagesData = messagesSnapshot.val();
-					const messages = [];
-	
-					if (messagesData) {
+				.on('value', (messagesSnapshot) => {
+				const messagesData = messagesSnapshot.val();
+				const messages = [];
+
+				if (messagesData) {
 					Object.keys(messagesData).forEach((messageId) => {
-						const message = { messageId, ...messagesData[messageId] };
-						messages.push(message);
+					const message = { messageId, ...messagesData[messageId] };
+					messages.push(message);
 					});
+				}
+
+				const userIds = messages.map((message) => message.userId);
+				const uniqueUserIds = [...new Set(userIds)];
+
+				usersRef.once('value').then((usersSnapshot) => {
+					const usersData = usersSnapshot.val();
+					const users = {};
+
+					uniqueUserIds.forEach((userId) => {
+					users[userId] = usersData[userId];
+					});
+
+					messages.forEach((message) => {
+					const userId = message.userId;
+					if (users[userId]) {
+						message.user = users[userId];
 					}
-	
-					const userIds = messages.map((message) => message.userId);
-					const uniqueUserIds = [...new Set(userIds)];
-	
+					});
+
+					thread.messages = messages;
+
+					// Fetch the user data separately using threadData.userId
 					usersRef
+					.child(threadData[threadId].userId)
 					.once('value')
-					.then((usersSnapshot) => {
-						const usersData = usersSnapshot.val();
-						const users = {};
-	
-						uniqueUserIds.forEach((userId) => {
-						users[userId] = usersData[userId];
-						});
-	
-						messages.forEach((message) => {
-						const userId = message.userId;
-						if (users[userId]) {
-							message.user = users[userId];
+					.then((userSnapshot) => {
+						const userData = userSnapshot.val();
+
+						if (userData) {
+						thread.user = { userId: threadData[threadId].userId, ...userData };
 						}
-						});
-	
-						thread.messages = messages;
-	
-						// Fetch the user data separately using threadData.userId
-						usersRef
-						.child(threadData[threadId].userId)
-						.once('value')
-						.then((userSnapshot) => {
-							const userData = userSnapshot.val();
-	
-							if (userData) {
-							thread.user = { userId: threadData[threadId].userId, ...userData };
-							}
-	
-							resolve(thread);
-						})
-						.catch((error) => {
-							reject(error);
-						});
+
+						resolve(thread);
 					})
 					.catch((error) => {
 						reject(error);
 					});
-				})
-				.catch((error) => {
-					reject(error);
+				});
 				});
 			} else {
-				resolve(null);
+			resolve(null);
 			}
-			})
-			.catch((error) => {
-			reject(error);
-			});
 		});
+	});
 	};
 
+
+	function sendCommentToThread(){
+
+		let commentArea = document.getElementById('commentArea');
+
+		let formData = {
+			content: commentArea.value,
+			threadId: threadData.threadId,
+			userId:user.uid,
+			createdAt: firebase.database.ServerValue.TIMESTAMP,
+			updatedAt: firebase.database.ServerValue.TIMESTAMP,
+		};
+	
+		// Simple validation to check if any field is empty
+		if (!formData.content) {
+		Swal.fire({
+			icon: 'error',
+			title: 'All fields are required!',
+		});
+		return; // Exit the function if any field is empty
+		}
+	
+		const threadRef = firebase.database().ref('messages');
+	
+		threadRef
+		.push(formData)
+		.then(() => {
+			Swal.fire({
+			icon: 'success',
+			title: 'Post Created successfully!',
+			});
+		})
+		.catch((error) => {
+			console.error(error);
+	
+			Swal.fire({
+			icon: 'error',
+			title: 'Something went wrong!',
+			});
+		})
+		.finally(() => {
+			commentArea.value = '';
+		});
+	}
+
+	function getCommentAge(commentDate) {
+		const now = new Date(); // current date and time
+		const postedDate = new Date(commentDate); // convert comment date to Date object
+		const timeDiff = now - postedDate; // get the time difference in milliseconds
+	
+		const seconds = Math.floor(timeDiff / 1000); // convert milliseconds to seconds
+		const minutes = Math.floor(seconds / 60); // convert seconds to minutes
+		const hours = Math.floor(minutes / 60); // convert minutes to hours
+		const days = Math.floor(hours / 24); // convert hours to days
+		const years = Math.floor(days / 365); // convert days to years
+	
+		if (seconds < 60) {
+			if (seconds > 1) {
+				return `${seconds} seconds ago`;
+			} else {
+				return `${seconds} second ago`;
+			}
+		} else if (minutes < 60) {
+			if (minutes > 1) {
+				return `${minutes} minutes ago`;
+			} else {
+				return `${minutes} minute ago`;
+			}
+		} else if (hours < 24) {
+			if (hours > 1) {
+				return `${hours} hours ago`;
+			} else {
+				return `${hours} hour ago`;
+			}
+		} else if (days < 365) {
+			if (days > 1) {
+				return `${days} days ago`;
+			} else {
+				return `${days} day ago`;
+			}
+		} else {
+			if (years > 1) {
+				return `${years} years ago`;
+			} else {
+				return `${years} year ago`;
+			}
+		}
+	}
+	
 
 	return (
 		<div className="container">
@@ -171,7 +248,7 @@ const ForumThread = () => {
 						<div>
 						<span className="d-flex">
 							<div style={{ fontSize: '12px', fontWeight: 'bolder' }}>{comment.user.username.toUpperCase()}</div>&nbsp;&nbsp;
-							<div style={{ fontSize: '10px' }}>{/* {getCommentAge(comment.created_at)} */}</div>
+							<div style={{ fontSize: '10px' }}>{getCommentAge(comment.createdAt)}</div>
 						</span>
 						<div style={{ fontSize: '11px' }}>{comment.content}</div>
 						<div className="mt-2 d-flex">
@@ -200,20 +277,15 @@ const ForumThread = () => {
 			</div>
 		</div>
 	
-		<div className="row my-3">
-			<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
-			<div className="p-2 py-3 px-lg-5">
-				<form id="commentForm">
-				<div id="commentError" className="text-danger text-sm"></div>
-				<div className="form-outline">
-					<textarea className="form-control" id="commentArea" rows="4"></textarea>
-					<label className="form-label" htmlFor="commentArea">Comment</label>
+			<div className="row my-3">
+				<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
+					<div className="p-2 py-3 px-lg-5">
+						<div id="commentError" className="text-danger text-sm"></div>
+						<textarea placeholder='Comment' className="form-control" id="commentArea" rows="4"></textarea>
+						<button onClick={()=>sendCommentToThread()} className="btn btn-dark my-2 col-12"><i className="fas fa-paper-plane"></i></button>
+					</div>
 				</div>
-				<button type="submit" className="btn btn-dark my-2 col-12"><i className="fas fa-paper-plane"></i></button>
-				</form>
 			</div>
-			</div>
-		</div>
 		</div>
 	);
 }

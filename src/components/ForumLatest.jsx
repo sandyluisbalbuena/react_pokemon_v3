@@ -27,65 +27,65 @@ const ForumLatest = (props) => {
 		const categoryRef = firebase.database().ref('categories');
 		const userRef = firebase.database().ref('users');
 		const messageRef = firebase.database().ref('messages');
-	  
+
 		const threadListener = threadRef.on('value', (snapshot) => {
-		  const threadData = snapshot.val();
-	  
-		  if (threadData) {
+		const threadData = snapshot.val();
+	
+		if (threadData) {
 			categoryRef.once('value', (categorySnapshot) => {
-			  const categoryData = categorySnapshot.val();
-	  
-			  userRef.once('value', (userSnapshot) => {
+			const categoryData = categorySnapshot.val();
+	
+			userRef.once('value', (userSnapshot) => {
 				const userData = userSnapshot.val();
-	  
+	
 				messageRef.once('value', (messageSnapshot) => {
-				  const messageData = messageSnapshot.val();
-	  
-				  const threadGroups = Object.entries(threadData).reduce((groups, [threadId, thread]) => {
+				const messageData = messageSnapshot.val();
+	
+				const threadGroups = Object.entries(threadData).reduce((groups, [threadId, thread]) => {
 					const categoryId = thread.categoryId;
 					const userId = thread.userId;
 					const category = categoryData[categoryId];
 					const user = userData[userId];
 					const messages = Object.values(messageData || {}).filter((message) => message.threadId === threadId);
-	  
+	
 					const threadInfo = {
-					  id: threadId,
-					  title: thread?.title || '',
-					  slug: thread?.slug || '',
-					  content: thread?.content || '',
-					  createdAt: thread?.createdAt || '',
-					  updatedAt: thread?.updatedAt || '',
-					  category: category ? category.name : '',
-					  user: user ? user.username : '',
-					  userImage: user ? user.image : '',
-					  messageCount: messages.length || 0, // Update message count based on retrieved messages
-					  messages: messages || [],
+					id: threadId,
+					title: thread?.title || '',
+					slug: thread?.slug || '',
+					content: thread?.content || '',
+					createdAt: thread?.createdAt || '',
+					updatedAt: thread?.updatedAt || '',
+					category: category ? category.name : '',
+					user: user ? user.username : '',
+					userImage: user ? user.image : '',
+					messageCount: messages.length || 0, // Update message count based on retrieved messages
+					messages: messages || [],
 					};
-	  
+	
 					if (!groups[categoryId]) {
-					  groups[categoryId] = {
+					groups[categoryId] = {
 						category: category ? category.name : '',
 						threads: [threadInfo],
-					  };
+					};
 					} else {
-					  groups[categoryId].threads.push(threadInfo);
+					groups[categoryId].threads.push(threadInfo);
 					}
-	  
+	
 					return groups;
-				  }, {});
-	  
-				  setThreadGroups(Object.values(threadGroups));
+				}, {});
+	
+				setThreadGroups(Object.values(threadGroups));
 				});
-			  });
 			});
-		  }
+			});
+		}
 		});
-	  
+	
 		return () => {
-		  threadRef.off('value', threadListener);
+		threadRef.off('value', threadListener);
 		};
-	  };
-	  
+	};
+	
 
 	const updateMessageCount = (threadId) => {
 		setThreadGroups((prevThreadGroups) => {
