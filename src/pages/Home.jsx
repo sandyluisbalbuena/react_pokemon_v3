@@ -58,7 +58,7 @@ const Home = () => {
 				const categoriesRef = firebase.database().ref('messages');
 				const newcategoriesRef = categoriesRef.push();
 				newcategoriesRef.set({
-					threadId: '-NY4f4pWkYnL1y4KVK8o',
+					threadId: '-NY5dWvaXUp7rsZicJqH',
 					userId: 'fqDbUPCZu4em2dWhaMYPVdITouw2',
 					parentID: null,
 					content:'I like Rayquaza the most.',

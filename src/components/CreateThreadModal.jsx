@@ -4,30 +4,8 @@ import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 const CreateThreadModal = () => {
-	// let [userData,setuserdata] = useState([]);
 	const [user] = useAuthState(firebase.auth());
 
-
-	// useEffect(() => {
-	// 	if (user) {
-	// 	const userRef = firebase.database().ref(`users/${user.uid}`);
-	// 	userRef.on('value', (snapshot) => {
-	// 		const userData = snapshot.val();
-
-	// console.log(userData);
-			
-	// 		// if (userData) {
-	// 		// 	setUsername(userData.username || '');
-	// 		// 	setUserimage(userData.image || 'pikachu');
-	// 		// 	setuserdata(userData);
-	// 		// }
-	// 	});
-	// 	}
-	// }, [user]);
-		if (user) {
-
-	console.log(user.uid);
-}
 	useEffect(()=>{
 		tinymce.init({
 			selector: 'textarea#summernote',
@@ -73,7 +51,7 @@ const CreateThreadModal = () => {
 		let formData = {
 			categoryId: category.value,
 			title: title.value,
-			slug: slugify(title),
+			slug: slugify(title.value),
 			content: tinymce.activeEditor.getContent(),
 			userId:user.uid,
 			createdAt: firebase.database.ServerValue.TIMESTAMP,

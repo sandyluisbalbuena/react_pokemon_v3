@@ -14,6 +14,7 @@ import Login from './components/Login';
 import Pokeforum from './pages/Pokeforum'
 import About from './pages/About'
 import CreateThreadModal from './components/CreateThreadModal'
+import Thread from './pages/Thread'
 
 
 const firebaseConfig = {
@@ -41,6 +42,7 @@ function App() {
 						<Route path='/pokedex' element={<Pokedex />}/>
 						<Route path='/pokecard' element={<Pokecard />}/>
 						<Route path='/pokeforum' element={<Pokeforum />}/>
+						<Route path='/pokeforum/:slug' element={<Thread />}/>
 						<Route path='/about' element={<About />}/>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
