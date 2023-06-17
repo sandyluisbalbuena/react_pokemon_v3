@@ -15,6 +15,7 @@ const ForumThread = () => {
 		fetchThreadBySlug(slug)
 		.then((thread) => {
 			if (thread) {
+				console.log(thread);
 				setThreadData(thread);
 			} else {
 				console.log('Thread not found');
@@ -25,7 +26,41 @@ const ForumThread = () => {
 		});
 	}, [slug]);
 
-	console.log(threadData);
+	useEffect(()=>{
+		const messagesRef = firebase.database().ref('messages');
+		const usersRef = firebase.database().ref('users');
+
+		messagesRef.on('child_added', handleNewMessage);
+		usersRef.on('child_changed', handleNewMessage);
+	},[])
+
+	const handleNewMessage = () => {
+		// const newMessage = snapshot.val();
+		// console.log('New message:', newMessage);
+
+
+		fetchThreadBySlug(slug)
+		.then((thread) => {
+			if (thread) {
+				console.log(thread);
+				setThreadData(thread);
+			} else {
+				console.log('Thread not found');
+			}
+		})
+		.catch((error) => {
+			console.error('Error fetching thread:', error);
+		});
+
+		// if(threadData)
+		// {
+			// console.log(threadData);
+		// }
+	
+		// Process the new message as needed
+		// ...
+	};
+
 
 	const fetchThreadBySlug = (slug) => {
 		return new Promise((resolve, reject) => {

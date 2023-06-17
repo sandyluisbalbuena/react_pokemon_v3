@@ -5,6 +5,7 @@ import ForumCategories from '../components/ForumCategories';
 import ForumMyThreads from '../components/ForumMyThreads';
 import ForumTrendingTopics from '../components/ForumTrendingTopics';
 import ForumLatest from '../components/ForumLatest';
+import OnlineUsers from '../components/OnlineUsers';
 
 const Pokeforum = () => {
 
@@ -85,6 +86,10 @@ const Pokeforum = () => {
 
 							<div className="row">
 								<ForumCategories/>
+							</div>
+
+							<div className="row">
+								<OnlineUsers/>
 							</div>
 
 							<div className="row">
