@@ -7,15 +7,15 @@ import Pokecard from './pages/Pokecard'
 import Notfound from './pages/Notfound'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
 import 'firebase/compat/database';
+import 'firebase/compat/firestore';
 import Register from './components/Register';
 import Login from './components/Login';
 import Pokeforum from './pages/Pokeforum'
 import About from './pages/About'
 import CreateThreadModal from './components/CreateThreadModal'
 import Thread from './pages/Thread'
-
+import Profile from './components/Profile'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -30,9 +30,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-
 function App() {
-
 	return (
 		<>
 			<BrowserRouter basename='/'>
@@ -52,6 +50,7 @@ function App() {
 			</BrowserRouter>
 
 			<CreateThreadModal />
+			<Profile />
 		</>
 	)
 }

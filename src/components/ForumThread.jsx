@@ -117,11 +117,11 @@ const ForumThread = () => {
 	
 		// Simple validation to check if any field is empty
 		if (!formData.content) {
-		Swal.fire({
-			icon: 'error',
-			title: 'All fields are required!',
-		});
-		return; // Exit the function if any field is empty
+			Swal.fire({
+				icon: 'error',
+				title: 'All fields are required!',
+			});
+			return; // Exit the function if any field is empty
 		}
 	
 		const threadRef = firebase.database().ref('messages');

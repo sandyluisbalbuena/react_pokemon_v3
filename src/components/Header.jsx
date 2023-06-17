@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import eventBus from '../eventBus';
 import  { useAuthState } from 'react-firebase-hooks/auth';
@@ -80,7 +80,7 @@ const Header = () => {
 				footer: '<a href="">Why do I have this issue?</a>'
 			})
 
-  	navigate('/');
+    navigate('/');
 		} catch (error) {
       Swal.fire({
 				icon: 'error',
@@ -184,7 +184,7 @@ const Header = () => {
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                   <li>
-                    <a className="dropdown-item" href="#">My profile</a>
+                    <a className="dropdown-item"  data-mdb-toggle="modal" data-mdb-target="#profile">My profile</a>
                   </li>
                   {/* <li>
                     <a className="dropdown-item" href="#">Settings</a>

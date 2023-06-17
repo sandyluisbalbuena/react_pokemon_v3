@@ -95,7 +95,6 @@ const CreateThreadModal = () => {
 	}
 
 	return (
-		<>
 		<div className="modal fade modal-lg" id="postThread" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div className="modal-dialog">
 				<div className="modal-content">
@@ -130,10 +129,6 @@ const CreateThreadModal = () => {
 				</div>
 			</div>
 		</div>
-
-		
-
-		</>
 	)
 }
 

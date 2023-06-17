@@ -305,3 +305,8 @@ border-top:#332c2c solid 4px;
 #filterbtnrow {
     overflow-y: auto;
 }
+
+.userImageIconButton {
+    width: 25px;
+    height: 25px;
+}

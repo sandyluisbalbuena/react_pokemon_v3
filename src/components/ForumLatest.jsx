@@ -1,26 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+let uid;
+
 
 const ForumLatest = (props) => {
 	const [threadGroups, setThreadGroups] = useState([]);
+	const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
+	const [user, isLoading] = useAuthState(firebase.auth());
+	// const [uid, setUid] = useState('');
+
+	useEffect(() => {
+		if (!isLoading && user) {
+			uid=user.uid;
+			console.log(uid);
+			// Use the uid here or call a function that requires the uid
+		}
+	}, [user, isLoading]);
+
+	// console.log(uid);
+
+
 
 	useEffect(() => {
 		fetchThreads();
+		setupListeners();
 	}, []);
 
-	useEffect(() => {
+	const setupListeners = () => {
 		const messageRef = firebase.database().ref('messages');
+		const userRef = firebase.database().ref('users');
+	
 		const messageListener = messageRef.on('child_added', (snapshot) => {
 		const newMessage = snapshot.val();
 		updateMessageCount(newMessage.threadId);
 		});
 	
+		const userListener = userRef.on('child_changed', (snapshot) => {
+		const updatedUser = snapshot.val();
+		updateUserData(updatedUser);
+		});
+	
 		return () => {
 		messageRef.off('child_added', messageListener);
+		userRef.off('child_changed', userListener);
 		};
-	}, []);
+	};
 
 	const fetchThreads = () => {
 		const threadRef = firebase.database().ref('threads');
@@ -57,6 +85,7 @@ const ForumLatest = (props) => {
 					updatedAt: thread?.updatedAt || '',
 					category: category ? category.name : '',
 					user: user ? user.username : '',
+					userId: thread?.userId || '',
 					userImage: user ? user.image : '',
 					messageCount: messages.length || 0, // Update message count based on retrieved messages
 					messages: messages || [],
@@ -85,7 +114,6 @@ const ForumLatest = (props) => {
 		threadRef.off('value', threadListener);
 		};
 	};
-	
 
 	const updateMessageCount = (threadId) => {
 		setThreadGroups((prevThreadGroups) => {
@@ -97,12 +125,42 @@ const ForumLatest = (props) => {
 			updatedThreads[threadIndex].messageCount += 1;
 		}
 	
-		// Update the threadGroups state with the updated message count
 		return updatedGroups.map((group) => ({
 				...group,
 				threads: updatedThreads.filter((thread) => thread.category === group.category),
 			}));
 		});
+	};
+
+	const updateUserData = (updatedUser) => {
+		// if(uid){
+			setThreadGroups((prevThreadGroups) => {
+			const updatedGroups = [...prevThreadGroups];
+			const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
+		
+				// console.log(user?.uid)
+	
+				console.log(updatedThreads,uid);
+	
+			// if(uid){
+				updatedThreads.forEach((thread) => {
+					if (uid === thread.userId) {
+		
+						thread.userImage = updatedUser.image;
+						thread.user = updatedUser.username;
+					}
+				});
+			// }
+			
+		
+			return updatedGroups.map((group) => ({
+				...group,
+					threads: updatedThreads.filter((thread) => thread.category === group.category),
+				}));
+			});
+
+		// }
+		
 	};
 
 	function deleteThread(deleteThreadId) {
@@ -138,8 +196,6 @@ const ForumLatest = (props) => {
 
 		return false;
 	}
-
-	console.log(threadGroups);
 
 	return (
 		<div>
