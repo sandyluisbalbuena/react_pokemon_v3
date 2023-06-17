@@ -16,13 +16,8 @@ const ForumLatest = (props) => {
 	useEffect(() => {
 		if (!isLoading && user) {
 			uid=user.uid;
-			console.log(uid);
-			// Use the uid here or call a function that requires the uid
 		}
 	}, [user, isLoading]);
-
-	// console.log(uid);
-
 
 
 	useEffect(() => {

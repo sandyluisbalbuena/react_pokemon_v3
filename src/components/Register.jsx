@@ -41,6 +41,12 @@ const Register = () => {
 		emailjs.send("service_cyqrhaq","template_9ghriyi",templateParams);
 
 		navigate('/');
+
+
+		const user = firebase.auth().currentUser;
+		const onlineUsersRef = firebase.database().ref('onlineUsers'); // or use Firestore reference if using Firestore
+		onlineUsersRef.child(user.uid).set(true); 
+
 		} catch (error) {
 			Swal.fire({
 				icon: 'error',
@@ -75,6 +81,9 @@ const Register = () => {
 	
 		emailjs.send("service_cyqrhaq", "template_9ghriyi", templateParams);
 		navigate('/');
+
+		const onlineUsersRef = firebase.database().ref('onlineUsers'); // or use Firestore reference if using Firestore
+		onlineUsersRef.child(user.uid).set(true); 
 		} catch (error) {
 		// Handle the error
 			Swal.fire({

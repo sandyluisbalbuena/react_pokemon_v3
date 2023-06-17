@@ -67,7 +67,6 @@ const Header = () => {
         handleCardSearch();
       }
     }
-    
   };
 
   async function handleLogout (){
@@ -79,6 +78,11 @@ const Header = () => {
 				text: 'Successfully Logout.',
 				footer: '<a href="">Why do I have this issue?</a>'
 			})
+
+      const userRef = firebase.database().ref(`onlineUsers`);
+
+      userRef.child(user.uid).set(false); 
+      // userRef.update(false);
 
     navigate('/');
 		} catch (error) {

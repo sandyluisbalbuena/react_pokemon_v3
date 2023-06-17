@@ -13,6 +13,10 @@ const Login = () => {
 		try {
 		await firebase.auth().signInWithEmailAndPassword(email, password);
 		navigate('/');
+
+		const user = firebase.auth().currentUser;
+		const onlineUsersRef = firebase.database().ref('onlineUsers'); // or use Firestore reference if using Firestore
+		onlineUsersRef.child(user.uid).set(true); 
 		} catch (error) {
 			Swal.fire({
 				icon: 'error',
@@ -28,6 +32,11 @@ const Login = () => {
 		const provider = new firebase.auth.GoogleAuthProvider();
 		await firebase.auth().signInWithPopup(provider);
 		navigate('/');
+
+		const user = firebase.auth().currentUser;
+		const onlineUsersRef = firebase.database().ref('onlineUsers'); // or use Firestore reference if using Firestore
+		onlineUsersRef.child(user.uid).set(true); 
+
 		} catch (error) {
 		console.log(error);
 			Swal.fire({
