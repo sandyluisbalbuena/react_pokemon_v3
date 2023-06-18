@@ -1,8 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import  { useAuthState } from 'react-firebase-hooks/auth';
+import firebase from 'firebase/compat/app';
 import ForumCategories from '../components/ForumCategories'
 import ForumThread from '../components/ForumThread'
+import OnlineUsers from '../components/OnlineUsers'
+import ForumMyThreads from '../components/ForumMyThreads'
+import ForumTrendingTopics from '../components/ForumTrendingTopics';
 
 const Thread = () => {
+
+	let [userdata,setuserdata] = useState([]);
+
+	const [user] = useAuthState(firebase.auth());
+	const [username, setUsername] = useState('');
+	const [userimage, setUserimage] = useState('');
+
+	useEffect(() => {
+		if (user) {
+		const userRef = firebase.database().ref(`users/${user.uid}`);
+		userRef.on('value', (snapshot) => {
+			const userData = snapshot.val();
+			if (userData) {
+				setUsername(userData.username || '');
+				setUserimage(userData.image || 'pikachu');
+				setuserdata(userData);
+			}
+		});
+		}
+	}, [user]);
 
 	return (
 		<div className="container">
@@ -19,27 +44,19 @@ const Thread = () => {
 							<div style={{position: '-webkit-sticky', position: 'sticky', top: '70px'}}>
 
 								<div className="row">
+									<OnlineUsers/>
+								</div>
+
+								<div className="row">
 									<ForumCategories />
 								</div>
 
 								<div className="row">
-									<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{borderRadius: '5px', height: '100%'}}>
-										<div className="card-body container-fluid">
-											<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#myThreads" aria-expanded="false" aria-controls="myThreads"><h6 className="ms-4">My threads</h6><i className="fas fa-angles-down"></i></div>
-											<ul className="collapse mt-4" id="myThreads">
-											</ul>
-										</div>
-									</div>
+									<ForumMyThreads />
 								</div>
 
 								<div className="row">
-									<div className="card px-1 animate__animated animate__fadeIn animate__delay-1s" style={{borderRadius: '5px', height: '100%'}} id="thirdCard">
-										<div className="card-body container-fluid">
-											<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#trendingTopics" aria-expanded="true" aria-controls="trendingTopics"><h6 className="ms-4">Trending Topics</h6><i className="fas fa-angles-down"></i></div>
-											<ul className="collapse show mt-4" id="trendingTopics">
-											</ul>
-										</div>
-									</div>
+									<ForumTrendingTopics />
 								</div>
 								
 							</div>

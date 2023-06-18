@@ -85,11 +85,11 @@ const Pokeforum = () => {
 							</div>
 
 							<div className="row">
-								<ForumCategories/>
+								<OnlineUsers/>
 							</div>
 
 							<div className="row">
-								<OnlineUsers/>
+								<ForumCategories/>
 							</div>
 
 							<div className="row">

@@ -15,7 +15,6 @@ const ForumThread = () => {
 		fetchThreadBySlug(slug)
 		.then((thread) => {
 			if (thread) {
-				console.log(thread);
 				setThreadData(thread);
 			} else {
 				console.log('Thread not found');
@@ -42,7 +41,6 @@ const ForumThread = () => {
 		fetchThreadBySlug(slug)
 		.then((thread) => {
 			if (thread) {
-				console.log(thread);
 				setThreadData(thread);
 			} else {
 				console.log('Thread not found');

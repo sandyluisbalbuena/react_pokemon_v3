@@ -5,7 +5,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 let uid;
 
-
 const ForumLatest = (props) => {
 	const [threadGroups, setThreadGroups] = useState([]);
 	const [userData, setuserData] = useState([]);

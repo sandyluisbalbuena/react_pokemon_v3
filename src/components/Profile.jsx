@@ -19,7 +19,13 @@ const Profile = () => {
 		'pikachu',
 		'psyduck',
 		'snorlax',
-		'squirtle'
+		'squirtle',
+		'weedle',
+		'venonat',
+		'rattata',
+		'pidgey',
+		'meowth',
+		'bellsprout'
 	];
 
 	let newUserIcon;

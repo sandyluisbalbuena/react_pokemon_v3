@@ -11,7 +11,9 @@ useEffect(() => {
 	const usersRef = firebase.database().ref('users');
 
 	const handleOnlineUsersChange = (snapshot) => {
-	const onlineUserIds = Object.keys(snapshot.val() || {});
+	const onlineUserIds = Object.entries(snapshot.val() || {})
+		.filter(([userId, isOnline]) => isOnline === true)
+		.map(([userId]) => userId);
 
 	// Retrieve user data for each online user
 	const onlineUserPromises = onlineUserIds.map((userId) => {
@@ -61,15 +63,15 @@ useEffect(() => {
 return (
 	<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
 	<div className="card-body container-fluid">
-		<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#categories" aria-expanded="false" aria-controls="categories">
+		<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#onlineUsers" aria-expanded="false" aria-controls="onlineUsers">
 		<h6 className="ms-4">Online Users</h6>
 		<i className="fas fa-angles-down"></i>
 		</div>
-		<ul className="collapse mt-3" id="categories" style={{ listStyleType: 'none' }}>
+		<ul className="collapse mt-3" id="onlineUsers" style={{ listStyleType: 'none' }}>
 		{onlineUsers.map((userId) => (
 			<a key={userId}>
-			<li className="px-2 py-1 rounded list-group-item threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-				{userMap[userId] && userMap[userId].username && userMap[userId].username.toUpperCase()}
+			<li className="px-2 py-1 rounded threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+				{userMap[userId].username.toUpperCase()}
 			</li>
 			</a>
 		))}
