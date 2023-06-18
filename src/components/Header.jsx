@@ -80,7 +80,6 @@ const Header = () => {
 			})
 
       const userRef = firebase.database().ref(`onlineUsers`);
-
       userRef.child(user.uid).set(false); 
       // userRef.update(false);
 

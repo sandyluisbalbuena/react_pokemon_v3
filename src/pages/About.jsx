@@ -6,7 +6,7 @@ const About = () => {
 			<div className="mask">
 				<div className="d-flex justify-content-center align-items-center h-100">
 					<div>
-						<div class="container mt-5">
+						<div className="container mt-5">
 							<p style={{backgroundColor: 'aliceblue', borderRadius:'3px', padding: '20px', opacity: '.6'}}>
 								Welcome to our website, Pokémon enthusiasts! We are thrilled to have you here and share our passion for the world of Pokémon. Whether you're a dedicated trainer, a collector, or simply a fan of these iconic creatures, this is the perfect place for you.
 

@@ -237,7 +237,9 @@ const ForumThread = () => {
 				<div className="container summernote_container">
 				<div className="row text-center">
 					<div id="summernoteContent" style={{ paddingTop: '20px' }}>
-					{threadData && threadData.content}
+					{threadData && (
+                    <div dangerouslySetInnerHTML={{ __html: threadData.content }} />
+					)}
 					</div>
 				</div>
 				</div>

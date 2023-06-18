@@ -31,6 +31,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 function App() {
+	
+
+	window.addEventListener('beforeunload', function(event) {
+		const userRef = firebase.database().ref(`onlineUsers`);
+		userRef.child(user.uid).set(false); 
+	});
+
+
 	return (
 		<>
 			<BrowserRouter basename='/'>
