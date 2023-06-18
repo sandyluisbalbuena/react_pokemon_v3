@@ -49,7 +49,7 @@ const ForumLatest = (props) => {
 		const categoryRef = firebase.database().ref('categories');
 		const userRef = firebase.database().ref('users');
 		const messageRef = firebase.database().ref('messages');
-
+	
 		const threadListener = threadRef.on('value', (snapshot) => {
 		const threadData = snapshot.val();
 	
@@ -63,41 +63,50 @@ const ForumLatest = (props) => {
 				messageRef.once('value', (messageSnapshot) => {
 				const messageData = messageSnapshot.val();
 	
-				const threadGroups = Object.entries(threadData).reduce((groups, [threadId, thread]) => {
+				const threadGroups = Object.entries(threadData)
+					.reduce((groups, [threadId, thread]) => {
 					const categoryId = thread.categoryId;
 					const userId = thread.userId;
 					const category = categoryData[categoryId];
 					const user = userData[userId];
-					const messages = Object.values(messageData || {}).filter((message) => message.threadId === threadId);
+					const messages = Object.values(messageData || {}).filter(
+						(message) => message.threadId === threadId
+					);
 	
 					const threadInfo = {
-					id: threadId,
-					title: thread?.title || '',
-					slug: thread?.slug || '',
-					content: thread?.content || '',
-					createdAt: thread?.createdAt || '',
-					updatedAt: thread?.updatedAt || '',
-					category: category ? category.name : '',
-					user: user ? user.username : '',
-					userId: thread?.userId || '',
-					userImage: user ? user.image : '',
-					messageCount: messages.length || 0, // Update message count based on retrieved messages
-					messages: messages || [],
+						id: threadId,
+						title: thread?.title || '',
+						slug: thread?.slug || '',
+						content: thread?.content || '',
+						createdAt: thread?.createdAt || '',
+						updatedAt: thread?.updatedAt || '',
+						category: category ? category.name : '',
+						user: user ? user.username : '',
+						userId: thread?.userId || '',
+						userImage: user ? user.image : '',
+						messageCount: messages.length || 0, // Update message count based on retrieved messages
+						messages: messages || '',
 					};
 	
 					if (!groups[categoryId]) {
-					groups[categoryId] = {
+						groups[categoryId] = {
 						category: category ? category.name : '',
 						threads: [threadInfo],
-					};
+						};
 					} else {
-					groups[categoryId].threads.push(threadInfo);
+						groups[categoryId].threads.push(threadInfo);
 					}
 	
 					return groups;
-				}, {});
+					}, {});
 	
-				setThreadGroups(Object.values(threadGroups));
+				// Sort threads within each category by the latest createdAt date
+				const sortedThreadGroups = Object.values(threadGroups).map((group) => {
+					group.threads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+					return group;
+				});
+	
+				setThreadGroups(sortedThreadGroups);
 				});
 			});
 			});

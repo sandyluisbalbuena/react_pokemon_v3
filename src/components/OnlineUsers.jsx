@@ -40,7 +40,7 @@ useEffect(() => {
 	const handleUserStatusChange = (snapshot) => {
 	const userId = snapshot.key;
 	const isOnline = snapshot.val();
-	
+
 	if (!isOnline) {
 		setOnlineUsers((prevOnlineUsers) => prevOnlineUsers.filter((id) => id !== userId));
 		setUserMap((prevUserMap) => {
@@ -51,12 +51,27 @@ useEffect(() => {
 	}
 	};
 
+	const handleUsernameChange = (snapshot) => {
+	const userId = snapshot.key;
+	const newUsername = snapshot.val()?.username;
+
+	setUserMap((prevUserMap) => ({
+		...prevUserMap,
+		[userId]: {
+		...prevUserMap[userId],
+		username: newUsername,
+		},
+	}));
+	};
+
 	onlineUsersRef.on('value', handleOnlineUsersChange);
 	onlineUsersRef.on('child_removed', handleUserStatusChange);
+	usersRef.on('child_changed', handleUsernameChange);
 
 	return () => {
 	onlineUsersRef.off('value', handleOnlineUsersChange);
 	onlineUsersRef.off('child_removed', handleUserStatusChange);
+	usersRef.off('child_changed', handleUsernameChange);
 	};
 }, []);
 

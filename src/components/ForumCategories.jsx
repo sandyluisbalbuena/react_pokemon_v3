@@ -28,13 +28,13 @@ const ForumCategories = () => {
 	return (
 		<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
 			<div className="card-body container-fluid">
-				<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#categories" aria-expanded="false" aria-controls="categories">
+				<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#categories" aria-expanded="true" aria-controls="categories">
 				<h6 className="ms-4">Categories</h6>
 				<i className="fas fa-angles-down"></i>
 				</div>
-				<ul className="collapse mt-3" id="categories" style={{ listStyleType: 'none' }}>
+				<ul className="collapse show mt-3" id="categories" style={{ listStyleType: 'none' }}>
 				{categories.map((category) => (
-					<a onClick={() => wew(category.name)} key={category.id} href={'#' + category.name}>
+					<a onClick={() => wew(category.name)} key={category.id} href={'/pokeforum#' + category.name}>
 					<li className="px-2 py-1 rounded list-group-item threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 						{category.name.toUpperCase()}
 					</li>

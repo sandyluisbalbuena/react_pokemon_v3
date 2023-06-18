@@ -128,11 +128,26 @@ const Profile = () => {
 					</div>
 						<div className="modal-body">
 							<div id="titleError" className="text-danger text-sm"></div>
-							<button className='btn mb-4' type="button" data-mdb-toggle="collapse" data-mdb-target="#userIconsPickImage" aria-expanded="false" aria-controls="userIconsPickImage"><img id="userimage" width='45px' height='45px' src=''/>&nbsp;&nbsp;&nbsp; Click to change</button>
-							<div className="collapse mb-4" id="userIconsPickImage">
-							
+
+
+							<div className="row">
+
+								<div className="col-12 col-lg-4">
+									<button className='btn mb-4' type="button" data-mdb-toggle="collapse" data-mdb-target="#userIconsPickImage" aria-expanded="false" aria-controls="userIconsPickImage"><img id="userimage" width='45px' height='45px' src=''/>&nbsp;&nbsp;&nbsp; Click to change</button>
+								</div>
+								
+								<div className="col-12 col-lg-8">
+									<input name="title" type="text" id="username" className="form-control mb-4" placeholder='Title'/>
+								</div>
+
 							</div>
-							<input name="title" type="text" id="username" className="form-control mb-4" placeholder='Title'/>
+
+							<div className="row">
+								<div className="collapse mb-4" id="userIconsPickImage">
+								</div>
+							</div>
+
+							
 						</div>
 						<div className="modal-footer">
 							<button type="submit" className="btn btn-dark" onClick={()=>editProfile()}>Edit</button>
