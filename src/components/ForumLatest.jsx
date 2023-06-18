@@ -230,7 +230,7 @@ const ForumLatest = (props) => {
 							)}
 						</div>
 						<div className="d-none d-lg-block col-lg-3 d-lg-flex">
-							<img width="35px" height="35px" src={`../assets/images/userIcons/${thread.userImage}.png`} alt={thread.user} />
+							<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
 							<p className="ms-3">{thread.user.toUpperCase()}</p>
 						</div>
 						<div className="d-none d-lg-block col-lg-3">

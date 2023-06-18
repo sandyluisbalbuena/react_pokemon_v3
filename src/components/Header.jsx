@@ -184,7 +184,7 @@ const Header = () => {
                   <span className={`nav-link text-white  ${activeLink === 'login' ? 'active' : ''}`}>
                   {username !== '' ? username : user.displayName}
                   </span>
-                  <div className="rounded-circle bg-secondary ms-3"><img className="m-1" width="30px" src={`../assets/images/userIconsV2/${userimage}.png`}/></div>
+                  <div className="rounded-circle bg-secondary ms-3"><img className="m-1" width="30px" src={`../assets/images/userIcons/${userimage}.png`}/></div>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                   <li>

@@ -2,19 +2,18 @@ import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import eventBus from '../eventBus';
+
 
 const CreateThreadModal = () => {
 	const [user] = useAuthState(firebase.auth());
 
+
 	useEffect(()=>{
+
 		tinymce.init({
 			selector: 'textarea#summernote',
 			height: 350,
-			// plugins: [
-			//     'advlist', 'autolink', 'lists', 'link',  'charmap', 'preview',
-			//     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-			//     'insertdatetime', 'media', 'table', 'help', 'wordcount'
-			// ],
 			toolbar: 'undo redo | blocks | ' +
 			'bold italic backcolor | alignleft aligncenter ' +
 			'alignright alignjustify | bullist numlist outdent indent | ' +
@@ -27,9 +26,48 @@ const CreateThreadModal = () => {
 			],
 			image_dimensions: true,
 		});
+
+		eventBus.subscribe('pokedexCreateThread', pokedexCreateThread);
+
+		return () => {
+			eventBus.unsubscribe('pokedexCreateThread', pokedexCreateThread);
+		};	
+
 	}, [])
 
+	const pokedexCreateThread = (data) => {
+		document.getElementById('category').value = '-NY09vnKnlq-rP_dYN7L';
+		document.getElementById('title').value = data.name.toUpperCase();
+		document.getElementById('category').setAttribute('disabled', '');
+
+		let descriptionForThreadPokedex;
+
+		axios
+		.get(data.url)
+		.then((response) => {
+			response.data.flavor_text_entries.forEach((description) => {
+			if (description.language.name === 'en') {
+				descriptionForThreadPokedex = description.flavor_text;
+			}
+			});
+
+			tinymce.execCommand('mceInsertContent', false, `<img  class="rounded cardForThread" src="https://img.pokemondb.net/artwork/avif/`+data.name.toLowerCase()+`.avif">
+                                                        <h4>
+                                                        `+
+                                                        data.name.toUpperCase()
+                                                        +` 
+                                                        </h4>
+														<p>
+                                                        `+
+                                                        descriptionForThreadPokedex
+                                                        +` 
+                                                        </p>
+                                                    `);
+		})
+		.catch((error) => console.error('Error fetching Pokemon data', error));
 	
+	}
+
 
 	// let formPostThread = document.getElementById('formPostThread');
 	// let category = document.getElementById('category');
@@ -44,6 +82,7 @@ const CreateThreadModal = () => {
 	}
 
 	function createThread() {
+
 		let category = document.getElementById('category');
 		let title = document.getElementById('title');
 
@@ -107,7 +146,7 @@ const CreateThreadModal = () => {
 							<div id="categoryError" className="text-danger text-sm"></div>
 							<select name="category" type="text" id="category" className="form-control mb-4">
 								<option value="">--Select a Category--</option>
-								<option value="-NY09vnKnlq-rP_dYN7L">Pokemon</option>
+								<option value="-NY09vnKnlq-rP_dYN7L">Pokedex</option>
 								<option value="-NY09qsAZhynFQBPXtMI">Pokecard</option>
 							</select>
 

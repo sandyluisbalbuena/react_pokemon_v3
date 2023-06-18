@@ -247,8 +247,8 @@ const ForumThread = () => {
 					<>
 					<img
 						className="me-2"
-						src={`../assets/images/userIcons/${threadData.user.image}.png`}
-						style={{ width: '25px', height: '25px' }}
+						src={`../assets/images/userIconsV2/${threadData.user.image}.png`}
+						style={{ width: '45px', height: '45px' }}
 						alt={threadData.user.username}
 					/>
 					<p style={{ fontWeight: 'bolder', fontSize: '12px' }}>{threadData.user.username}</p>
@@ -276,7 +276,7 @@ const ForumThread = () => {
 					<div className="rounded my-3" key={comment.messageId}>
 					<div className="d-flex">
 						<div className="me-3">
-						<img src={`../assets/images/userIcons/${comment.user.image}.png`} style={{ width: '25px' }} alt={comment.user.username} />
+						<img src={`../assets/images/userIconsV2/${comment.user.image}.png`} style={{ width: '40px' }} alt={comment.user.username} />
 						</div>
 						<div>
 						<span className="d-flex">
