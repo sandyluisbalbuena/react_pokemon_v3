@@ -68,7 +68,7 @@ return (
 		{props.flavor_text.name ? props.flavor_text.name.charAt(0).toUpperCase() + props.flavor_text.name.slice(1) : ''}
 		</h5>
 		{user ? (
-		<button onClick={handleCreateThreadPokedex} className="mt-3 btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#postThread">
+		<button style={{width:'100%'}} onClick={handleCreateThreadPokedex} className="mt-3 btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#postThread">
 			<i className="far fa-pen-to-square me-1"></i>
 			Create a thread
 		</button>

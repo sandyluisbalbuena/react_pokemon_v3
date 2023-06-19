@@ -168,7 +168,8 @@ const ForumLatest = (props) => {
 
 	function deleteThread(deleteThreadId) {
 		const threadRef = firebase.database().ref('threads/' + deleteThreadId);
-
+		const messagesRef = firebase.database().ref('messages');
+	
 		Swal.fire({
 		title: 'Confirm Delete',
 		text: 'Are you sure you want to delete this record?',
@@ -180,8 +181,32 @@ const ForumLatest = (props) => {
 			return new Promise((resolve, reject) => {
 			threadRef
 				.remove()
-				.then(() => resolve({ success: true, message: 'Thread deleted successfully.' }))
-				.catch((error) => reject(new Error(error.message)));
+				.then(() => {
+				// Delete related messages
+				messagesRef
+					.orderByChild('threadId')
+					.equalTo(deleteThreadId)
+					.once('value')
+					.then((snapshot) => {
+					const promises = [];
+	
+					snapshot.forEach((childSnapshot) => {
+						const messageId = childSnapshot.key;
+						promises.push(messagesRef.child(messageId).remove());
+					});
+	
+					return Promise.all(promises);
+					})
+					.then(() => {
+					resolve({ success: true, message: 'Thread and related messages deleted successfully.' });
+					})
+					.catch((error) => {
+					reject(new Error(error.message));
+					});
+				})
+				.catch((error) => {
+				reject(new Error(error.message));
+				});
 			});
 		},
 		allowOutsideClick: () => !Swal.isLoading(),
@@ -196,7 +221,7 @@ const ForumLatest = (props) => {
 			});
 		}
 		});
-
+	
 		return false;
 	}
 

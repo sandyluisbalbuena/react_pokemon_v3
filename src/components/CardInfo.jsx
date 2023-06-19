@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react'
 import eventBus from '../eventBus';
 import queryString from 'query-string';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+
+let dataForCardThread = [];
 
 const CardInfo = () => {
 
 	useEffect(()=>{
 		const parsed = queryString.parse(window.location.search);
 		var cardTobeSearchFromUrl = parsed.cardId;
+
 
 		if(cardTobeSearchFromUrl == undefined && cardTobeSearchFromUrl == null){
 			getDataOneCard('swsh45sv-SV107');
@@ -37,11 +43,14 @@ const CardInfo = () => {
 		})
 	}
 
-	var table2 = $('#myTable2').DataTable({
-		searching:false,
-		paging:false,
-		info: false
-	});
+	// var table2 = $('#myTable2').DataTable({
+	// 	searching:false,
+	// 	paging:false,
+	// 	info: false
+	// });
+
+	const [user] = useAuthState(firebase.auth());
+	var table2;
 
 	function getAttackDescription(attackName) {
 
@@ -59,7 +68,9 @@ const CardInfo = () => {
 			behavior: 'smooth'
 		});
 
-		table2.destroy();
+		if(table2){
+			table2.destroy();
+		}
 	
 		let myTable2 = document.getElementById("myTable2");
 		let tbody2 = myTable2.getElementsByTagName("tbody")[0];
@@ -114,6 +125,9 @@ const CardInfo = () => {
 		let abilityName = document.getElementById('abilityName');
 		let textInfo = document.getElementById('textInfo');
 		let attackName="";
+
+		dataForCardThread[0] = cardData.name;
+		dataForCardThread[1] = cardData.imageUrlHiRes;
 	
 		cardName.innerHTML = cardData.name;
 		cardImage.innerHTML = '<img id="tobeZoom" class="rounded" width="100%" src="'+cardData.imageUrlHiRes+'" />';
@@ -309,6 +323,10 @@ const CardInfo = () => {
 		document.getElementById('myresult').style.visibility = "hidden";
 	}
 
+	const handleCreateThreadPokecard = () => {
+		eventBus.publish('pokecardCreateThread',dataForCardThread);
+	}
+
 	return (
 		<>
 		<div className="navbar navbar-dark bg-dark rounded cardNav">
@@ -320,20 +338,19 @@ const CardInfo = () => {
 		</div>	
 
 		<div className="row my-4 px-4">
-										
 			<div className="col-12 col-lg-3">
 
 				<div id="cardImage"  onMouseOver={()=>showResult()} onMouseOut={()=>hideResult()}  className="img-zoom-container">
 				</div>
 
-				{/* @if(auth()->check()) */}
-
-					{/* <button onclick="createThreadCard()" class="mt-3 btn btn-dark" style="width:100%;" data-mdb-toggle="modal" data-mdb-target="#postThread">
-						<i class="far fa-pen-to-square me-1"></i>
-						Create a thread
-					</button> */}
-
-				{/* @endif */}
+				{user ? (
+				<button style={{width:'100%'}} onClick={handleCreateThreadPokecard} className="mt-3 btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#postThread">
+					<i className="far fa-pen-to-square me-1"></i>
+					Create a thread
+				</button>
+				) : (
+				''
+				)}
 
 			</div>
 

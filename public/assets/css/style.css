@@ -123,6 +123,16 @@ pokemonBackroundColor {
         width: 25px !important;
         height: 25px !important;
     }
+
+    .grid-item { 
+        width: 35px !important;
+        padding: 5px;
+    }
+}
+
+.grid-item { 
+    width: 100px;
+    padding: 5px;
 }
 
 .cardIconTypes {
@@ -144,10 +154,7 @@ pokemonBackroundColor {
     padding: 0 200px 0 200px;
 }
 
-.grid-item { 
-    width: 100px;
-    padding: 5px;
-}
+
 
 .cardId {
     font-size: 13px;

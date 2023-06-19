@@ -3,10 +3,14 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import eventBus from '../eventBus';
+import { useNavigate } from 'react-router-dom';
+
+let redirectToThread = false;
 
 
 const CreateThreadModal = () => {
 	const [user] = useAuthState(firebase.auth());
+	const navigate = useNavigate();
 
 
 	useEffect(()=>{
@@ -28,9 +32,11 @@ const CreateThreadModal = () => {
 		});
 
 		eventBus.subscribe('pokedexCreateThread', pokedexCreateThread);
+		eventBus.subscribe('pokecardCreateThread', pokecardCreateThread);
 
 		return () => {
 			eventBus.unsubscribe('pokedexCreateThread', pokedexCreateThread);
+			eventBus.unsubscribe('pokecardCreateThread', pokecardCreateThread);
 		};	
 
 	}, [])
@@ -41,6 +47,8 @@ const CreateThreadModal = () => {
 		document.getElementById('category').setAttribute('disabled', '');
 
 		let descriptionForThreadPokedex;
+
+		redirectToThread = true;
 
 		axios
 		.get(data.url)
@@ -63,9 +71,26 @@ const CreateThreadModal = () => {
                                                         +` 
                                                         </p>
                                                     `);
+
 		})
 		.catch((error) => console.error('Error fetching Pokemon data', error));
-	
+	}
+
+	const pokecardCreateThread = (data) => {
+		document.getElementById('category').value = '-NY09qsAZhynFQBPXtMI';
+		document.getElementById('category').setAttribute('disabled', '');
+
+		redirectToThread = true;
+
+		console.log('cardthread', data);
+
+		tinymce.execCommand('mceInsertContent', false, `<img  class="rounded cardForThread" src="`+data[1]+`">
+                                                        <h6>
+                                                        `+
+                                                        data[0]
+                                                        +` 
+                                                        </h6>
+                                                    `);
 	}
 
 
@@ -81,55 +106,89 @@ const CreateThreadModal = () => {
 		return str;
 	}
 
+
 	function createThread() {
 
-		let category = document.getElementById('category');
-		let title = document.getElementById('title');
-
-
-		let formData = {
-			categoryId: category.value,
-			title: title.value,
-			slug: slugify(title.value),
-			content: tinymce.activeEditor.getContent(),
-			userId:user.uid,
-			createdAt: firebase.database.ServerValue.TIMESTAMP,
-			updatedAt: firebase.database.ServerValue.TIMESTAMP,
-		};
+		const category = document.getElementById('category');
+		const title = document.getElementById('title');
 	
-		// Simple validation to check if any field is empty
-		if (!formData.categoryId || !formData.title || !formData.content) {
-		Swal.fire({
-			icon: 'error',
-			title: 'All fields are required!',
-		});
-		return; // Exit the function if any field is empty
-		}
+		const slug = slugify(title.value);
+
 	
 		const threadRef = firebase.database().ref('threads');
 	
 		threadRef
-		.push(formData)
-		.then(() => {
-			$('#postThread').modal('hide');
-	
+		.orderByChild('title')
+		.equalTo(title.value)
+		.once('value')
+		.then((snapshot) => {
+			if (snapshot.exists()) {
 			Swal.fire({
-			icon: 'success',
-			title: 'Post Created successfully!',
+				icon: 'error',
+				title: 'Title already exists!',
+			});
+			return;
+			}
+	
+			return threadRef
+			.orderByChild('slug')
+			.equalTo(slug)
+			.once('value');
+		})
+		.then((slugSnapshot) => {
+			if (slugSnapshot.exists()) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Slug already exists!',
+			});
+			return;
+			}
+	
+			const formData = {
+			categoryId: category.value,
+			title: title.value,
+			slug: slug,
+			content: tinymce.activeEditor.getContent(),
+			userId: user.uid,
+			createdAt: firebase.database.ServerValue.TIMESTAMP,
+			updatedAt: firebase.database.ServerValue.TIMESTAMP,
+			};
+	
+			threadRef
+			.push(formData)
+			.then(() => {
+				$('#postThread').modal('hide');
+	
+				Swal.fire({
+				icon: 'success',
+				title: 'Post Created successfully!',
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+				Swal.fire({
+				icon: 'error',
+				title: 'Something went wrong!',
+				});
+			})
+			.finally(() => {
+				category.value = '';
+				title.value = '';
+				tinymce.activeEditor.setContent('');
+
+				document.getElementById('category').removeAttribute('disabled');
+
+				if(redirectToThread){
+					navigate('pokeforum/'+slug);
+				}
 			});
 		})
 		.catch((error) => {
 			console.error(error);
-	
 			Swal.fire({
 			icon: 'error',
 			title: 'Something went wrong!',
 			});
-		})
-		.finally(() => {
-			category.value = '';
-			title.value = '';
-			tinymce.activeEditor.setContent('');
 		});
 	}
 

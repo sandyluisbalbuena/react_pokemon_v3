@@ -187,7 +187,7 @@ const Header = () => {
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                   <li>
-                    <a className="dropdown-item"  data-mdb-toggle="modal" data-mdb-target="#profile">My profile</a>
+                    <a className="dropdown-item"  data-mdb-toggle="modal" data-mdb-target="#profile" href="#">My profile</a>
                   </li>
                   {/* <li>
                     <a className="dropdown-item" href="#">Settings</a>

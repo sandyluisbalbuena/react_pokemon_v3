@@ -64,11 +64,14 @@ const Register = () => {
 		const userId = user.uid;
 		const email = user.email; // Retrieve the user's email
 		const username = user.displayName; // Retrieve the user's email
+		const role = 'user'; // Retrieve the user's email
 		const userRef = firebase.database().ref(`users/${userId}`);
+		
 		userRef.set({ 
 			username,
 			image,
-			email // Save the user's email in the database
+			email,
+			role
 		});
 	
 		// Rest of your code...

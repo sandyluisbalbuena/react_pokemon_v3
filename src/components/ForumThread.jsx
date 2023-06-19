@@ -236,7 +236,7 @@ const ForumThread = () => {
 	
 				<div className="container summernote_container">
 				<div className="row text-center">
-					<div id="summernoteContent" style={{ paddingTop: '20px' }}>
+					<div id="summernoteContent" style={{ paddingTop: '20px'}}>
 					{threadData && (
                     <div dangerouslySetInnerHTML={{ __html: threadData.content }} />
 					)}
@@ -254,6 +254,7 @@ const ForumThread = () => {
 						alt={threadData.user.username}
 					/>
 					<p style={{ fontWeight: 'bolder', fontSize: '12px' }}>{threadData.user.username}</p>
+					<div style={{ fontSize: '10px' }} className='ms-1'>{getCommentAge(threadData.createdAt)}</div>
 					</>
 				)}
 				</span>
