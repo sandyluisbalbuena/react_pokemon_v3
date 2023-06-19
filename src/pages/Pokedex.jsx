@@ -111,7 +111,7 @@ const Pokedex = () => {
 				setstats(response.data.stats);   
 				setabilities(response.data.abilities);
 				setpokemonTypes(response.data.types);
-				setpokemonNameForCard(response.data.name);
+				setpokemonNameForCard(pokemonName);
 				setevolution(response.data.species);
 				setrelated(response.data.types);
 				setpokemonId(response.data.id);
@@ -198,7 +198,7 @@ const Pokedex = () => {
 							<a href="#" id="pokemonLink">${guest}</a>
 						</p>
 						<p>
-							<img width="150px" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${response.data.id.toString().padStart(3, "0")}.png" />
+							<img width="150px" src="https://img.pokemondb.net/artwork/avif/${guest.toLowerCase()}.avif" />
 						</p>
 						<button class="btn bg-dark text-white m-1" id="yesButton">Yes</button>
 						`,
@@ -257,7 +257,7 @@ const Pokedex = () => {
 
 				<div className="col-12 col-lg-3 mt-2">
 					<div className='pokedex-sidenav'>
-						<PokemonImage flavor_text={flavor_text} pokemonTyping={pokemonTypes} pokemonId={pokemonId}/>
+						<PokemonImage flavor_text={flavor_text} pokemonTyping={pokemonTypes} pokemonName={pokemonNameForCard} pokemonId={pokemonId}/>
 					</div>
 				</div>
 
