@@ -17,6 +17,7 @@ import CreateThreadModal from './components/CreateThreadModal'
 import Thread from './pages/Thread'
 import Profile from './components/Profile'
 import CommunityChat from './components/CommunityChat'
+import { useEffect, useState } from 'react'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -32,6 +33,16 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 function App() {
+
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	useEffect(() => {
+		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+		setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
+		});
+
+		return () => unsubscribe();
+	}, []);
 	
 
 	window.addEventListener('beforeunload', function(event) {
@@ -57,7 +68,7 @@ function App() {
 					<Route path='*' element={<Notfound />}/>
 				</Routes>
 				<CreateThreadModal />
-				<CommunityChat />
+				{isLoggedIn && <CommunityChat />}
 				<Profile />
 			</BrowserRouter>
 

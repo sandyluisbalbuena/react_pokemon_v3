@@ -58,6 +58,11 @@ const CommunityChat = () => {
 		setNewMessage(e.target.value);
 	};
 
+	const handleKeyPress = (e) => {
+		if (e.key === 'Enter') {
+		sendMessage();
+		}
+	};
 
 	// Send message to Realtime Database
 	const sendMessage = () => {
@@ -116,7 +121,7 @@ const CommunityChat = () => {
 					</div>
 					<div className="chat-input">
 				
-					<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange}/>
+					<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress}/>
 					<button onClick={sendMessage}>Send</button>
 					</div>
 				</div>
