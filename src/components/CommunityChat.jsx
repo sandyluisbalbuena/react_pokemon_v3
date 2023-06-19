@@ -7,6 +7,19 @@ const CommunityChat = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
+	const [currentUserId, setCurrentUserId] = useState(null);
+
+	useEffect(() => {
+		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+		if (user) {
+			setCurrentUserId(user.uid);
+		} else {
+			setCurrentUserId(null);
+		}
+		});
+
+		return () => unsubscribe();
+	}, []);
 
 
 	const toggleModal = () => {
@@ -85,13 +98,18 @@ const CommunityChat = () => {
 					<div className="chat-messages">
 
 						{messages.map((message) => (
-							<div key={message.timestamp} className="chat-message">
-								<img className="avatar"  src={`../assets/images/userIconsV2/${message.avatar}.png`} alt="Avatar"/>
+							<div key={message.timestamp} className={`chat-message ${message.senderId === currentUserId ? 'own-message' : ''}`}>
+								{message.senderId !== currentUserId ?
+								(<img className="avatar"  src={`../assets/images/userIconsV2/${message.avatar}.png`} alt="Avatar"/>):''
+								}
+								
 								<div className="content">
 									{/* <div className="sender">{message.sender}</div> */}
 									<div className="message">{message.content}</div>
 								</div>
-								<div className="timestamp ms-1">{formatTime(message.timestamp)}</div>
+								{message.senderId !== currentUserId ?
+								(<div className="timestamp ms-1">{formatTime(message.timestamp)}</div>):''
+								}
 							</div>
 						))}
 

@@ -370,6 +370,10 @@ border-top:#332c2c solid 4px;
     overflow-y: auto;
 }
 
+.own-message {
+    justify-content: flex-end;
+}
+
 /* Individual chat message */
 .chat-message {
     display: flex;
