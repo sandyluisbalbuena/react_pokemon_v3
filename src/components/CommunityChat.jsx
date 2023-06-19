@@ -93,7 +93,24 @@ const CommunityChat = () => {
 		return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
-	console.log(messages);
+	function groupConsecutiveMessages(messages) {
+		const groupedMessages = [];
+	
+		messages.forEach((message) => {
+		const previousGroup = groupedMessages[groupedMessages.length - 1];
+		const isConsecutiveMessage = previousGroup && previousGroup[0].senderId === message.senderId;
+	
+		if (isConsecutiveMessage) {
+			previousGroup.push(message);
+		} else {
+			groupedMessages.push([message]);
+		}
+		});
+	
+		return groupedMessages;
+	}
+	
+
 
 	return (
 		<>
@@ -102,37 +119,45 @@ const CommunityChat = () => {
 					<div className="chat-header">Chat</div>
 
 					<div className="chat-messages">
-						{messages.map((message, index) => {
-							const previousMessage = messages[index - 1];
+						{messages.reduce((groupedMessages, message, index) => {
+							const previousMessage = groupedMessages[groupedMessages.length - 1];
+							const isGrouped = previousMessage && previousMessage.senderId === message.senderId;
 
-							const isConsecutiveMessage = previousMessage && previousMessage.senderId === message.senderId;
-							const showAvatarAndSender = !isConsecutiveMessage && message.senderId !== currentUserId;
+							if (isGrouped) {
+							previousMessage.messages.push(message);
+							} else {
+							groupedMessages.push({
+								senderId: message.senderId,
+								messages: [message],
+							});
+							}
 
-							const messageClasses = `chat-message ${message.senderId === currentUserId ? 'own-message' : ''} ${isConsecutiveMessage ? 'consecutive-message' : ''}`;
-
-							return (
-							<div key={message.timestamp} className={messageClasses}>
-								{!isConsecutiveMessage && showAvatarAndSender && (
-								<img className="avatar" src={`../assets/images/userIconsV2/${message.avatar}.png`} alt="Avatar" />
-								)}
-
-								<div className="content">
-								{!isConsecutiveMessage && showAvatarAndSender && <div className="sender">{message.sender}</div>}
-								<div className="message">{message.content}</div>
-								</div>
-
-								{message.senderId !== currentUserId && (
-								<div className="timestamp ms-1">{formatTime(message.timestamp)}</div>
-								)}
+							return groupedMessages;
+						}, []).map((groupedMessage) => (
+							<div key={groupedMessage.messages[0].timestamp} className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}>
+							{groupedMessage.senderId !== currentUserId && (
+								<img className="avatar" src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`} alt="Avatar" />
+							)}
+							<div className="content">
+								{groupedMessage.messages.map((message) => (
+								<div key={message.timestamp} className="message">{message.content}</div>
+								))}
 							</div>
-							);
-						})}
+							{groupedMessage.senderId !== currentUserId && (
+								<div className="timestamp ms-1">{formatTime(groupedMessage.messages[0].timestamp)}</div>
+							)}
+							</div>
+						))}
 					</div>
+
+
+
+
 
 					<div className="chat-input">
 				
 					<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress}/>
-					<button onClick={sendMessage}>Send</button>
+					<button onClick={sendMessage} className='btn btn-sm'>Send</button>
 					</div>
 				</div>
 				
