@@ -58,7 +58,7 @@ function App() {
 				</Routes>
 				<CreateThreadModal />
 				<Profile />
-				{/* <CommmunityChat /> */}
+				<CommmunityChat />
 			</BrowserRouter>
 
 		</>

@@ -1,16 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { Widget } from 'react-chat-widget';
+
+import 'react-chat-widget/lib/styles.css';
 
 const CommmunityChat = () => {
+	// const [showModal, setShowModal] = useState(false);
+
+	// const toggleModal = () => {
+	// 	setShowModal(!showModal);
+	// };
+	const handleNewUserMessage = (newMessage) => {
+		console.log(`New message incoming! ${newMessage}`);
+		// Now send the message throught the backend API
+	};
+
 	return (
 		<>
-			<div id="communityChatModal" className='modal-community'>CommmunityChat</div>
-			<div className='btn btn-community-chat-div rounded-circle bg-light' data-mdb-toggle="modal" data-mdb-target="#communityChatModal">
-				<div className='btn-community-chat'></div>
-			</div>
-			{/* <img className='btn' type='button' width='25px' height='25px' src='../assets/images/misc/pokeball_loader.png'/> */}
-		</>
-		
-	)
-}
+		{/* {showModal && (
+			<div id="communityChatModal" className='modal-community'>
 
-export default CommmunityChat
+			
+			</div>
+		)}
+		<div className='btn btn-community-chat-div rounded-circle bg-light' onClick={toggleModal}>
+			<div className='btn-community-chat'></div>
+		</div> */}
+
+
+		<div className="App">
+		<Widget
+			handleNewUserMessage={handleNewUserMessage}
+		/>
+		</div>
+		</>
+	);
+};
+
+export default CommmunityChat;
