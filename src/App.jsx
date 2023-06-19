@@ -16,7 +16,7 @@ import About from './pages/About'
 import CreateThreadModal from './components/CreateThreadModal'
 import Thread from './pages/Thread'
 import Profile from './components/Profile'
-import CommmunityChat from './components/CommmunityChat'
+import CommunityChat from './components/CommunityChat'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -57,8 +57,8 @@ function App() {
 					<Route path='*' element={<Notfound />}/>
 				</Routes>
 				<CreateThreadModal />
+				<CommunityChat />
 				<Profile />
-				<CommmunityChat />
 			</BrowserRouter>
 
 		</>
