@@ -471,5 +471,7 @@ border-top:#332c2c solid 4px;
     background-color: #423a3a;
 }
 
-  
-  
+.consecutive-message {
+    margin-top: -5px; /* Adjust the spacing between consecutive messages */
+    margin-left: 40px; /* Adjust the spacing between consecutive messages */
+}

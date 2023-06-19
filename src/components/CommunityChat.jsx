@@ -100,25 +100,35 @@ const CommunityChat = () => {
 			{showModal && (
 				<div className="chat-container modal-community">
 					<div className="chat-header">Chat</div>
+
 					<div className="chat-messages">
+						{messages.map((message, index) => {
+							const previousMessage = messages[index - 1];
 
-						{messages.map((message) => (
-							<div key={message.timestamp} className={`chat-message ${message.senderId === currentUserId ? 'own-message' : ''}`}>
-								{message.senderId !== currentUserId ?
-								(<img className="avatar"  src={`../assets/images/userIconsV2/${message.avatar}.png`} alt="Avatar"/>):''
-								}
-								
+							const isConsecutiveMessage = previousMessage && previousMessage.senderId === message.senderId;
+							const showAvatarAndSender = !isConsecutiveMessage && message.senderId !== currentUserId;
+
+							const messageClasses = `chat-message ${message.senderId === currentUserId ? 'own-message' : ''} ${isConsecutiveMessage ? 'consecutive-message' : ''}`;
+
+							return (
+							<div key={message.timestamp} className={messageClasses}>
+								{!isConsecutiveMessage && showAvatarAndSender && (
+								<img className="avatar" src={`../assets/images/userIconsV2/${message.avatar}.png`} alt="Avatar" />
+								)}
+
 								<div className="content">
-									{/* <div className="sender">{message.sender}</div> */}
-									<div className="message">{message.content}</div>
+								{!isConsecutiveMessage && showAvatarAndSender && <div className="sender">{message.sender}</div>}
+								<div className="message">{message.content}</div>
 								</div>
-								{message.senderId !== currentUserId ?
-								(<div className="timestamp ms-1">{formatTime(message.timestamp)}</div>):''
-								}
-							</div>
-						))}
 
+								{message.senderId !== currentUserId && (
+								<div className="timestamp ms-1">{formatTime(message.timestamp)}</div>
+								)}
+							</div>
+							);
+						})}
 					</div>
+
 					<div className="chat-input">
 				
 					<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress}/>
