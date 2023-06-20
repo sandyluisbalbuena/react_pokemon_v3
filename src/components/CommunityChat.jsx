@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 const CommunityChat = () => {
-	const [showModal, setShowModal] = useState(false);
+	const [showModal, setShowModal] = useState(true);
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
+	const chatContainerRef = useRef(null);
+	const [isTyping, setIsTyping] = useState(false);
+	const [typingUser, setTypingUser] = useState('');
+
+	let typingTimer;
+
 
 	useEffect(() => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -21,19 +27,31 @@ const CommunityChat = () => {
 		return () => unsubscribe();
 	}, []);
 
-	// useEffect(() => {
-	// 	// Play sound notification when a new message is received
-	// 	if (messages.length > 0) {
-	// 	const lastMessage = messages[messages.length - 1];
-	// 	if (lastMessage.senderId !== currentUserId) {
-	// 		const notificationSound = new Audio('./assets/notif/sound/dramatic_boom_effect.mp3');
-	// 		notificationSound.play();
-	// 	}
-	// 	}
-	// }, [messages, currentUserId]);
+
+
+	useEffect(() => {
+		return () => {
+		clearTimeout(typingTimer);
+		};
+	}, []);
+	
+	const startTyping = () => {
+		// Set typing status and user
+		setIsTyping(true);
+		setTypingUser('John Doe'); // Replace with the actual user's name or username
+		// Clear previous typing timer if it exists
+		clearTimeout(typingTimer);
+		// Start a new typing timer
+		typingTimer = setTimeout(stopTyping, 2000); // Adjust the duration as needed
+	};
+	
+	const stopTyping = () => {
+		// Clear typing status and user
+		setIsTyping(false);
+		setTypingUser('');
+	};
 
 	const playNotificationSound = () => {
-		// const notificationSound = new Audio('./assets/notif/sound/dramatic_boom_effect.mp3');
 		const notificationSound = new Audio('./assets/notif/sound/notification.mp3');
 		notificationSound.play();
 	};
@@ -51,6 +69,9 @@ const CommunityChat = () => {
 
 	const toggleModal = () => {
 		setShowModal(!showModal);
+		setTimeout(() => {
+		scrollToBottom();
+		}, 0);
 	};
 
 	// Listen for real-time updates
@@ -165,53 +186,80 @@ const CommunityChat = () => {
 	
 		return processedMessages;
 	};
-	
+
+	// Scroll to the bottom of the chat container after rendering messages
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
+
+	function scrollToBottom() {
+
+		const chatContainer = chatContainerRef.current;
+
+		if (chatContainer) {
+		const scrollTimeout = setTimeout(() => {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}, 0);
+
+
+		return () => clearTimeout(scrollTimeout);
+		}
+	}
 
 	return (
 		<>
-			{showModal && (
-				<div className="chat-container modal-community">
-					<div className="chat-header">Chat</div>
-
-					<div className="chat-messages">
-						{preprocessMessages(messages).map((groupedMessage) => (
-							<div key={groupedMessage.messages[0].timestamp} className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}>
-							{groupedMessage.senderId !== currentUserId && (
-								<div className="sender-info">
-								<img className="avatar" src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`} alt="Avatar" />
-								</div>
-							)}
-							<div className="content">
-								{groupedMessage.messages.map((message, index) => (
-								<React.Fragment key={message.timestamp}>
-									{groupedMessage.senderId !== currentUserId && index === 0 && (
-									<span className="sender">{message.sender}</span>
-									)}
-									<div className="message">{message.content}</div>
-								</React.Fragment>
-								))}
-								{groupedMessage.senderId !== currentUserId && (
-								<div className="timestamp ms-1">{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}</div>
-								)}
-							</div>
-							</div>
-						))}
+		{showModal && (
+			<div className="chat-container modal-community">
+			<div className="chat-header">Chat</div>
+	
+			<div className="chat-messages" ref={chatContainerRef} style={{ overflowY: 'auto' }}>
+				{preprocessMessages(messages).map((groupedMessage) => (
+				<div
+					key={groupedMessage.messages[0].timestamp}
+					className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}
+				>
+					{groupedMessage.senderId !== currentUserId && (
+					<div className="sender-info">
+						<img
+						className="avatar"
+						src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`}
+						alt="Avatar"
+						/>
 					</div>
-
-
-					<div className="chat-input">
-				
-					<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress}/>
-					<button onClick={sendMessage} className='btn btn-sm'>Send</button>
+					)}
+					<div className="content">
+					{groupedMessage.messages.map((message, index) => (
+						<React.Fragment key={message.timestamp}>
+						{groupedMessage.senderId !== currentUserId && index === 0 && (
+							<span className="sender">{message.sender}</span>
+						)}
+						<div className="message">{message.content}</div>
+						</React.Fragment>
+					))}
+					{groupedMessage.senderId !== currentUserId && (
+						<div className="timestamp ms-1">
+						{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}
+						</div>
+					)}
 					</div>
 				</div>
-				
-			)}
-			<div className='btn-community-chat-div bg-light rounded-circle btn' onClick={toggleModal}>
-				<div className='btn-community-chat'></div>
+				))}
+				{isTyping && <div>{typingUser} is typing...</div>}
 			</div>
+	
+			<div className="chat-input">
+				<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
+				<button onClick={sendMessage} className="btn btn-sm">
+				Send
+				</button>
+			</div>
+			</div>
+		)}
+		<div className="btn-community-chat-div bg-light rounded-circle btn" onClick={toggleModal}>
+			<div className="btn-community-chat"></div>
+		</div>
 		</>
 	);
-};
+	};
 
 export default CommunityChat;
