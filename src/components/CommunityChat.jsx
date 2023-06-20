@@ -50,6 +50,27 @@ const CommunityChat = () => {
 		typingStatusRef.off('value');
 		};
 	}, []);
+
+	useEffect(() => {
+		const typingStatusRef = firebase.database().ref('typingStatus');
+	
+		// Attach the child added event listener
+		const handleChildAdded = (snapshot) => {
+		const typingStatus = snapshot.val();
+		// Handle the newly added child (typing status)
+			setTimeout(() => {
+			scrollToBottom();
+			}, 0);
+		console.log(typingStatus);
+		};
+	
+		typingStatusRef.on('child_added', handleChildAdded);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+		typingStatusRef.off('child_added', handleChildAdded);
+		};
+	}, []);
 	
 	const startTyping = () => {
 		firebase.auth().onAuthStateChanged((user) => {
@@ -83,6 +104,7 @@ const CommunityChat = () => {
 	const stopTyping = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
 		typingStatusRef.set(null);
+		
 	};
 
 	const playNotificationSound = () => {
@@ -153,7 +175,6 @@ const CommunityChat = () => {
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
 		startTyping();
-		
 	};
 
 	const handleKeyPress = (e) => {
