@@ -30,28 +30,29 @@ const CommunityChat = () => {
 	useEffect(() => {
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
-	
+	  
 		const onMessageAdded = (snapshot) => {
-		const newMessage = snapshot.val();
-		// Get user data using the sender's userId
-		// Replace 'users' with the actual location of your user data
-		const userRef = database.ref('users/' + newMessage.senderId);
-		userRef.once('value').then((userSnapshot) => {
+		  const newMessage = snapshot.val();
+		  // Get user data using the sender's userId
+		  // Replace 'users' with the actual location of your user data
+		  const userRef = database.ref('users/' + newMessage.senderId);
+		  userRef.on('value', (userSnapshot) => {
 			const user = userSnapshot.val();
 			if (user) {
-			newMessage.sender = user.username; // Replace 'name' with the actual field containing the user's name
-			newMessage.avatar = user.image; // Replace 'avatar' with the actual field containing the user's avatar
+			  newMessage.sender = user.username; // Replace 'username' with the actual field containing the user's username
+			  newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
 			}
 			setMessages((prevMessages) => [...prevMessages, newMessage]);
-		});
+		  });
 		};
-	
+	  
 		messagesRef.on('child_added', onMessageAdded);
-	
+	  
 		return () => {
-		messagesRef.off('child_added', onMessageAdded);
+		  messagesRef.off('child_added', onMessageAdded);
 		};
-	}, []);
+	  }, []);
+	  
 	
 	// Handle message input
 	const handleInputChange = (e) => {
@@ -131,8 +132,6 @@ const CommunityChat = () => {
 				<div className="chat-container modal-community">
 					<div className="chat-header">Chat</div>
 
-
-
 					<div className="chat-messages">
 						{preprocessMessages(messages).map((groupedMessage) => (
 							<div key={groupedMessage.messages[0].timestamp} className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}>
@@ -157,8 +156,6 @@ const CommunityChat = () => {
 							</div>
 						))}
 					</div>
-
-
 
 
 					<div className="chat-input">
