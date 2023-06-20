@@ -10,6 +10,7 @@ const CommunityChat = () => {
 	const chatContainerRef = useRef(null);
 	const [isTyping, setIsTyping] = useState(false);
 	const [typingUser, setTypingUser] = useState('');
+	const [typingUserImage, setTypingUserImage] = useState('');
 
 	let typingTimer;
 
@@ -33,9 +34,10 @@ const CommunityChat = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
 	
 		typingStatusRef.on('value', (snapshot) => {
-		const { isTyping, user } = snapshot.val() || {};
+		const { isTyping, user, image } = snapshot.val() || {};
 		setIsTyping(isTyping);
 		setTypingUser(user);
+		setTypingUserImage(image);
 		});
 
 		setTimeout(() => {
@@ -48,16 +50,31 @@ const CommunityChat = () => {
 	}, []);
 	
 	const startTyping = () => {
-		const typingStatusRef = firebase.database().ref('typingStatus');
-		const userInfo = firebase.database().ref('users');
-		typingStatusRef.set({
-		isTyping: true,
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				console.log(user.uid);
+				const typingStatusRef = firebase.database().ref('typingStatus');
+				const userInfo = firebase.database().ref(`users/${user.uid}`);
+				userInfo.on('value', (snapshot) => {
+					const userData = snapshot.val();
 
-		user: userInfo.username, 
+					console.log(userData);
+
+					if (userData) {
+						typingStatusRef.set({
+						isTyping: true,
+						user: userData.username, 
+						image: userData.image, 
+						});
+		
+						clearTimeout(typingTimer);
+						typingTimer = setTimeout(stopTyping, 2000); 
+					}
+				});
+
+			
+			}
 		});
-
-		clearTimeout(typingTimer);
-		typingTimer = setTimeout(stopTyping, 2000); 
 	};
 	
 	const stopTyping = () => {
@@ -71,7 +88,6 @@ const CommunityChat = () => {
 	};
 	
 	useEffect(() => {
-		// Play sound notification when a new message is received
 		if (messages.length > 0) {
 		const lastMessage = messages[messages.length - 1];
 		if (lastMessage.senderId !== currentUserId) {
@@ -260,7 +276,23 @@ const CommunityChat = () => {
 					</div>
 				</div>
 				))}
-				{isTyping && <div>{typingUser} is typing...</div>}
+				{isTyping && 
+					<div className='chat-message'>	
+					<div className="sender-info">
+						<img
+						className="avatar"
+						src={`../assets/images/userIconsV2/${typingUserImage}.png`}
+						alt="Avatar"
+						/>
+					</div>
+					<div className="content">
+						<React.Fragment>
+							<span className="sender">{typingUser}</span>
+						<div className="message">...</div>
+						</React.Fragment>
+					</div>
+					</div>
+				}
 			</div>
 	
 			<div className="chat-input">
