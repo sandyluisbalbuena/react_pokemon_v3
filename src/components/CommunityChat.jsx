@@ -11,6 +11,7 @@ const CommunityChat = () => {
 	const [isTyping, setIsTyping] = useState(false);
 	const [typingUser, setTypingUser] = useState('');
 	const [typingUserImage, setTypingUserImage] = useState('');
+	const [typingUserId, setTypingUserId] = useState('');
 
 	let typingTimer;
 
@@ -34,10 +35,11 @@ const CommunityChat = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
 	
 		typingStatusRef.on('value', (snapshot) => {
-		const { isTyping, user, image } = snapshot.val() || {};
+		const { isTyping, user, image, id } = snapshot.val() || {};
 		setIsTyping(isTyping);
 		setTypingUser(user);
 		setTypingUserImage(image);
+		setTypingUserId(id);
 		});
 
 		setTimeout(() => {
@@ -65,6 +67,7 @@ const CommunityChat = () => {
 						isTyping: true,
 						user: userData.username, 
 						image: userData.image, 
+						id: user.uid, 
 						});
 		
 						clearTimeout(typingTimer);
@@ -276,21 +279,21 @@ const CommunityChat = () => {
 					</div>
 				</div>
 				))}
-				{isTyping && 
+				{isTyping && typingUserId !== currentUserId &&
 					<div className='chat-message'>	
-					<div className="sender-info">
-						<img
-						className="avatar"
-						src={`../assets/images/userIconsV2/${typingUserImage}.png`}
-						alt="Avatar"
-						/>
-					</div>
-					<div className="content">
-						<React.Fragment>
-							<span className="sender">{typingUser}</span>
-						<div className="message">...</div>
-						</React.Fragment>
-					</div>
+						<div className="sender-info">
+							<img
+							className="avatar"
+							src={`../assets/images/userIconsV2/${typingUserImage}.png`}
+							alt="Avatar"
+							/>
+						</div>
+						<div className="content">
+							<React.Fragment>
+								<span className="sender">{typingUser}</span>
+							<div className="message">...</div>
+							</React.Fragment>
+						</div>
 					</div>
 				}
 			</div>
