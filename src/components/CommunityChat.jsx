@@ -30,25 +30,35 @@ const CommunityChat = () => {
 
 
 	useEffect(() => {
+		
+	
+		const typingStatusRef = firebase.database().ref('typingStatus');
+	
+		typingStatusRef.on('value', (snapshot) => {
+		const { isTyping, user } = snapshot.val() || {};
+		setIsTyping(isTyping);
+		setTypingUser(user);
+		});
+	
 		return () => {
-		clearTimeout(typingTimer);
+		typingStatusRef.off('value');
 		};
 	}, []);
 	
 	const startTyping = () => {
-		// Set typing status and user
-		setIsTyping(true);
-		setTypingUser('John Doe'); // Replace with the actual user's name or username
-		// Clear previous typing timer if it exists
+		const typingStatusRef = firebase.database().ref('typingStatus');
+		typingStatusRef.set({
+		isTyping: true,
+		user: 'John Doe', 
+		});
+	
 		clearTimeout(typingTimer);
-		// Start a new typing timer
-		typingTimer = setTimeout(stopTyping, 2000); // Adjust the duration as needed
+		typingTimer = setTimeout(stopTyping, 2000); 
 	};
 	
 	const stopTyping = () => {
-		// Clear typing status and user
-		setIsTyping(false);
-		setTypingUser('');
+		const typingStatusRef = firebase.database().ref('typingStatus');
+		typingStatusRef.set(null);
 	};
 
 	const playNotificationSound = () => {
