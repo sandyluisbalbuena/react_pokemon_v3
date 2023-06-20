@@ -8,6 +8,7 @@ const CommunityChat = () => {
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
+	const [currentUser, setCurrentUser] = useState(null);
 	const chatContainerRef = useRef(null);
 	const [isTyping, setIsTyping] = useState(false);
 	const [typingUser, setTypingUser] = useState('');
@@ -19,6 +20,7 @@ const CommunityChat = () => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
 		if (user) {
 			setCurrentUserId(user.uid);
+			setCurrentUser(user);
 		} else {
 			setCurrentUserId(null);
 		}
@@ -30,8 +32,6 @@ const CommunityChat = () => {
 
 
 	useEffect(() => {
-		
-	
 		const typingStatusRef = firebase.database().ref('typingStatus');
 	
 		typingStatusRef.on('value', (snapshot) => {
@@ -39,6 +39,10 @@ const CommunityChat = () => {
 		setIsTyping(isTyping);
 		setTypingUser(user);
 		});
+
+		setTimeout(() => {
+		scrollToBottom();
+		}, 0);
 	
 		return () => {
 		typingStatusRef.off('value');
@@ -49,8 +53,10 @@ const CommunityChat = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
 		typingStatusRef.set({
 		isTyping: true,
-		user: 'John Doe', 
+		user: currentUser.username, 
 		});
+
+		
 	
 		clearTimeout(typingTimer);
 		typingTimer = setTimeout(stopTyping, 2000); 
@@ -130,6 +136,7 @@ const CommunityChat = () => {
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
 		startTyping();
+		
 	};
 
 	const handleKeyPress = (e) => {
