@@ -117,11 +117,13 @@ const CommunityChat = () => {
 			processedMessages.push({ senderId: currentGroup[0].senderId, messages: currentGroup });
 		}
 		});
+
+	console.log(processedMessages);
+
 	
 		return processedMessages;
 	};
 	
-
 
 	return (
 		<>
@@ -135,11 +137,18 @@ const CommunityChat = () => {
 						{preprocessMessages(messages).map((groupedMessage) => (
 							<div key={groupedMessage.messages[0].timestamp} className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}>
 							{groupedMessage.senderId !== currentUserId && (
+								<div className="sender-info">
 								<img className="avatar" src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`} alt="Avatar" />
+								</div>
 							)}
 							<div className="content">
-								{groupedMessage.messages.map((message) => (
-								<div key={message.timestamp} className="message">{message.content}</div>
+								{groupedMessage.messages.map((message, index) => (
+								<React.Fragment key={message.timestamp}>
+									{groupedMessage.senderId !== currentUserId && index === 0 && (
+									<span className="sender">{message.sender}</span>
+									)}
+									<div className="message">{message.content}</div>
+								</React.Fragment>
 								))}
 								{groupedMessage.senderId !== currentUserId && (
 								<div className="timestamp ms-1">{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}</div>
@@ -148,6 +157,8 @@ const CommunityChat = () => {
 							</div>
 						))}
 					</div>
+
+
 
 
 					<div className="chat-input">
