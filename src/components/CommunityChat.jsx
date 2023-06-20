@@ -1,14 +1,12 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 const CommunityChat = () => {
 	const [showModal, setShowModal] = useState(true);
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
-	const [currentUser, setCurrentUser] = useState(null);
 	const chatContainerRef = useRef(null);
 	const [isTyping, setIsTyping] = useState(false);
 	const [typingUser, setTypingUser] = useState('');
@@ -20,7 +18,7 @@ const CommunityChat = () => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
 		if (user) {
 			setCurrentUserId(user.uid);
-			setCurrentUser(user);
+			// setCurrentUser(user);
 		} else {
 			setCurrentUserId(null);
 		}
@@ -51,13 +49,13 @@ const CommunityChat = () => {
 	
 	const startTyping = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
+		const userInfo = firebase.database().ref('users');
 		typingStatusRef.set({
 		isTyping: true,
-		user: currentUser.username, 
+
+		user: userInfo.username, 
 		});
 
-		
-	
 		clearTimeout(typingTimer);
 		typingTimer = setTimeout(stopTyping, 2000); 
 	};
