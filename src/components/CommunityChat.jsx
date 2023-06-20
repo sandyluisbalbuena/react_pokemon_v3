@@ -119,6 +119,7 @@ const CommunityChat = () => {
 	// Handle message input
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
+		startTyping();
 	};
 
 	const handleKeyPress = (e) => {
