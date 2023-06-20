@@ -289,7 +289,7 @@ const CommunityChat = () => {
 						{groupedMessage.senderId !== currentUserId && index === 0 && (
 							<span className="sender">{message.sender}</span>
 						)}
-						<div className="message">{message.content}</div>
+						<div className="message">{message.content.replace(/(\S{24})/g, '$1 ')}</div>
 						</React.Fragment>
 					))}
 					{groupedMessage.senderId !== currentUserId && (

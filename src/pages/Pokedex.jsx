@@ -33,7 +33,7 @@ const Pokedex = () => {
 
 	useEffect(()=>{
 		const parsed = queryString.parse(window.location.search);
-  		var pokemonNameName = parsed.pokemonName;
+		var pokemonNameName = parsed.pokemonName;
 
 		if(pokemonNameName == undefined && pokemonNameName == null){
 			pokemonName2 = 'charizard';
