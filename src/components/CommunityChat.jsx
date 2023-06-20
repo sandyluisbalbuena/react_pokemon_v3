@@ -93,22 +93,33 @@ const CommunityChat = () => {
 		return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
-	function groupConsecutiveMessages(messages) {
-		const groupedMessages = [];
+	const preprocessMessages = (messages) => {
+		const processedMessages = [];
+		let currentGroup = [];
 	
-		messages.forEach((message) => {
-		const previousGroup = groupedMessages[groupedMessages.length - 1];
-		const isConsecutiveMessage = previousGroup && previousGroup[0].senderId === message.senderId;
+		// Sort messages by timestamp in ascending order
+		const sortedMessages = messages.sort((a, b) => a.timestamp - b.timestamp);
 	
-		if (isConsecutiveMessage) {
-			previousGroup.push(message);
+		sortedMessages.forEach((message, index) => {
+		const previousMessage = sortedMessages[index - 1];
+	
+		if (previousMessage && previousMessage.senderId === message.senderId) {
+			currentGroup.push(message);
 		} else {
-			groupedMessages.push([message]);
+			if (currentGroup.length > 0) {
+			processedMessages.push({ senderId: currentGroup[0].senderId, messages: currentGroup });
+			currentGroup = [];
+			}
+			currentGroup.push(message);
+		}
+	
+		if (index === sortedMessages.length - 1) {
+			processedMessages.push({ senderId: currentGroup[0].senderId, messages: currentGroup });
 		}
 		});
 	
-		return groupedMessages;
-	}
+		return processedMessages;
+	};
 	
 
 
@@ -118,22 +129,10 @@ const CommunityChat = () => {
 				<div className="chat-container modal-community">
 					<div className="chat-header">Chat</div>
 
+
+
 					<div className="chat-messages">
-						{messages.reduce((groupedMessages, message, index) => {
-							const previousMessage = groupedMessages[groupedMessages.length - 1];
-							const isGrouped = previousMessage && previousMessage.senderId === message.senderId;
-
-							if (isGrouped) {
-							previousMessage.messages.push(message);
-							} else {
-							groupedMessages.push({
-								senderId: message.senderId,
-								messages: [message],
-							});
-							}
-
-							return groupedMessages;
-						}, []).map((groupedMessage) => (
+						{preprocessMessages(messages).map((groupedMessage) => (
 							<div key={groupedMessage.messages[0].timestamp} className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}>
 							{groupedMessage.senderId !== currentUserId && (
 								<img className="avatar" src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`} alt="Avatar" />
@@ -142,16 +141,13 @@ const CommunityChat = () => {
 								{groupedMessage.messages.map((message) => (
 								<div key={message.timestamp} className="message">{message.content}</div>
 								))}
+								{groupedMessage.senderId !== currentUserId && (
+								<div className="timestamp ms-1">{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}</div>
+								)}
 							</div>
-							{groupedMessage.senderId !== currentUserId && (
-								<div className="timestamp ms-1">{formatTime(groupedMessage.messages[0].timestamp)}</div>
-							)}
 							</div>
 						))}
 					</div>
-
-
-
 
 
 					<div className="chat-input">
