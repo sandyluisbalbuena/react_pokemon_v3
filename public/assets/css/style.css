@@ -380,6 +380,8 @@ border-top:#332c2c solid 4px;
     word-wrap: break-word;
 }
 
+
+
 /* Individual chat message */
 .chat-message {
     display: flex;
@@ -410,6 +412,15 @@ border-top:#332c2c solid 4px;
     border-radius: 10px;
     padding: 3px 10px 3px 10px;
     word-wrap: break-word;
+    width: auto;
+    /* width: 70%; */
+    max-width: 70%;
+}
+
+.own-message .content{
+    justify-content: flex-end;
+    word-wrap: break-word;
+    width: auto;
 }
 
 .chat-message .sender {

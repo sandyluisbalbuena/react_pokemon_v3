@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 const PokemonMoves = (props) => {
+	const [tableData, setTableData] = useState([]);
+
 
 	const myTable = $('#myTable');
 
@@ -9,11 +11,14 @@ const PokemonMoves = (props) => {
 		if ($.fn.DataTable.isDataTable(myTable)) {
 			$(myTable).DataTable().destroy();
 		}
+
+		console.log(myTable);
 	}
-	reinitializeDataTable();
+	// reinitializeDataTable();
 
-
-	const [tableData, setTableData] = useState([]);
+	if(tableData.length !== 125){
+		reinitializeDataTable();
+	}
 
 	useEffect(() => {
 
@@ -21,10 +26,10 @@ const PokemonMoves = (props) => {
 	
 		if ($.fn.DataTable.isDataTable(myTable)) {
 			myTable.DataTable().destroy();
-		}
+			}
 
 		
-		myTable.DataTable({
+			myTable.DataTable({
 				language: {
 				searchPlaceholder: 'Search Move',
 				},
@@ -33,6 +38,7 @@ const PokemonMoves = (props) => {
 		};
 	
 		if (tableData.length > 0) {
+			console.log(tableData);
 			initDataTable();
 		}
 	}, [tableData]);
@@ -84,7 +90,6 @@ const PokemonMoves = (props) => {
 				<tr>
 				<th>Name</th>
 				<th>Accuracy</th>
-				{/* <th>Damage class</th> */}
 				<th>Power</th>
 				<th>PP</th>
 				<th>Type</th>
@@ -103,7 +108,6 @@ const PokemonMoves = (props) => {
 					</button>
 					</td>
 					<td>{row[1]}</td>
-					{/* <td>{row[2]}</td> */}
 					<td>{row[3]}</td>
 					<td>{row[4]}</td>
 					<td>

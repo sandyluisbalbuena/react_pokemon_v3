@@ -3,7 +3,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 
 const CommunityChat = () => {
-	const [showModal, setShowModal] = useState(true);
+	const [showModal, setShowModal] = useState(false);
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
@@ -61,7 +61,6 @@ const CommunityChat = () => {
 			setTimeout(() => {
 			scrollToBottom();
 			}, 0);
-		console.log(typingStatus);
 		};
 	
 		typingStatusRef.on('child_added', handleChildAdded);
@@ -75,13 +74,11 @@ const CommunityChat = () => {
 	const startTyping = () => {
 		firebase.auth().onAuthStateChanged((user) => {
 			if (user) {
-				console.log(user.uid);
 				const typingStatusRef = firebase.database().ref('typingStatus');
 				const userInfo = firebase.database().ref(`users/${user.uid}`);
 				userInfo.on('value', (snapshot) => {
 					const userData = snapshot.val();
 
-					console.log(userData);
 
 					if (userData) {
 						typingStatusRef.set({
@@ -237,7 +234,6 @@ const CommunityChat = () => {
 		}
 		});
 
-	console.log(processedMessages);
 
 	
 		return processedMessages;
@@ -289,7 +285,7 @@ const CommunityChat = () => {
 						{groupedMessage.senderId !== currentUserId && index === 0 && (
 							<span className="sender">{message.sender}</span>
 						)}
-						<div className="message">{message.content.replace(/(\S{24})/g, '$1 ')}</div>
+						<div className="message">{message.content.replace(/(\S{10})/g, '$1 ')}</div>
 						</React.Fragment>
 					))}
 					{groupedMessage.senderId !== currentUserId && (

@@ -101,7 +101,7 @@ const Pokedex = () => {
 		pokemonrelatedtobutton.setAttribute('aria-expanded', 'false');
 		collapseExample1.classList.remove('show');
 		collapseExample2.classList.remove('show');
-		let pokemonImage = document.getElementById('pokemonImage');
+		// let pokemonImage = document.getElementById('pokemonImage');
 
 			axios.get('https://pokeapi.co/api/v2/pokemon/'+pokemonName)
 			.then(response => {
