@@ -16,6 +16,13 @@ const Header = () => {
   let handleNavLinkClick = (link) => {
     setActiveLink(link);
     localStorage.setItem('activeLink', link);
+    // Close the navbar when a link is clicked on mobile
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    if (navbarToggler && navbarCollapse) {
+      navbarToggler.classList.add('collapsed');
+      navbarCollapse.classList.remove('show');
+    }
   };
 
   useEffect(() => {
@@ -89,13 +96,6 @@ const Header = () => {
     }
   }
 
-  const closeMobileNavbar = () => {
-    const navbarToggle = document.getElementById('navbarSupportedContent');
-    if (navbarToggle.classList.contains('show')) {
-      navbarToggle.classList.remove('show');
-    }
-  };
-
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -125,12 +125,9 @@ const Header = () => {
               <li className="nav-item">
                 <Link
                   to="/"
-                  onClick={() => {
-                    handleNavLinkClick('home');
-                    closeMobileNavbar();
-                  }}
+                  onClick={() => handleNavLinkClick('home')}
                   className={`nav-link hvr-underline-from-center ${
-                    activeLink === 'home' ? 'active' : ''
+                    activeLink === 'pokedex' ? 'active' : ''
                   }`}
                 >
                   Home
@@ -139,10 +136,7 @@ const Header = () => {
               <li className="nav-item">
                 <Link
                   to="/pokedex"
-                  onClick={() => {
-                    handleNavLinkClick('pokedex');
-                    closeMobileNavbar();
-                  }}
+                  onClick={() => handleNavLinkClick('pokedex')}
                   className={`nav-link hvr-underline-from-center ${
                     activeLink === 'pokedex' ? 'active' : ''
                   }`}
@@ -153,12 +147,9 @@ const Header = () => {
               <li className="nav-item">
                 <Link
                   to="/pokecard"
-                  onClick={() => {
-                    handleNavLinkClick('pokecard');
-                    closeMobileNavbar();
-                  }}
+                  onClick={() => handleNavLinkClick('pokecard')}
                   className={`nav-link hvr-underline-from-center ${
-                    activeLink === 'pokecard' ? 'active' : ''
+                    activeLink === 'pokedex' ? 'active' : ''
                   }`}
                 >
                   Pokecard
@@ -167,10 +158,7 @@ const Header = () => {
               {user ? (
                 <Link
                   to="/pokeforum"
-                  onClick={() => {
-                    handleNavLinkClick('pokeforum');
-                    closeMobileNavbar();
-                  }}
+                  onClick={() => handleNavLinkClick('pokeforum')}
                   className={`nav-link hvr-underline-from-center ${
                     activeLink === 'pokeforum' ? 'active' : ''
                   }`}
@@ -180,10 +168,6 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
-                  onClick={() => {
-                    handleNavLinkClick('login');
-                    closeMobileNavbar();
-                  }}
                   className={`nav-link hvr-underline-from-center ${
                     activeLink === 'login' ? 'active' : ''
                   }`}
@@ -194,12 +178,9 @@ const Header = () => {
               <li className="nav-item">
                 <Link
                   to="/about"
-                  onClick={() => {
-                    handleNavLinkClick('about');
-                    closeMobileNavbar();
-                  }}
+                  onClick={() => handleNavLinkClick('about')}
                   className={`nav-link hvr-underline-from-center ${
-                    activeLink === 'about' ? 'active' : ''
+                    activeLink === 'pokedex' ? 'active' : ''
                   }`}
                 >
                   About
@@ -243,29 +224,54 @@ const Header = () => {
               </div>
             )}
 
-            {!user ? (
-              <ul className="navbar-nav">
-                <li className="nav-item">
-                  <Link
-                    to="/register"
-                    onClick={() => {
-                      handleNavLinkClick('register');
-                      closeMobileNavbar();
-                    }}
-                    className={`nav-link hvr-underline-from-center ${
-                      activeLink === 'register' ? 'active' : ''
-                    }`}
+            {user ? (
+              <>
+                <div className="dropdown">
+                  <a
+                    className="dropdown-toggle d-flex align-items-center hidden-arrow"
+                    href="#"
+                    id="navbarDropdownMenuAvatar"
+                    role="button"
+                    data-mdb-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    Register
-                  </Link>
-                </li>
+                    <span
+                      className={`nav-link text-white  ${
+                        activeLink === 'login' ? 'active' : ''
+                      }`}
+                    >
+                      {username !== '' ? username : user.displayName}
+                    </span>
+                    <div className="rounded-circle bg-secondary ms-3">
+                      <img
+                        className="m-1"
+                        width="30px"
+                        src={`../assets/images/userIcons/${userimage}.png`}
+                      />
+                    </div>
+                  </a>
+                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                    <li>
+                      <a className="dropdown-item" data-mdb-toggle="modal" data-mdb-target="#profile" href="#">
+                        My profile
+                      </a>
+                    </li>
+                    {/* <li>
+                      <a className="dropdown-item" href="#">Settings</a>
+                    </li> */}
+                    <li>
+                      <a className="dropdown-item" onClick={handleLogout} href="#">
+                        Logout
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <ul className="navbar-nav mb-2 mb-lg-0  input-group w-auto me-5">
                 <li className="nav-item">
                   <Link
                     to="/login"
-                    onClick={() => {
-                      handleNavLinkClick('login');
-                      closeMobileNavbar();
-                    }}
                     className={`nav-link hvr-underline-from-center ${
                       activeLink === 'login' ? 'active' : ''
                     }`}
@@ -273,29 +279,17 @@ const Header = () => {
                     Login
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link
+                    to="/register"
+                    className={`nav-link hvr-underline-from-center ${
+                      activeLink === 'register' ? 'active' : ''
+                    }`}
+                  >
+                    Register
+                  </Link>
+                </li>
               </ul>
-            ) : (
-              <div className="d-flex align-items-center">
-                <span className="navbar-text mx-2">{username}</span>
-                <Link
-                  to={`/profile/${user.uid}`}
-                  onClick={() => {
-                    handleNavLinkClick('profile');
-                    closeMobileNavbar();
-                  }}
-                >
-                  <img
-                    src={userimage ? userimage : '../assets/images/profile/pikachu.png'}
-                    alt="Profile"
-                    className="rounded-circle"
-                    width="30"
-                    height="30"
-                  />
-                </Link>
-                <button className="btn btn-link text-white" onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
             )}
           </div>
         </div>
