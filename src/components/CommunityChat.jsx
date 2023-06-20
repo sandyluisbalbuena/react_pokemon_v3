@@ -36,17 +36,17 @@ const CommunityChat = () => {
 		// const notificationSound = new Audio('./assets/notif/sound/dramatic_boom_effect.mp3');
 		const notificationSound = new Audio('./assets/notif/sound/notification.mp3');
 		notificationSound.play();
-	  };
+	};
 	
-	  useEffect(() => {
+	useEffect(() => {
 		// Play sound notification when a new message is received
 		if (messages.length > 0) {
-		  const lastMessage = messages[messages.length - 1];
-		  if (lastMessage.senderId !== currentUserId) {
+		const lastMessage = messages[messages.length - 1];
+		if (lastMessage.senderId !== currentUserId) {
 			playNotificationSound();
-		  }
 		}
-	  }, [messages, currentUserId]);
+		}
+	}, [messages, currentUserId]);
 
 
 	const toggleModal = () => {

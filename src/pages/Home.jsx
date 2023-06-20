@@ -129,7 +129,7 @@ const Home = () => {
 				interval:1000,
 			} ).mount();
 		}
-		getpokemondata(0,151)
+		getpokemondata(0,50)
 	});
 
 
