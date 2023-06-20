@@ -71,11 +71,6 @@ const CommunityChat = () => {
 		typingStatusRef.off('child_added', handleChildAdded);
 		};
 	}, []);
-
-
-	const handleFocus = () => {
-		startTyping();
-	};
 	
 	const startTyping = () => {
 		firebase.auth().onAuthStateChanged((user) => {
@@ -97,7 +92,7 @@ const CommunityChat = () => {
 						});
 		
 						clearTimeout(typingTimer);
-						typingTimer = setTimeout(stopTyping, 2000); 
+						typingTimer = setTimeout(stopTyping, 4000); 
 					}
 				});
 
@@ -179,6 +174,7 @@ const CommunityChat = () => {
 	// Handle message input
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
+		startTyping();
 	};
 
 	const handleKeyPress = (e) => {
@@ -324,7 +320,7 @@ const CommunityChat = () => {
 			</div>
 	
 			<div className="chat-input">
-				<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} onFocus={handleFocus}/>
+				<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
 				<button onClick={sendMessage} className="btn btn-sm">
 				Send
 				</button>
