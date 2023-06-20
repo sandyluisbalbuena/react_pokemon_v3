@@ -21,6 +21,17 @@ const CommunityChat = () => {
 		return () => unsubscribe();
 	}, []);
 
+	useEffect(() => {
+		// Play sound notification when a new message is received
+		if (messages.length > 0) {
+		const lastMessage = messages[messages.length - 1];
+		if (lastMessage.senderId !== currentUserId) {
+			const notificationSound = new Audio('../assets/notif/sound/dramatic_boom_effect.mp3');
+			notificationSound.play();
+		}
+		}
+	}, [messages, currentUserId]);
+
 
 	const toggleModal = () => {
 		setShowModal(!showModal);
