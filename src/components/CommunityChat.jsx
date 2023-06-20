@@ -33,7 +33,8 @@ const CommunityChat = () => {
 	// }, [messages, currentUserId]);
 
 	const playNotificationSound = () => {
-		const notificationSound = new Audio('./assets/notif/sound/dramatic_boom_effect.mp3');
+		// const notificationSound = new Audio('./assets/notif/sound/dramatic_boom_effect.mp3');
+		const notificationSound = new Audio('./assets/notif/sound/notification.mp3');
 		notificationSound.play();
 	  };
 	
