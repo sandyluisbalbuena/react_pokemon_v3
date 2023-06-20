@@ -30,29 +30,43 @@ const CommunityChat = () => {
 	useEffect(() => {
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
-	  
+	
 		const onMessageAdded = (snapshot) => {
-		  const newMessage = snapshot.val();
-		  // Get user data using the sender's userId
-		  // Replace 'users' with the actual location of your user data
-		  const userRef = database.ref('users/' + newMessage.senderId);
-		  userRef.on('value', (userSnapshot) => {
+		const newMessage = snapshot.val();
+		// Get user data using the sender's userId
+		// Replace 'users' with the actual location of your user data
+		const userRef = database.ref('users/' + newMessage.senderId);
+		userRef.on('value', (userSnapshot) => {
 			const user = userSnapshot.val();
 			if (user) {
-			  newMessage.sender = user.username; // Replace 'username' with the actual field containing the user's username
-			  newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
+			newMessage.sender = user.username; // Replace 'username' with the actual field containing the user's username
+			newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
 			}
-			setMessages((prevMessages) => [...prevMessages, newMessage]);
-		  });
+			setMessages((prevMessages) => {
+			// Check if the message already exists in the array
+			const existingMessage = prevMessages.find(
+				(message) => message.timestamp === newMessage.timestamp
+			);
+			if (existingMessage) {
+				// If the message exists, update it with the new data
+				return prevMessages.map((message) =>
+				message.timestamp === newMessage.timestamp ? newMessage : message
+				);
+			} else {
+				// If the message doesn't exist, add it to the array
+				return [...prevMessages, newMessage];
+			}
+			});
+		});
 		};
-	  
+	
 		messagesRef.on('child_added', onMessageAdded);
-	  
+	
 		return () => {
-		  messagesRef.off('child_added', onMessageAdded);
+		messagesRef.off('child_added', onMessageAdded);
 		};
-	  }, []);
-	  
+	}, []);
+
 	
 	// Handle message input
 	const handleInputChange = (e) => {
