@@ -55,7 +55,16 @@ const Pokeforum = () => {
 								</button>
 							</div>
 						</div>
+
+						<ForumCategories/>
+	
+						<ForumMyThreads />
+
+						<ForumTrendingTopics />
+
 					</div>
+
+
 
 					<div id="forumLatest">
 						<ForumLatest  user={userdata} />

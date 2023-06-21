@@ -329,7 +329,7 @@ const CommunityChat = () => {
 					<div>
 						{isUnMuted &&(<div className='btn text-white' onClick={() => muteChat()}><i className="fas fa-bell-slash"></i></div>)}
 						{!isUnMuted &&(<div className='btn text-white' onClick={() => unmuteChat()}><i className="fas fa-bell"></i></div>)}
-						<div className='btn text-white'  onClick={toggleModal}><i class="fas fa-xmark"></i></div>
+						<div className='btn text-white'  onClick={toggleModal}><i className="fas fa-xmark"></i></div>
 					</div>
 					
 				</div>
