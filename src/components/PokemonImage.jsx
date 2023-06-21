@@ -39,11 +39,12 @@ return (
 		{loading ? (
 		<img
 			id="pokemonImage"
-			className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid"
+			className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid lazyload"
 			// src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${props.pokemonId
 			// .toString()
 			// .padStart(3, '0')}.png`}
-			src={`https://img.pokemondb.net/artwork/avif/${props.pokemonName.toLowerCase()}.avif`}
+			data-src={`https://img.pokemondb.net/artwork/avif/${props.pokemonName.toLowerCase()}.avif`}
+			src="low-quality.jpg"
 			width="100%"
 			height="100%"
 			alt=""

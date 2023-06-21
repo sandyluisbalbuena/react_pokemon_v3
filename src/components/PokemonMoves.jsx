@@ -3,18 +3,13 @@ import React, { useEffect, useState } from 'react';
 const PokemonMoves = (props) => {
 	const [tableData, setTableData] = useState([]);
 
-
 	const myTable = $('#myTable');
-
 
 	function reinitializeDataTable() {
 		if ($.fn.DataTable.isDataTable(myTable)) {
 			$(myTable).DataTable().destroy();
 		}
-
-		console.log(myTable);
 	}
-	// reinitializeDataTable();
 
 	if(tableData.length !== 125){
 		reinitializeDataTable();
@@ -38,7 +33,6 @@ const PokemonMoves = (props) => {
 		};
 	
 		if (tableData.length > 0) {
-			console.log(tableData);
 			initDataTable();
 		}
 	}, [tableData]);

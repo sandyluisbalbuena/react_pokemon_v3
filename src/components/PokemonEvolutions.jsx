@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 
 const PokemonEvolutions = (props) => {
 
+
+  // console.log(props);
+
   const [showEvolutions, setShowEvolutions] = useState(false);
   const [evolutionChain, setEvolutionChain] = useState([]);
 

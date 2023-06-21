@@ -345,11 +345,11 @@ const Pokedex = () => {
 			</section>
 
 			<section className="row">
-				<CardSplide pokemonName={pokemonNameForCard}/>
+				{/* <CardSplide pokemonName={pokemonNameForCard}/> */}
 			</section>
 
 			<section className="row mb-5">
-				<PokemonVideos pokemonName={pokemonNameForCard}/>
+				{/* <PokemonVideos pokemonName={pokemonNameForCard}/> */}
 			</section>
 		</div>
 	)

@@ -1,6 +1,7 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
+// import { createPicker } from 'picmo';
 
 const CommunityChat = () => {
 	const [showModal, setShowModal] = useState(false);
@@ -15,6 +16,10 @@ const CommunityChat = () => {
 	const chatContainerRef = useRef(null);
 	let typingTimer;
 
+	// const container = document.querySelector('.pickerContainer');
+	// const picker = createPicker({
+	// 	rootElement: container
+	// });
 
 	useEffect(() => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -363,6 +368,7 @@ const CommunityChat = () => {
 			</div>
 	
 			<div className="chat-input">
+				<div class="pickerContainer"></div>
 				<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
 				<button onClick={sendMessage} className="btn btn-sm">
 				Send
