@@ -138,6 +138,15 @@ const CreateThreadModal = () => {
 		const title = document.getElementById('title');
 		const slug = slugify(title.value);
 
+
+		if(title.value == '' || tinymce.activeEditor.getContent() == ''){
+			Swal.fire({
+				icon: 'error',
+				title: 'All fields are required!',
+			});
+			return
+		}
+
 	
 		const threadRef = firebase.database().ref('threads');
 	
@@ -220,6 +229,14 @@ const CreateThreadModal = () => {
 		const category = document.getElementById('category');
 		const title = document.getElementById('title');
 		const slug = slugify(title.value);
+
+		if(title.value == '' || tinymce.activeEditor.getContent() == ''){
+			Swal.fire({
+				icon: 'error',
+				title: 'All fields are required!',
+			});
+			return
+		}
 	
 		const threadRef = firebase.database().ref('threads/' + id); // Update the reference to include the thread ID
 	

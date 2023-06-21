@@ -4,6 +4,7 @@ import 'firebase/compat/database';
 
 const CommunityChat = () => {
 	const [showModal, setShowModal] = useState(false);
+	const [isUnMuted, setisUnMuted] = useState(true);
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
@@ -116,7 +117,9 @@ const CommunityChat = () => {
 
 	const playNotificationSound = () => {
 		const notificationSound = new Audio('../assets/notif/sound/notification.mp3');
-		notificationSound.play();
+		if(isUnMuted){
+			notificationSound.play();
+		}
 	};
 
 	const toggleModal = () => {
@@ -165,6 +168,49 @@ const CommunityChat = () => {
 		messagesRef.off('child_added', onMessageAdded);
 		};
 	}, []);
+
+	function muteChat(){
+		console.log('mute');
+		setisUnMuted(false);
+		const Toast = Swal.mixin({
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 1000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+			toast.addEventListener('mouseenter', Swal.stopTimer)
+			toast.addEventListener('mouseleave', Swal.resumeTimer)
+			}
+		})
+		
+		Toast.fire({
+			icon: 'info',
+			title: 'Chat muted!'
+		})
+	}
+
+	function unmuteChat(){
+		console.log('unmute');
+		setisUnMuted(true);
+
+		const Toast = Swal.mixin({
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 1000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+			toast.addEventListener('mouseenter', Swal.stopTimer)
+			toast.addEventListener('mouseleave', Swal.resumeTimer)
+			}
+		})
+		
+		Toast.fire({
+			icon: 'info',
+			title: 'Chat unmuted!'
+		})
+	}
 	
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
@@ -257,7 +303,13 @@ const CommunityChat = () => {
 		<>
 		{showModal && (
 			<div className="chat-container modal-community">
-			<div className="chat-header">Chat</div>
+			<div className="chat-header" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+				<h6>
+					Chat
+				</h6>
+				{isUnMuted &&(<div className='btn text-white' onClick={() => muteChat()}><i className="fas fa-bell-slash"></i></div>)}
+				{!isUnMuted &&(<div className='btn text-white' onClick={() => unmuteChat()}><i className="fas fa-bell"></i></div>)}
+			</div>
 	
 			<div className="chat-messages" ref={chatContainerRef} style={{ overflowY: 'auto' }}>
 				{preprocessMessages(messages).map((groupedMessage) => (

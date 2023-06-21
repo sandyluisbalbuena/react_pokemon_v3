@@ -298,13 +298,13 @@ const ForumThread = () => {
 								
 								{threadData && user && user?.uid === threadData?.userId && (
 									<>
-									<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
-									<i className="fas fa-ellipsis"></i>
-									</button>
-									<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
-										<li><a className="dropdown-item" href="#" onClick={() => deleteThreadAndMessages(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
-										<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
-									</ul>
+										<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
+										<i className="fas fa-ellipsis"></i>
+										</button>
+										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
+											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadAndMessages(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
+											<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
+										</ul>
 									</>
 								)}
 								
