@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import eventBus from '../eventBus';
 
 const ForumThread = () => {
 
 	const [threadData, setThreadData] = useState(null);
+	const [userId, setuserId] = useState('');
 	const { slug } = useParams();
 	const [user] = useAuthState(firebase.auth());
+	const navigate = useNavigate();
 
+	useEffect(() => {
+		if(user){
+			setuserId(user.uid);
+			console.log(user);
+		}
+	}, [])
 	
 	useEffect(() => {
 		fetchThreadBySlug(slug)
@@ -26,17 +35,16 @@ const ForumThread = () => {
 	}, [slug]);
 
 	useEffect(()=>{
+		const threadsRef = firebase.database().ref('threads');
 		const messagesRef = firebase.database().ref('messages');
 		const usersRef = firebase.database().ref('users');
 
 		messagesRef.on('child_added', handleNewMessage);
 		usersRef.on('child_changed', handleNewMessage);
+		threadsRef.on('child_changed', handleNewMessage);
 	},[])
 
 	const handleNewMessage = () => {
-		// const newMessage = snapshot.val();
-		// console.log('New message:', newMessage);
-
 
 		fetchThreadBySlug(slug)
 		.then((thread) => {
@@ -50,13 +58,6 @@ const ForumThread = () => {
 			console.error('Error fetching thread:', error);
 		});
 
-		// if(threadData)
-		// {
-			// console.log(threadData);
-		// }
-	
-		// Process the new message as needed
-		// ...
 	};
 
 
@@ -135,6 +136,67 @@ const ForumThread = () => {
 	});
 	};
 
+	const deleteThreadAndMessages = (slug) => {
+		swal.fire({
+		title: "Are you sure?",
+		text: "Once deleted, you will not be able to recover the thread and its related messages!",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonText: 'Delete',
+		})
+		.then((result) => {
+		if (result.isConfirmed) {
+			let threadKey; // Declare threadKey variable here
+	
+			// Find the thread by its slug
+			const threadRef = firebase.database().ref('threads');
+			threadRef.orderByChild('slug').equalTo(slug).once('value')
+			.then((snapshot) => {
+				// Check if the thread exists
+				if (!snapshot.exists()) {
+				throw new Error('Thread not found');
+				}
+	
+				// Get the thread key
+				threadKey = Object.keys(snapshot.val())[0];
+	
+				// Delete the thread
+				return threadRef.child(threadKey).remove();
+			})
+			.then(() => {
+				// Delete the related messages
+				const messagesRef = firebase.database().ref('messages');
+				return messagesRef.orderByChild('threadId').equalTo(threadKey).once('value');
+			})
+			.then((snapshot) => {
+				// Check if there are any related messages
+				if (!snapshot.exists()) {
+				return; // No messages to delete
+				}
+	
+				const updates = {};
+				snapshot.forEach((childSnapshot) => {
+				updates[childSnapshot.key] = null;
+				});
+	
+				const messagesRef = firebase.database().ref('messages');
+				return messagesRef.update(updates);
+			})
+			.then(() => {
+				swal.fire("Deleted!", "Thread and related messages have been deleted.", "success");
+				navigate('/pokeforum');
+			})
+			.catch((error) => {
+				console.error('Error deleting thread:', error);
+				swal.fire("Error", "An error occurred while deleting the thread.", "error");
+			});
+		}
+		});
+	};
+	
+	function updateThread(data){
+		eventBus.publish('editThread', data);
+	}
 
 	function sendCommentToThread(){
 
@@ -223,50 +285,69 @@ const ForumThread = () => {
 			}
 		}
 	}
-	
+
+	console.log(threadData);
 
 	return (
 		<div className="container">
-		<div className="row">
-			<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
-			<div className="p-2 py-3 px-lg-5">
-				<div className="row text-center">
-				{threadData && <h2 id="threadTitle">{threadData.title}</h2>}
-				</div>
-	
-				<div className="container summernote_container">
-				<div className="row text-center">
-					<div id="summernoteContent" style={{ paddingTop: '20px'}}>
-					{threadData && (
-                    <div dangerouslySetInnerHTML={{ __html: threadData.content }} />
-					)}
+			<div className="row">
+				<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
+					<div className="p-2 py-3 px-lg-5">
+						<div className="row">
+							<div style={{textAlign: 'right'}}>
+								
+								{threadData && user && user?.uid === threadData?.userId && (
+									<>
+									<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
+									<i className="fas fa-ellipsis"></i>
+									</button>
+									<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
+										<li><a className="dropdown-item" href="#" onClick={() => deleteThreadAndMessages(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
+										<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
+									</ul>
+									</>
+								)}
+								
+
+							</div>
+						</div>
+						<div className="row text-center">
+						{threadData && <h2 id="threadTitle">{threadData.title}</h2>}
+						</div>
+			
+						<div className="container summernote_container">
+						<div className="row text-center">
+							<div id="summernoteContent" style={{ paddingTop: '20px'}}>
+							{threadData && (
+							<div dangerouslySetInnerHTML={{ __html: threadData.content }} />
+							)}
+							</div>
+						</div>
+						</div>
+			
+						<span className="d-flex">
+						{threadData && threadData.user && (
+							<>
+							<img
+								className="me-2"
+								src={`../assets/images/userIconsV2/${threadData.user.image}.png`}
+								style={{ width: '45px', height: '45px' }}
+								alt={threadData.user.username}
+							/>
+							<p style={{ fontWeight: 'bolder', fontSize: '12px' }}>{threadData.user.username}</p>
+							<div style={{ fontSize: '10px' }} className='ms-1'>{getCommentAge(threadData.createdAt)}</div>
+							</>
+						)}
+						</span>
+			
+						<span className="py-3">
+						<i className="fas fa-thumbs-up ms-2"></i>
+						<i className="fas fa-thumbs-down ms-2"></i>
+						<i className="fas fa-reply ms-2"></i>
+						</span>
 					</div>
 				</div>
-				</div>
-	
-				<span className="d-flex">
-				{threadData && threadData.user && (
-					<>
-					<img
-						className="me-2"
-						src={`../assets/images/userIconsV2/${threadData.user.image}.png`}
-						style={{ width: '45px', height: '45px' }}
-						alt={threadData.user.username}
-					/>
-					<p style={{ fontWeight: 'bolder', fontSize: '12px' }}>{threadData.user.username}</p>
-					<div style={{ fontSize: '10px' }} className='ms-1'>{getCommentAge(threadData.createdAt)}</div>
-					</>
-				)}
-				</span>
-	
-				<span className="py-3">
-				<i className="fas fa-thumbs-up ms-2"></i>
-				<i className="fas fa-thumbs-down ms-2"></i>
-				<i className="fas fa-reply ms-2"></i>
-				</span>
 			</div>
-			</div>
-		</div>
 	
 		<div className="row my-3">
 			<div className="card" style={{ borderRadius: '5px' }} id="firstCard">

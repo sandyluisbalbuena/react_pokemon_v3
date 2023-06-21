@@ -10,14 +10,12 @@ const ForumLatest = (props) => {
 	const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
 	const [user, isLoading] = useAuthState(firebase.auth());
-	// const [uid, setUid] = useState('');
 
 	useEffect(() => {
 		if (!isLoading && user) {
 			uid=user.uid;
 		}
 	}, [user, isLoading]);
-
 
 	useEffect(() => {
 		fetchThreads();

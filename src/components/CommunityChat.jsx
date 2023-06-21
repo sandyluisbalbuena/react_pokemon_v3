@@ -105,7 +105,7 @@ const CommunityChat = () => {
 	};
 
 	const playNotificationSound = () => {
-		const notificationSound = new Audio('./assets/notif/sound/notification.mp3');
+		const notificationSound = new Audio('../assets/notif/sound/notification.mp3');
 		notificationSound.play();
 	};
 	
