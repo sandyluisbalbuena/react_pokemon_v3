@@ -435,34 +435,6 @@ border-top:#332c2c solid 4px;
     font-size: 8px;
 }
 
-/* Chat input area */
-/* .chat-input {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f9f9f9;
-}
-
-.chat-input input[type="text"] {
-    flex-grow: 1;
-    padding: 5px;
-    border: none;
-    border-radius: 3px;
-    outline: none;
-}
-
-.chat-input button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    background-color: #332c2c;
-    color: #fff;
-    cursor: pointer;
-} */
-
-
-
 .chat-input {
     display: flex;
     align-items: center;
@@ -502,4 +474,11 @@ border-top:#332c2c solid 4px;
 .consecutive-message {
     margin-top: -5px; /* Adjust the spacing between consecutive messages */
     margin-left: 40px; /* Adjust the spacing between consecutive messages */
+}
+
+.emoji-picker-container {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    z-index: 50;
 }

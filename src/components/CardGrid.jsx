@@ -52,7 +52,7 @@ const CardGrid = (props) => {
 	
 				if(pokecard.rarity != undefined){
 	
-					let $newItems = $(`<div id="`+pokecard.id+`" class="grid-item card-img-forSearch `+pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')+`"><img class="lazyload" src="`+pokecard.imageUrlHiRes+`" data-src="`+pokecard.imageUrlHiRes+`" width="100%"/></div>`);
+					let $newItems = $(`<div id="`+pokecard.id+`" class="grid-item card-img-forSearch `+pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')+`"><img class="lazyload" loading="lazy" src="`+pokecard.imageUrlHiRes+`" data-src="`+pokecard.imageUrlHiRes+`" width="100%"/></div>`);
 					iso.append($newItems).isotope('appended', $newItems);
 		
 					if(!filterbuttons.includes(pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')) && pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '') != '' && pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '') != undefined){

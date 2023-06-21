@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-// import { createPicker } from 'picmo';
+import EmojiPicker from 'emoji-picker-react';
 
 const CommunityChat = () => {
 	const [showModal, setShowModal] = useState(false);
@@ -13,13 +13,11 @@ const CommunityChat = () => {
 	const [typingUser, setTypingUser] = useState('');
 	const [typingUserImage, setTypingUserImage] = useState('');
 	const [typingUserId, setTypingUserId] = useState('');
+	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
 	const chatContainerRef = useRef(null);
 	let typingTimer;
 
-	// const container = document.querySelector('.pickerContainer');
-	// const picker = createPicker({
-	// 	rootElement: container
-	// });
 
 	useEffect(() => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -304,6 +302,16 @@ const CommunityChat = () => {
 		}
 	}
 
+	const toggleEmojiPicker = () => {
+		setShowEmojiPicker(!showEmojiPicker);
+	};
+
+	const handleEmojiSelection = (selectedEmoji) => {
+		const emoji = selectedEmoji.emoji;
+  setNewMessage(newMessage + emoji);
+	};
+	
+
 	return (
 		<>
 		{showModal && (
@@ -366,12 +374,14 @@ const CommunityChat = () => {
 					</div>
 				}
 			</div>
-	
+			
 			<div className="chat-input">
-				<div class="pickerContainer"></div>
-				<input type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
+				<div onClick={toggleEmojiPicker} className="btn btn-sm">
+				😁
+				</div>
+				<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
 				<button onClick={sendMessage} className="btn btn-sm">
-				Send
+				<i className="fas fa-paper-plane"></i>
 				</button>
 			</div>
 			</div>
@@ -379,8 +389,13 @@ const CommunityChat = () => {
 		<div className="btn-community-chat-div bg-light rounded-circle btn" onClick={toggleModal}>
 			<div className="btn-community-chat"></div>
 		</div>
+		{showEmojiPicker && (
+			<div className="emoji-picker-container">
+				<EmojiPicker  onEmojiClick={handleEmojiSelection} />
+			</div>
+		)}
 		</>
 	);
-	};
+};
 
 export default CommunityChat;
