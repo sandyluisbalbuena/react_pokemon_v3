@@ -381,7 +381,7 @@ const CommunityChat = () => {
 				</div>
 			
 				<div className="chat-input">
-					<div onClick={toggleEmojiPicker} className="btn btn-sm">
+					<div onClick={toggleEmojiPicker} className="btn btn-sm d-none d-lg-block">
 					😁
 					</div>
 					<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onFocus={toggleEmojiPicker} onKeyPress={handleKeyPress} />
