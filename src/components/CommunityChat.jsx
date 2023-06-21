@@ -126,6 +126,7 @@ const CommunityChat = () => {
 	};
 
 	const toggleModal = () => {
+		toggleEmojiPickerClose();
 		setShowModal(!showModal);
 		setTimeout(() => {
 		scrollToBottom();
@@ -227,7 +228,7 @@ const CommunityChat = () => {
 	};
 
 	const sendMessage = () => {
-		toggleEmojiPicker();
+		toggleEmojiPickerClose();
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
 		const newMessageRef = messagesRef.push();
@@ -307,6 +308,10 @@ const CommunityChat = () => {
 		setShowEmojiPicker(!showEmojiPicker);
 	};
 
+	const toggleEmojiPickerClose = () => {
+		setShowEmojiPicker(false);
+	}
+
 	const handleEmojiSelection = (selectedEmoji) => {
 		const emoji = selectedEmoji.emoji;
 	setNewMessage(newMessage + emoji);
@@ -384,7 +389,7 @@ const CommunityChat = () => {
 					<div onClick={toggleEmojiPicker} className="btn btn-sm d-none d-lg-block">
 					😁
 					</div>
-					<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onFocus={toggleEmojiPicker} onKeyPress={handleKeyPress} />
+					<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onFocus={toggleEmojiPickerClose} onKeyPress={handleKeyPress} />
 					<button onClick={sendMessage}  className="btn btn-sm">
 					<i className="fas fa-paper-plane"></i>
 					</button>
