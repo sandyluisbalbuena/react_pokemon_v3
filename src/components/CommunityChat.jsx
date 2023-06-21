@@ -7,12 +7,11 @@ const CommunityChat = () => {
 	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [currentUserId, setCurrentUserId] = useState(null);
-	const chatContainerRef = useRef(null);
 	const [isTyping, setIsTyping] = useState(false);
 	const [typingUser, setTypingUser] = useState('');
 	const [typingUserImage, setTypingUserImage] = useState('');
 	const [typingUserId, setTypingUserId] = useState('');
-
+	const chatContainerRef = useRef(null);
 	let typingTimer;
 
 
@@ -28,8 +27,6 @@ const CommunityChat = () => {
 
 		return () => unsubscribe();
 	}, []);
-
-
 
 	useEffect(() => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
@@ -70,6 +67,20 @@ const CommunityChat = () => {
 		typingStatusRef.off('child_added', handleChildAdded);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (messages.length > 0) {
+		const lastMessage = messages[messages.length - 1];
+		if (lastMessage.senderId !== currentUserId) {
+			playNotificationSound();
+		}
+		}
+	}, [messages, currentUserId]);
+
+	const formatMessageContent = (content) => {
+		const urlRegex = /(https?:\/\/[^\s]+)/g;
+		return content.replace(urlRegex, (url) => `<a href="${url}" target="_blank">${url}</a>`);
+	};
 	
 	const startTyping = () => {
 		firebase.auth().onAuthStateChanged((user) => {
@@ -101,23 +112,12 @@ const CommunityChat = () => {
 	const stopTyping = () => {
 		const typingStatusRef = firebase.database().ref('typingStatus');
 		typingStatusRef.set(null);
-		
 	};
 
 	const playNotificationSound = () => {
 		const notificationSound = new Audio('../assets/notif/sound/notification.mp3');
 		notificationSound.play();
 	};
-	
-	useEffect(() => {
-		if (messages.length > 0) {
-		const lastMessage = messages[messages.length - 1];
-		if (lastMessage.senderId !== currentUserId) {
-			playNotificationSound();
-		}
-		}
-	}, [messages, currentUserId]);
-
 
 	const toggleModal = () => {
 		setShowModal(!showModal);
@@ -126,7 +126,6 @@ const CommunityChat = () => {
 		}, 0);
 	};
 
-	// Listen for real-time updates
 	useEffect(() => {
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
@@ -166,9 +165,7 @@ const CommunityChat = () => {
 		messagesRef.off('child_added', onMessageAdded);
 		};
 	}, []);
-
 	
-	// Handle message input
 	const handleInputChange = (e) => {
 		setNewMessage(e.target.value);
 		startTyping();
@@ -180,7 +177,6 @@ const CommunityChat = () => {
 		}
 	};
 
-	// Send message to Realtime Database
 	const sendMessage = () => {
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
@@ -239,7 +235,6 @@ const CommunityChat = () => {
 		return processedMessages;
 	};
 
-	// Scroll to the bottom of the chat container after rendering messages
 	useEffect(() => {
 		scrollToBottom();
 	}, [messages]);
@@ -285,7 +280,7 @@ const CommunityChat = () => {
 						{groupedMessage.senderId !== currentUserId && index === 0 && (
 							<span className="sender">{message.sender}</span>
 						)}
-						<div className="message">{message.content.replace(/(\S{10})/g, '$1 ')}</div>
+						<div className="message" dangerouslySetInnerHTML={{ __html: formatMessageContent(message.content) }} ></div>
 						</React.Fragment>
 					))}
 					{groupedMessage.senderId !== currentUserId && (
