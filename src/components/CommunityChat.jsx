@@ -227,6 +227,7 @@ const CommunityChat = () => {
 	};
 
 	const sendMessage = () => {
+		toggleEmojiPicker();
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
 		const newMessageRef = messagesRef.push();
@@ -308,7 +309,7 @@ const CommunityChat = () => {
 
 	const handleEmojiSelection = (selectedEmoji) => {
 		const emoji = selectedEmoji.emoji;
-  setNewMessage(newMessage + emoji);
+	setNewMessage(newMessage + emoji);
 	};
 	
 
@@ -316,74 +317,78 @@ const CommunityChat = () => {
 		<>
 		{showModal && (
 			<div className="chat-container modal-community">
-			<div className="chat-header" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-				<h6>
-					Chat
-				</h6>
-				{isUnMuted &&(<div className='btn text-white' onClick={() => muteChat()}><i className="fas fa-bell-slash"></i></div>)}
-				{!isUnMuted &&(<div className='btn text-white' onClick={() => unmuteChat()}><i className="fas fa-bell"></i></div>)}
-			</div>
-	
-			<div className="chat-messages" ref={chatContainerRef} style={{ overflowY: 'auto' }}>
-				{preprocessMessages(messages).map((groupedMessage) => (
-				<div
-					key={groupedMessage.messages[0].timestamp}
-					className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}
-				>
-					{groupedMessage.senderId !== currentUserId && (
-					<div className="sender-info">
-						<img
-						className="avatar"
-						src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`}
-						alt="Avatar"
-						/>
+				<div className="chat-header" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+					<h6>
+						Chat
+					</h6>
+					<div>
+						{isUnMuted &&(<div className='btn text-white' onClick={() => muteChat()}><i className="fas fa-bell-slash"></i></div>)}
+						{!isUnMuted &&(<div className='btn text-white' onClick={() => unmuteChat()}><i className="fas fa-bell"></i></div>)}
+						<div className='btn text-white'  onClick={toggleModal}><i class="fas fa-xmark"></i></div>
 					</div>
-					)}
-					<div className="content">
-					{groupedMessage.messages.map((message, index) => (
-						<React.Fragment key={message.timestamp}>
-						{groupedMessage.senderId !== currentUserId && index === 0 && (
-							<span className="sender">{message.sender}</span>
-						)}
-						<div className="message" dangerouslySetInnerHTML={{ __html: formatMessageContent(message.content) }} ></div>
-						</React.Fragment>
-					))}
-					{groupedMessage.senderId !== currentUserId && (
-						<div className="timestamp ms-1">
-						{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}
-						</div>
-					)}
-					</div>
+					
 				</div>
-				))}
-				{isTyping && typingUserId !== currentUserId &&
-					<div className='chat-message'>	
+		
+				<div className="chat-messages" ref={chatContainerRef} style={{ overflowY: 'auto' }}>
+					{preprocessMessages(messages).map((groupedMessage) => (
+					<div
+						key={groupedMessage.messages[0].timestamp}
+						className={`chat-message ${groupedMessage.senderId === currentUserId ? 'own-message' : ''}`}
+					>
+						{groupedMessage.senderId !== currentUserId && (
 						<div className="sender-info">
 							<img
 							className="avatar"
-							src={`../assets/images/userIconsV2/${typingUserImage}.png`}
+							src={`../assets/images/userIconsV2/${groupedMessage.messages[0].avatar}.png`}
 							alt="Avatar"
 							/>
 						</div>
+						)}
 						<div className="content">
-							<React.Fragment>
-								<span className="sender">{typingUser}</span>
-							<div className="message">...</div>
+						{groupedMessage.messages.map((message, index) => (
+							<React.Fragment key={message.timestamp}>
+							{groupedMessage.senderId !== currentUserId && index === 0 && (
+								<span className="sender">{message.sender}</span>
+							)}
+							<div className="message" dangerouslySetInnerHTML={{ __html: formatMessageContent(message.content) }} ></div>
 							</React.Fragment>
+						))}
+						{groupedMessage.senderId !== currentUserId && (
+							<div className="timestamp ms-1">
+							{formatTime(groupedMessage.messages[groupedMessage.messages.length - 1].timestamp)}
+							</div>
+						)}
 						</div>
 					</div>
-				}
-			</div>
-			
-			<div className="chat-input">
-				<div onClick={toggleEmojiPicker} className="btn btn-sm">
-				😁
+					))}
+					{isTyping && typingUserId !== currentUserId &&
+						<div className='chat-message'>	
+							<div className="sender-info">
+								<img
+								className="avatar"
+								src={`../assets/images/userIconsV2/${typingUserImage}.png`}
+								alt="Avatar"
+								/>
+							</div>
+							<div className="content">
+								<React.Fragment>
+									<span className="sender">{typingUser}</span>
+								<div className="message">...</div>
+								</React.Fragment>
+							</div>
+						</div>
+					}
 				</div>
-				<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onKeyPress={handleKeyPress} />
-				<button onClick={sendMessage} className="btn btn-sm">
-				<i className="fas fa-paper-plane"></i>
-				</button>
-			</div>
+			
+				<div className="chat-input">
+					<div onClick={toggleEmojiPicker} className="btn btn-sm">
+					😁
+					</div>
+					<input id="chatInput" type="text" placeholder="Type your message" value={newMessage} onChange={handleInputChange} onFocus={toggleEmojiPicker} onKeyPress={handleKeyPress} />
+					<button onClick={sendMessage}  className="btn btn-sm">
+					<i className="fas fa-paper-plane"></i>
+					</button>
+				</div>
 			</div>
 		)}
 		<div className="btn-community-chat-div bg-light rounded-circle btn" onClick={toggleModal}>
@@ -391,7 +396,7 @@ const CommunityChat = () => {
 		</div>
 		{showEmojiPicker && (
 			<div className="emoji-picker-container">
-				<EmojiPicker  onEmojiClick={handleEmojiSelection} />
+				<EmojiPicker width="300px" height="500px" onEmojiClick={handleEmojiSelection} />
 			</div>
 		)}
 		</>

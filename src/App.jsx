@@ -50,6 +50,22 @@ function App() {
 		userRef.child(user.uid).set(false); 
 	});
 
+	useEffect(() => {
+		const handleBeforeUnload = () => {
+			const userRef = firebase.database().ref(`onlineUsers`);
+			userRef.child(user.uid).set(false); 
+		};
+		
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
+
+
+	
+
 
 	return (
 		<>
