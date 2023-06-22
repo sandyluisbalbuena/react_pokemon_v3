@@ -390,7 +390,9 @@ const CommunityChat = () => {
 							<div className="content">
 								<React.Fragment>
 									<span className="sender">{typingUser}</span>
-								<div className="message">...</div>
+								<div className="message">
+									<img width="40px" src="../assets/images/misc/typing.gif" alt="" />
+								</div>
 								</React.Fragment>
 							</div>
 						</div>

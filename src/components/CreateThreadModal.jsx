@@ -11,10 +11,31 @@ let redirectToThread = false;
 const CreateThreadModal = () => {
 	const [user] = useAuthState(firebase.auth());
 	const navigate = useNavigate();
+	const [categories, setCategories] = useState([]);
 	let [editFunction, setEditFunction] = useState(false);
 	let [postFunction, setPostFunction] = useState(true);
 	let [threadIDToBeEdit, setthreadIDToBeEdit] = useState('');
- 
+
+	useEffect(() => {
+		const fetchCategories = async () => {
+		try {
+			const snapshot = await firebase.database().ref('categories').once('value');
+			const categoriesData = snapshot.val();
+			if (categoriesData) {
+			const categoriesArray = Object.entries(categoriesData).map(([key, value]) => ({
+				id: key,
+				name: value.name,
+			}));
+			setCategories(categoriesArray);
+			}
+		} catch (error) {
+			// Handle error here
+			console.error('Error fetching categories:', error);
+		}
+		};
+	
+		fetchCategories();
+	}, []);
 
 	useEffect(()=>{
 
@@ -349,8 +370,13 @@ const CreateThreadModal = () => {
 						<div id="categoryError" className="text-danger text-sm"></div>
 						<select name="category" type="text" id="category" className="form-control mb-4">
 							<option value="">--Select a Category--</option>
-							<option value="-NY09vnKnlq-rP_dYN7L">Pokedex</option>
-							<option value="-NY09qsAZhynFQBPXtMI">Pokecard</option>
+							{/* <option value="-NY09vnKnlq-rP_dYN7L">Pokedex</option>
+							<option value="-NY09qsAZhynFQBPXtMI">Pokecard</option> */}
+							{categories.map((category) => (
+							<option key={category.id} value={category.id}>
+								{category.name}
+							</option>
+							))}
 						</select>
 
 						<div id="titleError" className="text-danger text-sm"></div>
