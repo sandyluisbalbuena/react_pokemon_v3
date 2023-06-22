@@ -1,116 +1,133 @@
-import React, { useEffect } from 'react'
-import eventBus from '../eventBus';
-
+import React, { useEffect } from "react";
+import { Blurhash } from "react-blurhash";
+import eventBus from "../eventBus";
 
 const CardGrid = (props) => {
+let iso;
+const blurhash = "your-blurhash-goes-here";
 
-	var iso;
-
-	useEffect(()=>{
-		iso = $('.grid').isotope({
-			itemSelector: '.grid-item',
-			layoutMode: 'fitRows'
-		});
-
-		getonecard(props.pokemonName);
+useEffect(() => {
+	iso = $(".grid").isotope({
+	itemSelector: ".grid-item",
+	layoutMode: "fitRows",
 	});
 
-	useEffect(() => {
-		eventBus.subscribe('getonecard', getonecard);
+	getOneCard(props.pokemonName);
+}, []);
 
-		return () => {
-			eventBus.unsubscribe('getonecard', getonecard);
-		};
-	}, []);
+useEffect(() => {
+	eventBus.subscribe("getonecard", getOneCard);
 
+	return () => {
+	eventBus.unsubscribe("getonecard", getOneCard);
+	};
+}, []);
 
-	const getonecard = (cardName) => {
-		var myGrid = document.getElementById("myGrid");
+const getOneCard = async (cardName) => {
+	const myGrid = document.getElementById("myGrid");
 
+	iso.isotope("destroy");
+	myGrid.innerHTML = "";
 
+	iso.isotope({
+	itemSelector: ".grid-item",
+	layoutMode: "fitRows",
+	});
 
-		// let pokemonName = 'charizard';
-	
-		iso.isotope('destroy');
-		myGrid.innerHTML = "";
-	
-		iso.isotope({
-			itemSelector: '.grid-item',
-			layoutMode: 'fitRows'
-		});
-	
-	
-		axios.get(`https://api.pokemontcg.io/v1/cards?name=`+cardName)
-		.then(response => {
-	
-	
-			let filterbuttons = [];
-			filterbtns.innerHTML = '';
-			filterbtns.innerHTML = `<button id="All" type="button" class="btn btn-dark text-sm btn-filter-cards">ALL</button>`;
-	
-			response.data.cards.forEach(function(pokecard){
-	
-				if(pokecard.rarity != undefined){
-	
-					let $newItems = $(`<div id="`+pokecard.id+`" class="grid-item card-img-forSearch `+pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')+`"><img class="lazyload" loading="lazy" src="`+pokecard.imageUrlHiRes+`" data-src="`+pokecard.imageUrlHiRes+`" width="100%"/></div>`);
-					iso.append($newItems).isotope('appended', $newItems);
-		
-					if(!filterbuttons.includes(pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')) && pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '') != '' && pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '') != undefined){
-		
-						filterbtns.innerHTML += `<button id="`+pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, '')+`" type="button" class="btn btn-dark text-sm btn-filter-cards">`+pokecard.rarity+`</button>`;
-						filterbuttons.push(pokecard.rarity.toUpperCase().trim().replace(/\s/g, '').replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, ''));
-					}
-				}
-	
-			})
-			let buttonFilters = [...document.getElementsByClassName('btn-filter-cards')];
-			buttonFilters.forEach((buttonFilter) => {
-			buttonFilter.addEventListener('click', () => multiFilter(buttonFilter.id));
-			});
+	try {
+	const response = await axios.get(
+		`https://api.pokemontcg.io/v1/cards?name=${cardName}`
+	);
 
-			let cardImgForSearh = [...document.getElementsByClassName('card-img-forSearch')];
-			cardImgForSearh.forEach((cardInfo) => {
-				cardInfo.addEventListener('click', () => searchThiscard(cardInfo.id));
-			});
-	
-		})
-		.catch(error => console.error('On get one pokemon card error', error))
-		.then(() => { 
-	
-			setTimeout(function() {
-				iso.isotope({ filter: '*' })
-			}, 500);
-	
-		})
-	}
+	const filterButtons = [];
+	filterbtns.innerHTML = '';
+	filterbtns.innerHTML = `<button id="All" type="button" class="btn btn-dark text-sm btn-filter-cards">ALL</button>`;
 
-	function searchThiscard(cardId){
-		eventBus.publish('getDataOneCard', cardId);
-	}
+	response.data.cards.forEach((pokecard) => {
+		if (pokecard.rarity) {
+		const rarityClass = pokecard.rarity
+			.toUpperCase()
+			.trim()
+			.replace(/\s/g, "")
+			.replace(/[\s~`!@#$%^&*()\-_=+[\]{}|;:'",.<>/?\\]/g, "");
 
-	function multiFilter(filter){
+		const $newItems = $(`
+			<div id="${pokecard.id}" class="grid-item card-img-forSearch ${rarityClass}">
+			<Blurhash
+				hash="${blurhash}"
+				width={400}
+				height={300}
+				resolutionX={32}
+				resolutionY={32}
+				punch={1}
+			/>
+			<img
+				class="lazyload"
+				loading="lazy"
+				src="${pokecard.imageUrlHiRes}"
+				data-src="${pokecard.imageUrlHiRes}"
+				width="100%"
+				alt="${pokecard.id}"
+			/>
+			</div>
+		`);
 
-		if(filter == 'All'){
-			iso.isotope({ filter: '*' })
-		}else{
-			iso.isotope({ filter: '.'+filter })
+		iso.append($newItems).isotope("appended", $newItems);
+
+		if (
+			!filterButtons.includes(rarityClass) &&
+			rarityClass !== "" &&
+			rarityClass !== undefined
+		) {
+			filterbtns.innerHTML += `
+			<button id="${rarityClass}" type="button" class="btn btn-dark text-sm btn-filter-cards">${pokecard.rarity}</button>
+			`;
+			filterButtons.push(rarityClass);
 		}
+		}
+	});
+
+	const buttonFilters = [...document.getElementsByClassName("btn-filter-cards")];
+	buttonFilters.forEach((buttonFilter) => {
+		buttonFilter.addEventListener("click", () => multiFilter(buttonFilter.id));
+	});
+
+	const cardImgForSearch = [...document.getElementsByClassName("card-img-forSearch")];
+	cardImgForSearch.forEach((cardInfo) => {
+		cardInfo.addEventListener("click", () => searchThisCard(cardInfo.id));
+	});
+
+	setTimeout(function() {
+		iso.isotope({ filter: "*" });
+	}, 500);
+	} catch (error) {
+	console.error("Error fetching cards", error);
 	}
+};
 
-
-	return (
-		<>
-			<div className="row my-4" id="filterbtnrow" >
-				<div className="btn-group bg-dark" role="group" aria-label="Basic example" id="filterbtns">
-				</div>
-			</div>
-
-			<div className="row my-5" id="gridrow">
-				<div className="grid" id="myGrid">
-				</div>
-			</div>
-		</>
-	)
+function searchThisCard(cardId) {
+	eventBus.publish("getDataOneCard", cardId);
 }
 
-export default CardGrid
+function multiFilter(filter) {
+	if (filter === "All") {
+	iso.isotope({ filter: "*" });
+	} else {
+	iso.isotope({ filter: `.${filter}` });
+	}
+}
+
+return (
+	<>
+	<div className="row my-4" id="filterbtnrow">
+		<div className="btn-group bg-dark" role="group" aria-label="Basic example" id="filterbtns"></div>
+	</div>
+
+	<div className="row my-5" id="gridrow">
+		<div className="grid" id="myGrid"></div>
+	</div>
+	</>
+);
+};
+
+export default CardGrid;
