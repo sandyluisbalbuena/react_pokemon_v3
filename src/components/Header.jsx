@@ -74,10 +74,7 @@ const Header = () => {
   async function handleLogout() {
     let navbarToggler = document.querySelector('.navbar-toggler');
     let navbarCollapse = document.querySelector('.navbar-collapse');
-    if (navbarToggler && navbarCollapse) {
-      navbarToggler.classList.add('collapsed');
-      navbarCollapse.classList.remove('show');
-    }
+    
     try {
       await firebase.auth().signOut();
 
@@ -89,7 +86,11 @@ const Header = () => {
 
       const userRef = firebase.database().ref(`onlineUsers`);
       userRef.child(user.uid).set(false);
-      // userRef.update(false);
+
+      if (navbarToggler && navbarCollapse) {
+        navbarToggler.classList.add('collapsed');
+        navbarCollapse.classList.remove('show');
+      }
 
       navigate('/');
     } catch (error) {
@@ -174,6 +175,7 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
+                  onClick={() => handleNavLinkClick('login')}
                   className={`nav-link hvr-underline-from-center ${
                     activeLink === 'login' ? 'active' : ''
                   }`}
