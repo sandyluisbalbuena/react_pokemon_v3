@@ -491,7 +491,7 @@ border-top:#332c2c solid 4px;
 
 .emoji-picker-container {
     position: fixed;
-    bottom: 70px;
+    bottom: 80px;
     right: 20px;
     z-index: 50;
 }

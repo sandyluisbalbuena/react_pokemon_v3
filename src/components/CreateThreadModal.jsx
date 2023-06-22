@@ -12,7 +12,7 @@ const CreateThreadModal = () => {
 	const [user] = useAuthState(firebase.auth());
 	const navigate = useNavigate();
 	let [editFunction, setEditFunction] = useState(false);
-	let [postFunction, setPostFunction] = useState(false);
+	let [postFunction, setPostFunction] = useState(true);
 	let [threadIDToBeEdit, setthreadIDToBeEdit] = useState('');
  
 
@@ -34,11 +34,14 @@ const CreateThreadModal = () => {
 			image_dimensions: true,
 		});
 
+
+		eventBus.subscribe('pokeforumCreateThread', pokeforumCreateThread);
 		eventBus.subscribe('pokedexCreateThread', pokedexCreateThread);
 		eventBus.subscribe('pokecardCreateThread', pokecardCreateThread);
 		eventBus.subscribe('editThread', editThread);
 
 		return () => {
+			eventBus.unsubscribe('pokeforumCreateThread', pokeforumCreateThread);
 			eventBus.unsubscribe('pokedexCreateThread', pokedexCreateThread);
 			eventBus.unsubscribe('pokecardCreateThread', pokecardCreateThread);
 			eventBus.unsubscribe('editThread', editThread);
@@ -84,6 +87,21 @@ const CreateThreadModal = () => {
 
 		})
 		.catch((error) => console.error('Error fetching Pokemon data', error));
+	}
+
+	const pokeforumCreateThread = () => {
+		document.getElementById('category').value = '';
+		document.getElementById('title').value = '';
+
+
+		redirectToThread = true;
+
+		setPostFunction(true);
+		setEditFunction(false);
+		let editor = tinymce.get('summernote');
+		editor.setContent('');
+
+		
 	}
 
 	const pokecardCreateThread = (data) => {

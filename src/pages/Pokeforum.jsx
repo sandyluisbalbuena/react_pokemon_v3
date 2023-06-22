@@ -6,6 +6,8 @@ import ForumMyThreads from '../components/ForumMyThreads';
 import ForumTrendingTopics from '../components/ForumTrendingTopics';
 import ForumLatest from '../components/ForumLatest';
 import OnlineUsers from '../components/OnlineUsers';
+import eventBus from '../eventBus';
+
 
 const Pokeforum = () => {
 
@@ -21,7 +23,7 @@ const Pokeforum = () => {
 		userRef.on('value', (snapshot) => {
 			const userData = snapshot.val();
 			if (userData) {
-				setUsername(userData.username || '');
+				setUsername(userData.username.toUpperCase() || '');
 				setUserimage(userData.image || 'pikachu');
 				setuserdata(userData);
 			}
@@ -29,6 +31,9 @@ const Pokeforum = () => {
 		}
 	}, [user]);
 
+	const handleCreateThreadPokeforum = () => {
+		eventBus.publish('pokeforumCreateThread');
+	}
 
 	return (
 		<div className="container">
@@ -49,7 +54,7 @@ const Pokeforum = () => {
 									{/* <img className="me-4" width="15%" src={`./assets/images/userIcons/${user && (userimage)}.png`} alt=""/> */}
 								</div>
 
-								<button className="btn btn-dark my-2" style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
+								<button className="btn btn-dark my-2" onClick={handleCreateThreadPokeforum} style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
 									<i className="far fa-pen-to-square me-1"></i>
 									Create Thread
 								</button>
@@ -85,7 +90,7 @@ const Pokeforum = () => {
 											{/* <img className="me-4" width="15%" src={`./assets/images/userIcons/${user && (userimage)}.png`} alt=""/> */}
 										</div>
 
-										<button className="btn btn-dark my-2" style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
+										<button className="btn btn-dark my-2" onClick={handleCreateThreadPokeforum} style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
 											<i className="far fa-pen-to-square me-1"></i>
 											Create Thread
 										</button>

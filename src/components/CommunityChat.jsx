@@ -18,6 +18,14 @@ const CommunityChat = () => {
 	const chatContainerRef = useRef(null);
 	let typingTimer;
 
+	useEffect(() => {
+		const storedActiveLink = localStorage.getItem('chatStatus');
+		if (storedActiveLink) {
+			setisUnMuted(storedActiveLink);
+		}else{
+			localStorage.setItem('chatStatus', 'true');
+		}
+	}, []);
 
 	useEffect(() => {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -98,7 +106,7 @@ const CommunityChat = () => {
 					if (userData) {
 						typingStatusRef.set({
 						isTyping: true,
-						user: userData.username, 
+						user: userData.username.toUpperCase(), 
 						image: userData.image, 
 						id: user.uid, 
 						});
@@ -145,7 +153,7 @@ const CommunityChat = () => {
 		userRef.on('value', (userSnapshot) => {
 			const user = userSnapshot.val();
 			if (user) {
-			newMessage.sender = user.username; // Replace 'username' with the actual field containing the user's username
+			newMessage.sender = user.username.toUpperCase(); // Replace 'username' with the actual field containing the user's username
 			newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
 			}
 			setMessages((prevMessages) => {
@@ -187,6 +195,8 @@ const CommunityChat = () => {
 			toast.addEventListener('mouseleave', Swal.resumeTimer)
 			}
 		})
+
+		localStorage.setItem('chatStatus', 'false');
 		
 		Toast.fire({
 			icon: 'info',
@@ -209,6 +219,8 @@ const CommunityChat = () => {
 			toast.addEventListener('mouseleave', Swal.resumeTimer)
 			}
 		})
+
+		localStorage.setItem('chatStatus', 'true');
 		
 		Toast.fire({
 			icon: 'info',

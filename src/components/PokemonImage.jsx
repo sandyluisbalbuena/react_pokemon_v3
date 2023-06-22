@@ -10,7 +10,7 @@ const [user] = useAuthState(firebase.auth());
 
 useEffect(() => {
 	if (props.flavor_text.url) {
-	flavorText(props.flavor_text.url);
+		flavorText(props.flavor_text.url);
 	}
 }, [props.flavor_text.url]);
 
@@ -40,11 +40,11 @@ return (
 		<img
 			id="pokemonImage"
 			className="animate__animated animate__fadeIn animate__delay-1s p-3 img-fluid lazyload"
-			// src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${props.pokemonId
-			// .toString()
-			// .padStart(3, '0')}.png`}
-			data-src={`https://img.pokemondb.net/artwork/avif/${props.pokemonName.toLowerCase()}.avif`}
-			src="low-quality.jpg"
+			src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${props.pokemonId
+			.toString()
+			.padStart(3, '0')}.png`}
+			// data-src={`https://img.pokemondb.net/artwork/avif/${props.pokemonName.toLowerCase()}.avif`}
+			// src="low-quality.jpg"
 			width="100%"
 			height="100%"
 			alt=""

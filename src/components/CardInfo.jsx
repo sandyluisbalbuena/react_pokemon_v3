@@ -292,35 +292,18 @@ const CardInfo = () => {
 			};
 		}
 	
-		// function resizeLens(e) {
-		//     e.preventDefault();
-	
-		//     var lensSizeOnScroll = calculateLensSizeOnScroll();
-		//     lens.style.width = lensSizeOnScroll + "px";
-		//     lens.style.height = lensSizeOnScroll + "px";
-		// }
-		
-		// function calculateLensSizeOnScroll() {
-	
-		//     console.log('wew');
-		//     // Adjust the lens size based on your desired logic for scrolling
-		//     // For example, you can reduce the lens size by a fixed value when scrolling occurs
-		//     var scrollOffset = window.pageYOffset || document.documentElement.scrollTop;
-		//     var newLensSize = lensSize - scrollOffset * 1; // Adjust the factor as needed
-		//     return Math.max(newLensSize, 0); // Ensure the lens size is never negative
-		// }
-	
-		
 	}
 
 	function showResult() {
-		document.getElementById('myresult').style.setProperty('visibility', 'visible', 'important');
+		if (window.innerWidth > 768) {
+			document.getElementById('myresult').style.setProperty('visibility', 'visible', 'important');
+		}
 	}
 	
 	function hideResult() {
-		// console.log('wewwew');
-		// document.getElementById('myresult').setAttribute("visible", "false");
-		document.getElementById('myresult').style.visibility = "hidden";
+		if (window.innerWidth > 768) {
+			document.getElementById('myresult').style.visibility = "hidden";
+		}
 	}
 
 	const handleCreateThreadPokecard = () => {
@@ -357,7 +340,7 @@ const CardInfo = () => {
 			<div className="col-12 col-lg-9">
 				
 				<div className="row">
-					<div id="myresult" className="img-zoom-result rounded"></div>
+					<div id="myresult" className="img-zoom-result rounded d-none d-lg-block"></div>
 					<div id="cardTyping">
 						<h6>Attack(s)</h6>
 						<table id="myTable2" className="display nowrap mb-3 table-sm">
