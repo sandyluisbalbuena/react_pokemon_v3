@@ -240,7 +240,7 @@ const ForumLatest = (props) => {
 						className="forumItems list-group-item list-group-item-action px-3 border-0"
 					>
 						<div className="row">
-						<div className="col-12 col-lg-3 d-flex">
+						<div className="col-10 col-lg-3 d-flex">
 							<i className="fas fa-comments mx-3"></i>
 							<p>{thread.title}</p>
 						</div>
@@ -259,7 +259,7 @@ const ForumLatest = (props) => {
 						<div className="d-none d-lg-block col-lg-3">
 							<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
 						</div>
-						<div className="d-none d-lg-block col-lg-1">
+						<div className="col-1">
 							{isAdmin && isAdmin === 'admin' && (
 							<span
 								onClick={(event) => {

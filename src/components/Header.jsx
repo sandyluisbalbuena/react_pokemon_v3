@@ -74,6 +74,10 @@ const Header = () => {
   async function handleLogout() {
     let navbarToggler = document.querySelector('.navbar-toggler');
     let navbarCollapse = document.querySelector('.navbar-collapse');
+    if (navbarToggler && navbarCollapse) {
+      navbarToggler.classList.add('collapsed');
+      navbarCollapse.classList.remove('show');
+    }
     try {
       await firebase.auth().signOut();
 
