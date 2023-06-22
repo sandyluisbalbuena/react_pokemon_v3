@@ -99,7 +99,7 @@ const getOneCard = async (cardName) => {
 
 	setTimeout(function() {
 		iso.isotope({ filter: "*" });
-	}, 500);
+	}, 1000);
 	} catch (error) {
 	console.error("Error fetching cards", error);
 	}
