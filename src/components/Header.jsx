@@ -17,8 +17,8 @@ const Header = () => {
     setActiveLink(link);
     localStorage.setItem('activeLink', link);
     // Close the navbar when a link is clicked on mobile
-    const navbarToggler = document.querySelector('.navbar-toggler');
-    const navbarCollapse = document.querySelector('.navbar-collapse');
+    let navbarToggler = document.querySelector('.navbar-toggler');
+    let navbarCollapse = document.querySelector('.navbar-collapse');
     if (navbarToggler && navbarCollapse) {
       navbarToggler.classList.add('collapsed');
       navbarCollapse.classList.remove('show');
@@ -72,6 +72,8 @@ const Header = () => {
   };
 
   async function handleLogout() {
+    let navbarToggler = document.querySelector('.navbar-toggler');
+    let navbarCollapse = document.querySelector('.navbar-collapse');
     try {
       await firebase.auth().signOut();
 
@@ -268,10 +270,11 @@ const Header = () => {
                 </div>
               </>
             ) : (
-              <ul className="navbar-nav mb-2 mb-lg-0  input-group w-auto me-5">
+              <ul className="navbar-nav mb-2 mb-lg-0 input-group w-auto me-5">
                 <li className="nav-item">
                   <Link
                     to="/login"
+                    onClick={() => handleNavLinkClick('login')}
                     className={`nav-link hvr-underline-from-center ${
                       activeLink === 'login' ? 'active' : ''
                     }`}
@@ -282,6 +285,7 @@ const Header = () => {
                 <li className="nav-item">
                   <Link
                     to="/register"
+                    onClick={() => handleNavLinkClick('register')}
                     className={`nav-link hvr-underline-from-center ${
                       activeLink === 'register' ? 'active' : ''
                     }`}
