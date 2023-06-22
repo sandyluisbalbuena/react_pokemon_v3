@@ -327,7 +327,7 @@ const CardInfo = () => {
 				</div>
 
 				{user ? (
-				<button style={{width:'100%'}} onClick={handleCreateThreadPokecard} className="mt-3 btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#postThread">
+				<button style={{width:'100%'}} onClick={handleCreateThreadPokecard} className="my-3 btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#postThread">
 					<i className="far fa-pen-to-square me-1"></i>
 					Create a thread
 				</button>
