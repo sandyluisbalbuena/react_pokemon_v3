@@ -100,7 +100,7 @@ const ForumLatest = (props) => {
 	
 				// Sort threads within each category by the latest createdAt date
 				const sortedThreadGroups = Object.values(threadGroups).map((group) => {
-					group.threads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+					group.threads.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 					return group;
 				});
 	

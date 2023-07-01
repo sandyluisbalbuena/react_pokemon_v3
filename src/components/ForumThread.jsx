@@ -60,7 +60,6 @@ const ForumThread = () => {
 
 	};
 
-
 	const fetchThreadBySlug = (slug) => {
 		return new Promise((resolve, reject) => {
 		const threadsRef = firebase.database().ref('threads');
@@ -209,6 +208,10 @@ const ForumThread = () => {
 			createdAt: firebase.database.ServerValue.TIMESTAMP,
 			updatedAt: firebase.database.ServerValue.TIMESTAMP,
 		};
+
+		let formDataUpdate = {
+			updatedAt: firebase.database.ServerValue.TIMESTAMP,
+		};
 	
 		// Simple validation to check if any field is empty
 		if (!formData.content) {
@@ -219,9 +222,13 @@ const ForumThread = () => {
 			return; // Exit the function if any field is empty
 		}
 	
-		const threadRef = firebase.database().ref('messages');
+		const messageRef = firebase.database().ref('messages');
+		// const threadRef = firebase.database().ref('threads');
+		const threadRef = firebase.database().ref('threads/' + threadData.threadId);
+
+		threadRef.update(formDataUpdate);
 	
-		threadRef
+		messageRef
 		.push(formData)
 		.then(() => {
 			Swal.fire({

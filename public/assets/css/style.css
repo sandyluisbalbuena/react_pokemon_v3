@@ -360,6 +360,7 @@ border-top:#332c2c solid 4px;
     z-index: 5;
     word-wrap: break-word;
 }
+
 /* Chat container */
 .chat-container {
     display: flex;
@@ -392,8 +393,6 @@ border-top:#332c2c solid 4px;
     justify-content: flex-end;
     word-wrap: break-word;
 }
-
-
 
 /* Individual chat message */
 .chat-message {

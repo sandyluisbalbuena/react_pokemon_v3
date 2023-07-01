@@ -234,7 +234,7 @@ const Header = () => {
 
             {user ? (
               <>
-                <div className="dropdown">
+                <div className="dropdown mt-2">
                   <a
                     className="dropdown-toggle d-flex align-items-center hidden-arrow"
                     href="#"
