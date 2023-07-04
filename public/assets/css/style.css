@@ -230,6 +230,11 @@ a {
 .list-group-item:hover {
     background-color: #c0c0c0;
 }
+
+.forumItems:hover {
+    background-color: #c0c0c0;
+}
+
 .note-modal-footer {
 padding: 6px;
 }
@@ -269,7 +274,7 @@ border-top:#332c2c solid 4px;
 
 .pokedexCard1 {
     border-radius: 5px; 
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky;
     top: 70px;
 }
@@ -493,4 +498,12 @@ border-top:#332c2c solid 4px;
     bottom: 80px;
     right: 20px;
     z-index: 50;
+}
+
+table.dataTable {
+    border: none !important;
+}
+
+.tableForumsLatest {
+    border-top: none !important;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -7,9 +7,10 @@ let uid;
 
 const ForumLatest = (props) => {
 	const [threadGroups, setThreadGroups] = useState([]);
-	const [userData, setuserData] = useState([]);
+	// const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
 	const [user, isLoading] = useAuthState(firebase.auth());
+	const dataTableRefs = useRef([]);
 
 	useEffect(() => {
 		if (!isLoading && user) {
@@ -21,6 +22,29 @@ const ForumLatest = (props) => {
 		fetchThreads();
 		setupListeners();
 	}, []);
+
+	useEffect(() => {
+		if (dataTableRefs.current.length === 0) {
+			tableInit();
+		}
+	}, [threadGroups]);
+
+	function tableInit(){
+		threadGroups.forEach((group, index) => {
+			const tableId = `tableForumLatest${group.category}`;
+			const table = new DataTable(`#${tableId}`, {
+				pageLength: 4, // Limit the number of entries per page to 4
+				lengthChange: false, // Remove the "Show [x] entries" dropdown
+				ordering: false,
+				language: {
+				info: '', // Remove the footer text "Showing 1 to 4 of 4 entries"
+				},
+			});
+		
+			// Store the DataTable instance reference
+			dataTableRefs.current[index] = table;
+		});
+	}
 
 	const setupListeners = () => {
 		const messageRef = firebase.database().ref('messages');
@@ -43,6 +67,7 @@ const ForumLatest = (props) => {
 	};
 
 	const fetchThreads = () => {
+
 		const threadRef = firebase.database().ref('threads');
 		const categoryRef = firebase.database().ref('categories');
 		const userRef = firebase.database().ref('users');
@@ -117,6 +142,9 @@ const ForumLatest = (props) => {
 	};
 
 	const updateMessageCount = (threadId) => {
+
+		// reinitializeDataTables();
+
 		setThreadGroups((prevThreadGroups) => {
 		const updatedGroups = [...prevThreadGroups];
 		const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
@@ -125,6 +153,14 @@ const ForumLatest = (props) => {
 		if (threadIndex !== -1) {
 			updatedThreads[threadIndex].messageCount += 1;
 		}
+
+		// threadGroups.forEach((group) => {
+		// const tableId = `tableForumLatest${group.category}`;
+		// const table = new DataTable(`#${tableId}`,{
+		// 		pageLength: 4,
+		// 		lengthChange: false,
+		// 	});
+		// });
 	
 		return updatedGroups.map((group) => ({
 				...group,
@@ -133,8 +169,31 @@ const ForumLatest = (props) => {
 		});
 	};
 
+	// const updateMessageCount = (threadId) => {
+	// 	setThreadGroups((prevThreadGroups) => {
+	// 	const updatedGroups = prevThreadGroups.map((group) => ({
+	// 		...group,
+	// 		threads: group.threads.map((thread) => {
+	// 		if (thread.id === threadId) {
+	// 			return {
+	// 			...thread,
+	// 			messageCount: thread.messageCount + 1,
+	// 			};
+	// 		}
+	// 		return thread;
+	// 		}),
+	// 	}));
+	
+	// 	return updatedGroups;
+	// 	});
+	
+	// };
+
 	const updateUserData = (updatedUser) => {
 		// if(uid){
+
+			// reinitializeDataTables();
+
 			setThreadGroups((prevThreadGroups) => {
 			const updatedGroups = [...prevThreadGroups];
 			const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
@@ -160,11 +219,18 @@ const ForumLatest = (props) => {
 				}));
 			});
 
+			// dataTableRefs.current.forEach((dataTable) => {
+			// 	dataTable.draw();
+			// });
+
 		// }
 		
 	};
 
 	function deleteThread(deleteThreadId) {
+
+		// reinitializeDataTables();
+
 		const threadRef = firebase.database().ref('threads/' + deleteThreadId);
 		const messagesRef = firebase.database().ref('messages');
 	
@@ -215,71 +281,141 @@ const ForumLatest = (props) => {
 			text: result.message,
 			icon: 'success',
 			}).then(() => {
-			fetchThreads();
+				fetchThreads();
+				// dataTableRefs.current.forEach((dataTable) => {
+				// 	dataTable.draw();
+				// });
 			});
 		}
 		});
+
+
 	
 		return false;
 	}
+
+	const reinitializeDataTables = () => {
+		// Destroy and reinitialize each DataTable instance
+		dataTableRefs.current.forEach((dataTable) => {
+		dataTable.destroy();
+		});
+	
+		// // Initialize DataTables again
+		// threadGroups.forEach((group, index) => {
+		// const tableId = `tableForumLatest${group.category}`;
+		// const table = new DataTable(`#${tableId}`, {
+		// 	pageLength: 4,
+		// 	lengthChange: false,
+		// 	language: {
+		// 	info: '',
+		// 	},
+		// });
+	
+		// dataTableRefs.current[index] = table;
+		// });
+	};
 
 	return (
 		<div>
 		{threadGroups.map((group) => (
 			<div key={group.category} className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }} id={group.category}>
-			<div className="card-body container">
-				<div className="row">
-				<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
-				<div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
-					{group.threads.map((thread) => (
-					<a
-						key={thread.id}
-						data-slug={thread.slug}
-						id={thread.id}
-						href={`/pokeforum/${thread.slug}`}
-						className="forumItems list-group-item list-group-item-action px-3 border-0"
-					>
-						<div className="row">
-						<div className="col-10 col-lg-3 d-flex">
-							<i className="fas fa-comments mx-3"></i>
-							<p>{thread.title}</p>
+				<div className="card-body container">
+					<div className="row">
+						<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
+						<div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
+							{group.threads.map((thread) => (
+								<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
+									<div className="row">
+										<div className="col-10 col-lg-3 d-flex">
+											<i className="fas fa-comments mx-3"></i>
+											<p>{thread.title}</p>
+										</div>
+										<div className="d-none d-lg-block col-lg-2">
+											{thread.messageCount > 1 && (
+											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
+											)}
+											{thread.messageCount == 1 && (
+											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
+											)}
+										</div>
+										<div className="d-none d-lg-block col-lg-3 d-lg-flex">
+											<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
+											<p className="ms-3">{thread.user.toUpperCase()}</p>
+										</div>
+										<div className="d-none d-lg-block col-lg-3">
+											<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
+										</div>
+										<div className="col-1">
+											{isAdmin && isAdmin === 'admin' && (
+											<span
+												onClick={(event) => {
+												event.preventDefault();
+												deleteThread(thread.id);
+												}}
+												className="badge badge-sm badge-danger"
+											>
+												<i className="fas fa-trash"></i>
+											</span>
+											)}
+										</div>
+									</div>
+								</a>
+							))}
 						</div>
-						<div className="d-none d-lg-block col-lg-2">
-							{thread.messageCount > 1 && (
-							<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
-							)}
-							{thread.messageCount == 1 && (
-							<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
-							)}
-						</div>
-						<div className="d-none d-lg-block col-lg-3 d-lg-flex">
-							<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
-							<p className="ms-3">{thread.user.toUpperCase()}</p>
-						</div>
-						<div className="d-none d-lg-block col-lg-3">
-							<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
-						</div>
-						<div className="col-1">
-							{isAdmin && isAdmin === 'admin' && (
-							<span
-								onClick={(event) => {
-								event.preventDefault();
-								deleteThread(thread.id);
-								}}
-								className="badge badge-sm badge-danger"
-							>
-								<i className="fas fa-trash"></i>
-							</span>
-							)}
-						</div>
-						</div>
-					</a>
-					))}
+
+						{/* <table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
+							<thead>
+								<tr>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+								</tr>
+							</thead>
+							<tbody className='tableForumsLatest'>
+							{group.threads.map((thread) => (
+									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="px-3 rounded">
+									<td><i className="fas fa-comments mx-3"></i></td>
+									<td>{thread.title}</td>
+									<td>
+										{thread.messageCount > 1 && (
+										<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
+										)}
+										{thread.messageCount == 1 && (
+										<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
+										)}
+									</td>
+									<td><img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} /></td>
+									<td><p className="ms-3">{thread.user.toUpperCase()}</p></td>
+									<td><span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span></td>
+									<td>
+									{isAdmin && isAdmin === 'admin' && (
+										<span
+										onClick={(event) => {
+										event.preventDefault();
+										deleteThread(thread.id);
+										}}
+										className="badge badge-sm badge-danger"
+									>
+										<i className="fas fa-trash"></i>
+										</span>
+									)}
+									</td>
+								</tr>
+
+								
+							))}
+							</tbody>
+						</table> */}
+
+					</div>
 				</div>
-				</div>
-			</div>
 			</div>
 		))}
+		{/* <button onClick={() => updateMessageCount(threadId)}>Update Thread Count</button> */}
 		</div>
 	);
 };

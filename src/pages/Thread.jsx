@@ -43,9 +43,9 @@ const Thread = () => {
 					<div className="container" style={{height:'100%'}}>
 							<div style={{position: '-webkit-sticky', position: 'sticky', top: '70px'}}>
 
-								<div className="row">
+								{/* <div className="row">
 									<OnlineUsers/>
-								</div>
+								</div> */}
 
 								<div className="row">
 									<ForumCategories />

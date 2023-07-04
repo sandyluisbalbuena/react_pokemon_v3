@@ -306,7 +306,8 @@ const ForumThread = () => {
 								{threadData && user && user?.uid === threadData?.userId && (
 									<>
 										<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
-										<i className="fas fa-ellipsis"></i>
+										{/* <i className="fas fa-ellipsis"></i> */}
+										<i className="fas fa-ellipsis-vertical"></i>
 										</button>
 										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
 											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadAndMessages(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
