@@ -375,11 +375,11 @@ const ForumThread = () => {
 							<div style={{ fontSize: '10px' }}>{getCommentAge(comment.createdAt)}</div>
 						</span>
 						<div style={{ fontSize: '11px' }}>{comment.content}</div>
-						<div className="mt-2 d-flex">
+						{/* <div className="mt-2 d-flex">
 							<i className="fas fa-thumbs-up ms-2" style={{ width: '15px', height: '15px' }}></i>
 							<i className="fas fa-thumbs-down ms-2" style={{ width: '15px', height: '15px' }}></i>
 							<i className="fas fa-reply ms-2" style={{ width: '15px', height: '15px' }} data-mdb-toggle="collapse" href={`#repliesToThreadInput${comment.id}`} role="button" aria-expanded="false" aria-controls={`repliesToThreadInput${comment.id}`}></i>
-						</div>
+						</div> */}
 						<div className="collapse mt-1" id={`repliesToThreadInput${comment.messageId}`}>
 							<div className="d-flex">
 							<div id={`replyCommentError${comment.id}`} className="text-danger text-sm"></div>
