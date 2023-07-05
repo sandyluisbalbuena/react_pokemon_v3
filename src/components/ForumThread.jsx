@@ -306,7 +306,6 @@ const ForumThread = () => {
 								{threadData && user && user?.uid === threadData?.userId && (
 									<>
 										<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
-										{/* <i className="fas fa-ellipsis"></i> */}
 										<i className="fas fa-ellipsis-vertical"></i>
 										</button>
 										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
@@ -348,11 +347,11 @@ const ForumThread = () => {
 						)}
 						</span>
 			
-						<span className="py-3">
+						{/* <span className="py-3">
 						<i className="fas fa-thumbs-up ms-2"></i>
 						<i className="fas fa-thumbs-down ms-2"></i>
 						<i className="fas fa-reply ms-2"></i>
-						</span>
+						</span> */}
 					</div>
 				</div>
 			</div>

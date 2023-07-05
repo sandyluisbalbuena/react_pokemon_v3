@@ -98,9 +98,9 @@ const Pokeforum = () => {
 								</div>
 							</div>
 
-							{/* <div className="row">
+							<div className="row">
 								<OnlineUsers/>
-							</div> */}
+							</div>
 
 							<div className="row">
 								<ForumCategories/>
