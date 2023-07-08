@@ -93,25 +93,69 @@ const CommunityChat = () => {
 	}, [messages, currentUserId]);
 
 	useEffect(() => {
+		if (!showModal) {
 		const updateUnreadCount = snapshot => {
-		let count = 0;
-		snapshot.forEach(data => {
+			let count = 0;
+			snapshot.forEach(data => {
 			const chat = data.val();
 			if (!chat.isSeen) {
-			count++;
+				count++;
 			}
-		});
-		setUnreadCount(count);
+			});
+			setUnreadCount(count);
 		};
 	
 		chatsRef.on('value', updateUnreadCount);
 	
-		// Clean up the listener when the component unmounts
 		return () => {
-		chatsRef.off('value', updateUnreadCount);
+			chatsRef.off('value', updateUnreadCount);
+		};
+		}
+	}, [showModal]);
+
+	useEffect(() => {
+		const database = firebase.database();
+		const messagesRef = database.ref('chats');
+	
+		const onMessageAdded = (snapshot) => {
+		const newMessage = snapshot.val();
+		// Get user data using the sender's userId
+		// Replace 'users' with the actual location of your user data
+		const userRef = database.ref('users/' + newMessage.senderId);
+		userRef.on('value', (userSnapshot) => {
+			const user = userSnapshot.val();
+			if (user) {
+			newMessage.sender = user.username.toUpperCase(); // Replace 'username' with the actual field containing the user's username
+			newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
+			}
+			setMessages((prevMessages) => {
+			// Check if the message already exists in the array
+			const existingMessage = prevMessages.find(
+				(message) => message.timestamp === newMessage.timestamp
+			);
+			if (existingMessage) {
+				// If the message exists, update it with the new data
+				return prevMessages.map((message) =>
+				message.timestamp === newMessage.timestamp ? newMessage : message
+				);
+			} else {
+				// If the message doesn't exist, add it to the array
+				return [...prevMessages, newMessage];
+			}
+			});
+		});
+		};
+	
+		messagesRef.on('child_added', onMessageAdded);
+	
+		return () => {
+		messagesRef.off('child_added', onMessageAdded);
 		};
 	}, []);
-	
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
 
 	const formatMessageContent = (content) => {
 		const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -158,52 +202,13 @@ const CommunityChat = () => {
 	};
 
 	const toggleModal = () => {
+		markMessagesAsSeen();
 		toggleEmojiPickerClose();
 		setShowModal(!showModal);
 		setTimeout(() => {
 		scrollToBottom();
 		}, 0);
 	};
-
-	useEffect(() => {
-		const database = firebase.database();
-		const messagesRef = database.ref('chats');
-	
-		const onMessageAdded = (snapshot) => {
-		const newMessage = snapshot.val();
-		// Get user data using the sender's userId
-		// Replace 'users' with the actual location of your user data
-		const userRef = database.ref('users/' + newMessage.senderId);
-		userRef.on('value', (userSnapshot) => {
-			const user = userSnapshot.val();
-			if (user) {
-			newMessage.sender = user.username.toUpperCase(); // Replace 'username' with the actual field containing the user's username
-			newMessage.avatar = user.image; // Replace 'image' with the actual field containing the user's image
-			}
-			setMessages((prevMessages) => {
-			// Check if the message already exists in the array
-			const existingMessage = prevMessages.find(
-				(message) => message.timestamp === newMessage.timestamp
-			);
-			if (existingMessage) {
-				// If the message exists, update it with the new data
-				return prevMessages.map((message) =>
-				message.timestamp === newMessage.timestamp ? newMessage : message
-				);
-			} else {
-				// If the message doesn't exist, add it to the array
-				return [...prevMessages, newMessage];
-			}
-			});
-		});
-		};
-	
-		messagesRef.on('child_added', onMessageAdded);
-	
-		return () => {
-		messagesRef.off('child_added', onMessageAdded);
-		};
-	}, []);
 
 	function muteChat(){
 		console.log('mute');
@@ -278,6 +283,7 @@ const CommunityChat = () => {
 			newMessageRef.set({
 			senderId: senderId,
 			content: newMessage,
+			isSeen: false,
 			timestamp: firebase.database.ServerValue.TIMESTAMP,
 			});
 			
@@ -322,9 +328,19 @@ const CommunityChat = () => {
 		return processedMessages;
 	};
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
+	
+
+	const markMessagesAsSeen = () => {
+		chatsRef.once('value', snapshot => {
+		snapshot.forEach(data => {
+			const chat = data.val();
+			if (!chat.isSeen) {
+			data.ref.update({ isSeen: true });
+			}
+		});
+		setUnreadCount(0);
+		});
+	};
 
 	function scrollToBottom() {
 
@@ -437,7 +453,9 @@ const CommunityChat = () => {
 		<div className="btn-community-chat-div bg-light rounded-circle btn" onClick={toggleModal}>
 			<div className="btn-community-chat"></div>
 		</div>
-		<span className="badge badge-pill badge-danger">{unreadCount}</span>
+		{unreadCount > 0 && (
+			<span className="badge badge-pill badge-danger notif_counter">{unreadCount}</span>
+		)}
 		{showEmojiPicker && (
 			<div className="emoji-picker-container">
 				<EmojiPicker width="300px" height="500px" onEmojiClick={handleEmojiSelection} />

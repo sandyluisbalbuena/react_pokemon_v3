@@ -358,6 +358,13 @@ border-top:#332c2c solid 4px;
     z-index: 5;
 }
 
+.notif_counter {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    z-index: 6;
+}
+
 .modal-community {
     position: fixed;
     bottom: 0;
