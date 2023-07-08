@@ -18,6 +18,7 @@ import Thread from './pages/Thread'
 import Profile from './components/Profile'
 import CommunityChat from './components/CommunityChat'
 import { useEffect, useState } from 'react'
+import Dashboard from './pages/Dashboard'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -62,8 +63,6 @@ function App() {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
 	}, []);
-
-
 	
 
 
@@ -80,6 +79,7 @@ function App() {
 						<Route path='/about' element={<About />}/>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
+						<Route path='/dashboard' element={<Dashboard />}/>
 					</Route>
 					<Route path='*' element={<Notfound />}/>
 				</Routes>

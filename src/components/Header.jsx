@@ -12,6 +12,8 @@ const Header = () => {
   const location = useLocation();
   const [username, setUsername] = useState('');
   const [userimage, setUserimage] = useState('');
+	let [userdata,setuserdata] = useState([]);
+
 
   let handleNavLinkClick = (link) => {
     setActiveLink(link);
@@ -40,16 +42,21 @@ const Header = () => {
 
   useEffect(() => {
     if (user) {
+
       const userRef = firebase.database().ref(`users/${user.uid}`);
       userRef.on('value', (snapshot) => {
         const userData = snapshot.val();
         if (userData) {
           setUsername(userData.username || '');
           setUserimage(userData.image || 'pikachu');
+  				setuserdata(userData);
         }
       });
     }
   }, [user]);
+
+  console.log(userdata.role);
+
 
   const handleSearch = () => {
     eventBus.publish('searchPokemon', document.getElementById('pokemonNameInputSearch').value);
@@ -162,17 +169,42 @@ const Header = () => {
                   Pokecard
                 </Link>
               </li>
+              
               {user ? (
-                <Link
-                  to="/pokeforum"
-                  onClick={() => handleNavLinkClick('pokeforum')}
-                  className={`nav-link hvr-underline-from-center ${
-                    activeLink === 'pokeforum' ? 'active' : ''
-                  }`}
-                >
-                  Pokeforum
-                </Link>
+                <>
+                <li className="nav-item">
+                  <Link
+                    to="/pokeforum"
+                    onClick={() => handleNavLinkClick('pokeforum')}
+                    className={`nav-link hvr-underline-from-center ${
+                      activeLink === 'pokeforum' ? 'active' : ''
+                    }`}
+                  >
+                    Pokeforum
+                  </Link>
+                </li>
+
+                {userdata.role == 'admin' ? (    
+                <li className="nav-item">
+                  <Link
+                    to="/dashboard"
+                    onClick={() => handleNavLinkClick('dashboard')}
+                    className={`nav-link hvr-underline-from-center ${
+                      activeLink === 'pokedex' ? 'active' : ''
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                ):
+                null
+                }
+
+
+                </>
+
               ) : (
+              <li className="nav-item">
                 <Link
                   to="/login"
                   onClick={() => handleNavLinkClick('login')}
@@ -182,7 +214,11 @@ const Header = () => {
                 >
                   Pokeforum
                 </Link>
+              </li>
               )}
+
+              
+
               <li className="nav-item">
                 <Link
                   to="/about"
@@ -301,6 +337,7 @@ const Header = () => {
                 </li>
               </ul>
             )}
+
           </div>
         </div>
       </nav>

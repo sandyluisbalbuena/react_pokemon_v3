@@ -21,7 +21,7 @@ const Footer = () => {
 					</div>
 				</section>
 			</div>
-			<div className="text-center p-3 footer-end">© 2020 Copyright:
+			<div className="text-center p-3 footer-end">© 2023 Copyright:
 				<a className="text-white" href="https://sandy-luis-balbuena.epizy.com/">sandy-luis-balbuena.epizy.com</a>
 			</div>
 		</footer>

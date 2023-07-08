@@ -9,6 +9,7 @@ const ForumLatest = (props) => {
 	const [threadGroups, setThreadGroups] = useState([]);
 	// const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
+	let dashboard = props.dashboard;
 	const [user, isLoading] = useAuthState(firebase.auth());
 	const dataTableRefs = useRef([]);
 
@@ -99,6 +100,7 @@ const ForumLatest = (props) => {
 					const threadInfo = {
 						id: threadId,
 						title: thread?.title || '',
+						hide: thread?.hide || '',
 						slug: thread?.slug || '',
 						content: thread?.content || '',
 						createdAt: thread?.createdAt || '',
@@ -236,7 +238,7 @@ const ForumLatest = (props) => {
 	
 		Swal.fire({
 		title: 'Confirm Delete',
-		text: 'Are you sure you want to delete this record?',
+		text: 'Are you sure you want to delete this thread?',
 		icon: 'warning',
 		showCancelButton: true,
 		confirmButtonText: 'Delete',
@@ -282,9 +284,6 @@ const ForumLatest = (props) => {
 			icon: 'success',
 			}).then(() => {
 				fetchThreads();
-				// dataTableRefs.current.forEach((dataTable) => {
-				// 	dataTable.draw();
-				// });
 			});
 		}
 		});
@@ -293,6 +292,83 @@ const ForumLatest = (props) => {
 	
 		return false;
 	}
+
+	function hideThread(hideThreadId) {
+		const threadRef = firebase.database().ref('threads/' + hideThreadId);
+	
+		Swal.fire({
+		title: 'Confirm Hide',
+		text: 'Are you sure you want to hide this thread?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Hide',
+		showLoaderOnConfirm: true,
+		preConfirm: () => {
+			return new Promise((resolve, reject) => {
+			threadRef
+				.update({ hide: 1 }) // Update hide property to 1
+				.then(() => {
+				resolve({ success: true, message: 'Thread hidden successfully.' });
+				})
+				.catch((error) => {
+				reject(new Error(error.message));
+				});
+			});
+		},
+		allowOutsideClick: () => !Swal.isLoading(),
+		}).then((result) => {
+		if (result.isConfirmed) {
+			Swal.fire({
+			title: 'Thread Hidden',
+			text: result.message,
+			icon: 'success',
+			}).then(() => {
+			fetchThreads();
+			});
+		}
+		});
+	
+		return false;
+	}
+
+	function unhideThread(hideThreadId) {
+		const threadRef = firebase.database().ref('threads/' + hideThreadId);
+	
+		Swal.fire({
+		title: 'Confirm Show',
+		text: 'Are you sure you want to Show this thread?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Show',
+		showLoaderOnConfirm: true,
+		preConfirm: () => {
+			return new Promise((resolve, reject) => {
+			threadRef
+				.update({ hide: 0 }) // Update hide property to 1
+				.then(() => {
+				resolve({ success: true, message: 'Thread shown successfully.' });
+				})
+				.catch((error) => {
+				reject(new Error(error.message));
+				});
+			});
+		},
+		allowOutsideClick: () => !Swal.isLoading(),
+		}).then((result) => {
+		if (result.isConfirmed) {
+			Swal.fire({
+			title: 'Thread shown',
+			text: result.message,
+			icon: 'success',
+			}).then(() => {
+			fetchThreads();
+			});
+		}
+		});
+	
+		return false;
+	}
+	
 
 	const reinitializeDataTables = () => {
 		// Destroy and reinitialize each DataTable instance
@@ -324,12 +400,15 @@ const ForumLatest = (props) => {
 						<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
 						<div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
 							{group.threads.map((thread) => (
-								<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
+
+								((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
+									<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
 									<div className="row">
 										<div className="col-10 col-lg-3 d-flex">
 											<i className="fas fa-comments mx-3"></i>
 											<p>{thread.title}</p>
 										</div>
+										{!dashboard && (
 										<div className="d-none d-lg-block col-lg-2">
 											{thread.messageCount > 1 && (
 											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
@@ -338,15 +417,19 @@ const ForumLatest = (props) => {
 											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
 											)}
 										</div>
+										)}
 										<div className="d-none d-lg-block col-lg-3 d-lg-flex">
+											{!dashboard && (
 											<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
+											)}
 											<p className="ms-3">{thread.user.toUpperCase()}</p>
 										</div>
 										<div className="d-none d-lg-block col-lg-3">
 											<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
 										</div>
-										<div className="col-1">
-											{isAdmin && isAdmin === 'admin' && (
+										
+										{dashboard ? (
+										<div className="col-2">
 											<span
 												onClick={(event) => {
 												event.preventDefault();
@@ -356,10 +439,48 @@ const ForumLatest = (props) => {
 											>
 												<i className="fas fa-trash"></i>
 											</span>
+
+											{thread.hide === 1 ? (
+											<span
+												onClick={(event) => {
+												event.preventDefault();
+												unhideThread(thread.id);
+												}}
+												className="badge badge-sm badge-success ms-1"
+											>
+												<i className="fas fa-eye"></i>
+											</span>
+											):(
+												<span
+												onClick={(event) => {
+												event.preventDefault();
+												hideThread(thread.id);
+												}}
+												className="badge badge-sm badge-success ms-1"
+												>
+													<i className="fas fa-eye-slash"></i>
+												</span>
 											)}
+
 										</div>
+										):(
+											<div className="col-1">
+												{isAdmin && isAdmin === 'admin' && (
+												<span
+													onClick={(event) => {
+													event.preventDefault();
+													deleteThread(thread.id);
+													}}
+													className="badge badge-sm badge-danger"
+												>
+													<i className="fas fa-trash"></i>
+												</span>
+												)}
+											</div>
+										)}
 									</div>
-								</a>
+									</a>
+								)
 							))}
 						</div>
 

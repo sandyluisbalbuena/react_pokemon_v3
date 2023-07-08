@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import  { useAuthState } from 'react-firebase-hooks/auth';
 import firebase from 'firebase/compat/app';
+import ForumLatest from '../components/ForumLatest'
 import ForumCategories from '../components/ForumCategories';
-import ForumMyThreads from '../components/ForumMyThreads';
-import ForumTrendingTopics from '../components/ForumTrendingTopics';
-import ForumLatest from '../components/ForumLatest';
-import OnlineUsers from '../components/OnlineUsers';
-import eventBus from '../eventBus';
 
-
-const Pokeforum = () => {
+const Dashboard = () => {
 
 	let [userdata,setuserdata] = useState([]);
-
-	const [user] = useAuthState(firebase.auth());
 	const [username, setUsername] = useState('');
 	const [userimage, setUserimage] = useState('');
+
+	const [user] = useAuthState(firebase.auth());
 
 	useEffect(() => {
 		if (user) {
@@ -30,10 +25,6 @@ const Pokeforum = () => {
 		});
 		}
 	}, [user]);
-
-	const handleCreateThreadPokeforum = () => {
-		eventBus.publish('pokeforumCreateThread');
-	}
 
 	return (
 		<div className="container">
@@ -51,28 +42,17 @@ const Pokeforum = () => {
 
 								<div className="navbar rounded" style={{backgroundColor: '#D1CFC9'}}>
 									<h6 className="m-auto">{user && (username !== '' ? username : user.displayName)}</h6>
-									{/* <img className="me-4" width="15%" src={`./assets/images/userIcons/${user && (userimage)}.png`} alt=""/> */}
 								</div>
 
-								<button className="btn btn-dark my-2" onClick={handleCreateThreadPokeforum} style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
-									<i className="far fa-pen-to-square me-1"></i>
-									Create Thread
-								</button>
 							</div>
 						</div>
 
 						<ForumCategories/>
 	
-						<ForumMyThreads />
-
-						<ForumTrendingTopics />
-
 					</div>
 
-
-
 					<div id="forumLatest">
-						<ForumLatest  user={userdata} />
+						<ForumLatest  user={userdata} dashboard={1}/>
 					</div>
 
 				</div>
@@ -87,37 +67,20 @@ const Pokeforum = () => {
 
 										<div className="navbar rounded" style={{backgroundColor: '#D1CFC9'}}>
 											<h6 className="m-auto">{user && (username !== '' ? username : user.displayName)}</h6>
-											{/* <img className="me-4" width="15%" src={`./assets/images/userIcons/${user && (userimage)}.png`} alt=""/> */}
 										</div>
 
-										<button className="btn btn-dark my-2" onClick={handleCreateThreadPokeforum} style={{width:'100%'}} data-mdb-toggle="modal" data-mdb-target="#postThread">
-											<i className="far fa-pen-to-square me-1"></i>
-											Create Thread
-										</button>
 									</div>
 								</div>
 							</div>
 
-							{/* <div className="row">
-								<OnlineUsers/>
-							</div> */}
 
 							<div className="row">
 								<ForumCategories/>
 							</div>
 
-							<div className="row">
-								<ForumMyThreads />
-							</div>
-
-							<div className="row">
-								<ForumTrendingTopics />
-							</div>
-
 						</div>
 					</div>
 				</div>
-
 
 			</section>
 
@@ -125,4 +88,4 @@ const Pokeforum = () => {
 	)
 }
 
-export default Pokeforum
+export default Dashboard

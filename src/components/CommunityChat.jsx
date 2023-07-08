@@ -14,8 +14,11 @@ const CommunityChat = () => {
 	const [typingUserImage, setTypingUserImage] = useState('');
 	const [typingUserId, setTypingUserId] = useState('');
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+	const [unreadCount, setUnreadCount] = useState(0);
+
 
 	const chatContainerRef = useRef(null);
+	const chatsRef = firebase.database().ref('chats');
 	let typingTimer;
 
 	useEffect(() => {
@@ -88,6 +91,27 @@ const CommunityChat = () => {
 		}
 		}
 	}, [messages, currentUserId]);
+
+	useEffect(() => {
+		const updateUnreadCount = snapshot => {
+		let count = 0;
+		snapshot.forEach(data => {
+			const chat = data.val();
+			if (!chat.isSeen) {
+			count++;
+			}
+		});
+		setUnreadCount(count);
+		};
+	
+		chatsRef.on('value', updateUnreadCount);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+		chatsRef.off('value', updateUnreadCount);
+		};
+	}, []);
+	
 
 	const formatMessageContent = (content) => {
 		const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -413,6 +437,7 @@ const CommunityChat = () => {
 		<div className="btn-community-chat-div bg-light rounded-circle btn" onClick={toggleModal}>
 			<div className="btn-community-chat"></div>
 		</div>
+		<span className="badge badge-pill badge-danger">{unreadCount}</span>
 		{showEmojiPicker && (
 			<div className="emoji-picker-container">
 				<EmojiPicker width="300px" height="500px" onEmojiClick={handleEmojiSelection} />
