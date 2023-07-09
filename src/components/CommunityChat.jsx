@@ -94,11 +94,11 @@ const CommunityChat = () => {
 
 	useEffect(() => {
 		if (!showModal) {
-		const updateUnreadCount = snapshot => {
+		const updateUnreadCount = (snapshot) => {
 			let count = 0;
-			snapshot.forEach(data => {
+			snapshot.forEach((data) => {
 			const chat = data.val();
-			if (!chat.isSeen) {
+			if (chat.notSeenBy.includes(firebase.auth().currentUser.uid)) {
 				count++;
 			}
 			});
@@ -112,6 +112,7 @@ const CommunityChat = () => {
 		};
 		}
 	}, [showModal]);
+	
 
 	useEffect(() => {
 		const database = firebase.database();
@@ -272,20 +273,32 @@ const CommunityChat = () => {
 		toggleEmojiPickerClose();
 		const database = firebase.database();
 		const messagesRef = database.ref('chats');
+		const usersRef = database.ref('users');
 		const newMessageRef = messagesRef.push();
+
+
 		// Get the current user
 		const currentUser = firebase.auth().currentUser;
 		
 		// Check if the user is logged in
 		if (currentUser) {
 			const senderId = currentUser.uid;
-		
-			newMessageRef.set({
-			senderId: senderId,
-			content: newMessage,
-			isSeen: false,
-			timestamp: firebase.database.ServerValue.TIMESTAMP,
+
+			usersRef.on('value', (userSnapshot) => {
+				const users = userSnapshot.val();
+				if (users) {
+					// console.log(Object.keys(users));
+					newMessageRef.set({
+					senderId: senderId,
+					content: newMessage,
+					isSeen: false,
+					notSeenBy: Object.keys(users),
+					timestamp: firebase.database.ServerValue.TIMESTAMP,
+					});
+				}
 			});
+		
+			
 			
 			setNewMessage('');
 		} else {
@@ -328,8 +341,6 @@ const CommunityChat = () => {
 		return processedMessages;
 	};
 
-	
-
 	const markMessagesAsSeen = () => {
 		chatsRef.once('value', snapshot => {
 		snapshot.forEach(data => {
@@ -366,7 +377,7 @@ const CommunityChat = () => {
 
 	const handleEmojiSelection = (selectedEmoji) => {
 		const emoji = selectedEmoji.emoji;
-	setNewMessage(newMessage + emoji);
+		setNewMessage(newMessage + emoji);
 	};
 	
 

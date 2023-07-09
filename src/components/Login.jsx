@@ -70,6 +70,7 @@ const Login = () => {
 
 								<button type="submit" className="btn btn-primary btn-block btn-dark"  onClick={handleLogin}>Login</button>
 								<button className="btn btn-primary btn-block btn-dark" onClick={handleLoginWithGoogle}>Login with Google</button>
+								<a href="/register">Don't have an account</a>
 							</div>
 						</div>
 
