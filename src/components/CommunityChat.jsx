@@ -98,7 +98,7 @@ const CommunityChat = () => {
 			let count = 0;
 			snapshot.forEach((data) => {
 			const chat = data.val();
-			if (chat.notSeenBy.includes(firebase.auth().currentUser.uid)) {
+			if (chat && chat.notSeenBy && chat.notSeenBy.includes(firebase.auth().currentUser.uid)) {
 				count++;
 			}
 			});
@@ -112,6 +112,7 @@ const CommunityChat = () => {
 		};
 		}
 	}, [showModal]);
+	
 	
 
 	useEffect(() => {
@@ -341,17 +342,32 @@ const CommunityChat = () => {
 		return processedMessages;
 	};
 
+	// const markMessagesAsSeen = () => {
+	// 	chatsRef.once('value', snapshot => {
+	// 	snapshot.forEach(data => {
+	// 		const chat = data.val();
+			
+	// 	});
+	// 	setUnreadCount(0);
+	// 	});
+	// };
+
 	const markMessagesAsSeen = () => {
-		chatsRef.once('value', snapshot => {
-		snapshot.forEach(data => {
+		chatsRef.once('value', (snapshot) => {
+		snapshot.forEach((data) => {
+			const chatId = data.key;
 			const chat = data.val();
-			if (!chat.isSeen) {
-			data.ref.update({ isSeen: true });
+	
+			if (chat && chat.notSeenBy && chat.notSeenBy.includes(firebase.auth().currentUser.uid)) {
+			const updatedNotSeenBy = chat.notSeenBy.filter((userId) => userId !== firebase.auth().currentUser.uid);
+			chatsRef.child(chatId).child('notSeenBy').set(updatedNotSeenBy);
 			}
 		});
+	
 		setUnreadCount(0);
 		});
 	};
+	
 
 	function scrollToBottom() {
 
