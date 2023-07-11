@@ -29,7 +29,19 @@ const Pokeforum = () => {
 			}
 		});
 		}
+		getData();
 	}, [user]);
+
+	const getData = () => {
+		axios.get(`https://pok3mon.online/api/users`)
+		.then(response => {
+			console.log(response.data);
+		})
+		.catch(error => console.error('On get one pokemon card error', error))
+		.then(() => { 
+	
+		})
+	}
 
 	const handleCreateThreadPokeforum = () => {
 		eventBus.publish('pokeforumCreateThread');

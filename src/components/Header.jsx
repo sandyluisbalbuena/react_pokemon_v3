@@ -55,8 +55,6 @@ const Header = () => {
     }
   }, [user]);
 
-  console.log(userdata.role);
-
 
   const handleSearch = () => {
     eventBus.publish('searchPokemon', document.getElementById('pokemonNameInputSearch').value);

@@ -16,7 +16,6 @@ const CommunityChat = () => {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [unreadCount, setUnreadCount] = useState(0);
 
-
 	const chatContainerRef = useRef(null);
 	const chatsRef = firebase.database().ref('chats');
 	let typingTimer;
@@ -112,8 +111,6 @@ const CommunityChat = () => {
 		};
 		}
 	}, [showModal]);
-	
-	
 
 	useEffect(() => {
 		const database = firebase.database();
@@ -341,16 +338,6 @@ const CommunityChat = () => {
 	
 		return processedMessages;
 	};
-
-	// const markMessagesAsSeen = () => {
-	// 	chatsRef.once('value', snapshot => {
-	// 	snapshot.forEach(data => {
-	// 		const chat = data.val();
-			
-	// 	});
-	// 	setUnreadCount(0);
-	// 	});
-	// };
 
 	const markMessagesAsSeen = () => {
 		chatsRef.once('value', (snapshot) => {
