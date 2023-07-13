@@ -86,7 +86,7 @@ return (
 		{onlineUsers.map((userId) => (
 			<a key={userId}>
 			<li className="px-2 py-1 rounded threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-				{userMap[userId].username.toUpperCase()}
+				{/* {userMap[userId].username.toUpperCase()} */}
 			</li>
 			</a>
 		))}

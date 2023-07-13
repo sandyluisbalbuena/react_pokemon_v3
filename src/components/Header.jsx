@@ -282,7 +282,7 @@ const Header = () => {
                         activeLink === 'login' ? 'active' : ''
                       }`}
                     >
-                      {username !== '' ? username.toUpperCase() : user.displayName.toUpperCase()}
+                      {username !== '' && username.toUpperCase()}
                     </span>
                     <div className="rounded-circle bg-secondary ms-3">
                       <img

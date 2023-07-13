@@ -81,8 +81,6 @@ const Pokeforum = () => {
 
 					</div>
 
-
-
 					<div id="forumLatest">
 						<ForumLatest  user={userdata} />
 					</div>
