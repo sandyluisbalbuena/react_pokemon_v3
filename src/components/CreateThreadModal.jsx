@@ -289,8 +289,8 @@ const CreateThreadModal = () => {
 		};
 
 	axios
-		// .post('https://pok3mon.online/api/thread', formData)
-		.post('http://127.0.0.1:8000/api/thread', formData)
+		.post('https://pok3mon.online/api/thread', formData)
+		// .post('http://127.0.0.1:8000/api/thread', formData)
 		.then((response) => {
 		// Handle successful response
 			// console.log(response.data);
