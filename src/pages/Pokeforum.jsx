@@ -29,11 +29,22 @@ const Pokeforum = () => {
 			}
 		});
 		}
-		getData();
+		// postData();
 	}, [user]);
 
 	const getData = () => {
 		axios.get(`https://pok3mon.online/api/users`)
+		.then(response => {
+			console.log(response.data);
+		})
+		.catch(error => console.error('On get one pokemon card error', error))
+		.then(() => { 
+	
+		})
+	}
+
+	const postData = () => {
+		axios.post(`https://pok3mon.online/api/store`)
 		.then(response => {
 			console.log(response.data);
 		})

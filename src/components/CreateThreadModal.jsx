@@ -217,13 +217,13 @@ const CreateThreadModal = () => {
 			}
 	
 			const formData = {
-			categoryId: category.value,
-			title: title.value,
-			slug: slug,
-			content: tinymce.activeEditor.getContent(),
-			userId: user.uid,
-			createdAt: firebase.database.ServerValue.TIMESTAMP,
-			updatedAt: firebase.database.ServerValue.TIMESTAMP,
+				categoryId: category.value,
+				title: title.value,
+				slug: slug,
+				content: tinymce.activeEditor.getContent(),
+				userId: user.uid,
+				createdAt: firebase.database.ServerValue.TIMESTAMP,
+				updatedAt: firebase.database.ServerValue.TIMESTAMP,
 			};
 	
 			threadRef
@@ -262,6 +262,62 @@ const CreateThreadModal = () => {
 			title: 'Something went wrong!',
 			});
 		});
+	}
+
+	function createThreadLaravel() {
+
+		const category = document.getElementById('category').value;
+		const title = document.getElementById('title').value;
+		const content = tinymce.activeEditor.getContent();
+
+		if (title === '' || content === '') {
+			Swal.fire({
+			icon: 'error',
+			title: 'All fields are required!',
+			});
+			return;
+		}
+
+		const formData = {
+			categoryId: category,
+			title: title,
+			slug: slugify(title),
+			content: content,
+			userId: user.uid,
+			createdAt: Date.now(),
+			updatedAt: Date.now(),
+		};
+
+	axios
+		// .post('https://pok3mon.online/api/thread', formData)
+		.post('http://127.0.0.1:8000/api/thread', formData)
+		.then((response) => {
+		// Handle successful response
+			// console.log(response.data);
+			$('#postThread').modal('hide');
+			Swal.fire({
+				icon: 'success',
+				title: 'Thread created successfully',
+			});
+		})
+		.catch((error) => {
+			// Handle error
+			Swal.fire({
+				icon: 'error',
+				title: 'Error creating thread',
+				text: error.message,
+			});
+		})
+		.finally(() => {
+			category.value = '';
+			title.value = '';
+			tinymce.activeEditor.setContent('');
+			document.getElementById('category').removeAttribute('disabled');
+			if(redirectToThread){
+				navigate('pokeforum/'+slug);
+			}
+		});
+
 	}
 
 	function editedThread(id) {
@@ -388,7 +444,8 @@ const CreateThreadModal = () => {
 						</div>
 					</div>
 					<div className="modal-footer">
-						{postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Post</button>)}
+						{postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThreadLaravel()}>Post</button>)}
+						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Post</button>)} */}
 						{editFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>editedThread(threadIDToBeEdit)}>Edit</button>)}
 						<button type="button" className="btn btn-dark" data-mdb-dismiss="modal">Cancel</button>
 					</div>

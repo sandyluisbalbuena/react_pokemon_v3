@@ -10,7 +10,6 @@ let userThreadsQuery;
 
 useEffect(() => {
 	if (currentUser) {
-		console.log('wew');
 	const userId = currentUser.uid;
 	const threadsRef = firebase.database().ref('threads');
 	userThreadsQuery = threadsRef.orderByChild('userId').equalTo(userId);
