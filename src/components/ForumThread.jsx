@@ -295,6 +295,9 @@ const ForumThread = () => {
 
 	function deleteThreadLaravel(deleteThreadId) {
 		// const [user1] = useAuthState(firebase.auth());
+
+		let currentUser = firebase.auth().currentUser;
+		let bearerToken = localStorage.getItem('bearerToken');
 		
 		Swal.fire({
 		title: 'Confirm Delete',
@@ -308,7 +311,9 @@ const ForumThread = () => {
 			// .delete(`https:pok3mon.online/api/thread/${deleteThreadId}`)
 			.delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
 				headers: {
-				  'X-User-Id': uid, // Include the user ID in the request headers
+				  	'X-User-Id': currentUser.uid, // Include the user ID in the request headers
+					'X-User-Uid': currentUser.uid,
+					'Authorization': `Bearer ${bearerToken}`,
 				}
 			})
 			.then((response) => {
@@ -353,7 +358,7 @@ const ForumThread = () => {
 										<i className="fas fa-ellipsis-vertical"></i>
 										</button>
 										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
-											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadAndMessages(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
+											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadLaravel(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
 											<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
 										</ul>
 									</>

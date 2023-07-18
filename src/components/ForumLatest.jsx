@@ -292,7 +292,6 @@ const ForumLatest = (props) => {
 	function deleteThreadLaravel(deleteThreadId) {
 		// const [user1] = useAuthState(firebase.auth());
 
-		let currentUser = firebase.auth().currentUser;
 		let bearerToken = localStorage.getItem('bearerToken');
 		
 		Swal.fire({
@@ -308,7 +307,7 @@ const ForumLatest = (props) => {
 			// .delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
 				headers: {
 					'X-User-Id': uid, // Include the user ID in the request headers
-					'X-User-Uid': currentUser.uid,
+					'X-User-Uid': uid,
 					'Authorization': `Bearer ${bearerToken}`,
 				}
 			})

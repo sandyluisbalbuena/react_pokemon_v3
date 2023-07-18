@@ -130,10 +130,17 @@ const Profile = () => {
 			return;
 		}
 
-		const currentUser = firebase.auth().currentUser;
+		let currentUser = firebase.auth().currentUser;
+		let bearerToken = localStorage.getItem('bearerToken');
+
 		if (currentUser) {
-			axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData)
-			// axios.put(`http://pok3mon.online/api/user/${currentUser.uid}`, formData)
+			axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData, {
+			// axios.put(`http://pok3mon.online/api/user/${currentUser.uid}`, formData, {
+				headers: {
+					'X-User-Uid': currentUser.uid,
+					'Authorization': `Bearer ${bearerToken}`,
+				},
+			})
 			.then(() => {
 			$('#profile').modal('hide');
 
