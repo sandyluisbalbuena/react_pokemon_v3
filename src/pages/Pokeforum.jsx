@@ -19,39 +19,40 @@ const Pokeforum = () => {
 
 	useEffect(() => {
 		if (user) {
-		const userRef = firebase.database().ref(`users/${user.uid}`);
-		userRef.on('value', (snapshot) => {
-			const userData = snapshot.val();
-			if (userData) {
-				setUsername(userData.username.toUpperCase() || '');
-				setUserimage(userData.image || 'pikachu');
-				setuserdata(userData);
-			}
-		});
+			const userRef = firebase.database().ref(`users/${user.uid}`);
+			userRef.on('value', (snapshot) => {
+				const userData = snapshot.val();
+				if (userData) {
+					setUsername(userData.username.toUpperCase() || '');
+					setUserimage(userData.image || 'pikachu');
+					setuserdata(userData);
+				}
+			});
 		}
-		// postData();
+		// sampleFethcWithBearer();
 	}, [user]);
 
-	const getData = () => {
-		axios.get(`https://pok3mon.online/api/users`)
-		.then(response => {
-			console.log(response.data);
-		})
-		.catch(error => console.error('On get one pokemon card error', error))
-		.then(() => { 
-	
-		})
-	}
 
-	const postData = () => {
-		axios.post(`https://pok3mon.online/api/store`)
-		.then(response => {
-			console.log(response.data);
-		})
-		.catch(error => console.error('On get one pokemon card error', error))
-		.then(() => { 
-	
-		})
+	function sampleFethcWithBearer(){
+
+		if(firebase.auth().currentUser){
+
+			const currentUser = firebase.auth().currentUser;
+			const bearerToken = localStorage.getItem('bearerToken');
+
+			axios.get('http://127.0.0.1:8000/api/threads', {
+			headers: {
+				'X-User-Uid': currentUser.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+			})
+			.then(response => {
+				console.log(response.data);
+			})
+			.catch(error => {
+				// Handle errors
+			});
+		}
 	}
 
 	const handleCreateThreadPokeforum = () => {

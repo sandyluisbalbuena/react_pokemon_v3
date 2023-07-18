@@ -200,9 +200,7 @@ const ForumLatest = (props) => {
 			const updatedGroups = [...prevThreadGroups];
 			const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
 		
-				// console.log(user?.uid)
 	
-				console.log(updatedThreads,uid);
 	
 			// if(uid){
 				updatedThreads.forEach((thread) => {
@@ -230,8 +228,6 @@ const ForumLatest = (props) => {
 	};
 
 	function deleteThread(deleteThreadId) {
-
-		// reinitializeDataTables();
 
 		const threadRef = firebase.database().ref('threads/' + deleteThreadId);
 		const messagesRef = firebase.database().ref('messages');
@@ -292,6 +288,57 @@ const ForumLatest = (props) => {
 	
 		return false;
 	}
+
+	function deleteThreadLaravel(deleteThreadId) {
+		// const [user1] = useAuthState(firebase.auth());
+
+		let currentUser = firebase.auth().currentUser;
+		let bearerToken = localStorage.getItem('bearerToken');
+		
+		Swal.fire({
+		title: 'Confirm Delete',
+		text: 'Are you sure you want to delete this thread?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Delete',
+		showLoaderOnConfirm: true,
+		preConfirm: () => {
+			return axios
+			.delete(`https:pok3mon.online/api/thread/${deleteThreadId}`, {
+			// .delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
+				headers: {
+					'X-User-Id': uid, // Include the user ID in the request headers
+					'X-User-Uid': currentUser.uid,
+					'Authorization': `Bearer ${bearerToken}`,
+				}
+			})
+			.then((response) => {
+				return response.data;
+			})
+			.catch((error) => {
+				throw new Error(error.response.data.message);
+			});
+		},
+		allowOutsideClick: () => !Swal.isLoading(),
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+			Swal.fire({
+				title: 'Record Deleted',
+				text: result.message,
+				icon: 'success',
+			}).then(() => {
+				fetchThreads();
+			});
+			}
+		})
+		.catch((error) => {
+			Swal.fire('Error', error.message, 'error');
+		});
+	
+		return false;
+	}
+	
 
 	function hideThread(hideThreadId) {
 		const threadRef = firebase.database().ref('threads/' + hideThreadId);
@@ -433,7 +480,7 @@ const ForumLatest = (props) => {
 											<span
 												onClick={(event) => {
 												event.preventDefault();
-												deleteThread(thread.id);
+												deleteThreadLaravel(thread.id);
 												}}
 												className="badge badge-sm badge-danger"
 											>
@@ -469,7 +516,7 @@ const ForumLatest = (props) => {
 												<span
 													onClick={(event) => {
 													event.preventDefault();
-													deleteThread(thread.id);
+													deleteThreadLaravel(thread.id);
 													}}
 													className="badge badge-sm badge-danger"
 												>

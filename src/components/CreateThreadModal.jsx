@@ -170,12 +170,32 @@ const CreateThreadModal = () => {
 		return str;
 	}
 
+	// if(firebase.auth().currentUser){
+
+	// 	let currentUser = firebase.auth().currentUser;
+	// 	let bearerToken = localStorage.getItem('bearerToken');
+
+	// 	axios.get('http://127.0.0.1:8000/api/threads', {
+	// 	headers: {
+	// 		'X-User-Uid': currentUser.uid,
+	// 		'Authorization': `Bearer ${bearerToken}`,
+	// 	},
+	// 	})
+	// 	.then(response => {
+	// 		console.log(response.data);
+	// 	})
+	// 	.catch(error => {
+	// 		// Handle errors
+	// 	});
+	// }
+
 
 	function createThread() {
 
 		const category = document.getElementById('category');
 		const title = document.getElementById('title');
 		const slug = slugify(title.value);
+		
 
 
 		if(title.value == '' || tinymce.activeEditor.getContent() == ''){
@@ -269,6 +289,8 @@ const CreateThreadModal = () => {
 		const category = document.getElementById('category').value;
 		const title = document.getElementById('title').value;
 		const content = tinymce.activeEditor.getContent();
+		let currentUser = firebase.auth().currentUser;
+		let bearerToken = localStorage.getItem('bearerToken');
 
 		if (title === '' || content === '') {
 			Swal.fire({
@@ -288,9 +310,16 @@ const CreateThreadModal = () => {
 			updatedAt: Date.now(),
 		};
 
-	axios
-		.post('https://pok3mon.online/api/thread', formData)
-		// .post('http://127.0.0.1:8000/api/thread', formData)
+		// const url = 'http://127.0.0.1:8000/api/thread';
+		const url = 'https://pok3mon.online/api/thread';
+
+		axios
+		.post(url, formData, {
+			headers: {
+				'X-User-Uid': currentUser.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
 		.then((response) => {
 		// Handle successful response
 			// console.log(response.data);
@@ -410,6 +439,69 @@ const CreateThreadModal = () => {
 				});
 			});
 	}
+
+	function editedThreadLaravel(id) {
+		const category = document.getElementById('category');
+		const title = document.getElementById('title');
+		const slug = slugify(title.value);
+		let currentUser = firebase.auth().currentUser;
+		let bearerToken = localStorage.getItem('bearerToken');
+	
+		if (title.value == '' || tinymce.activeEditor.getContent() == '') {
+			Swal.fire({
+				icon: 'error',
+				title: 'All fields are required!',
+			});
+			return;
+		}
+	
+		// const url = 'http://127.0.0.1:8000/api/thread/'+id;
+		const url = 'https://pok3mon.online/api/thread'+id;
+	
+		const formData = {
+			id: id, // Include the thread ID in the form data
+			categoryId: category.value,
+			title: title.value,
+			slug: slug,
+			content: tinymce.activeEditor.getContent(),
+			updatedAt: firebase.database.ServerValue.TIMESTAMP,
+			userId: user.uid,
+		};
+	
+		axios.put(url, formData, {
+			headers: {
+				'X-User-Uid': currentUser.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
+		.then(response => {
+			$('#postThread').modal('hide');
+
+			Swal.fire({
+				icon: 'success',
+				title: 'Thread Updated successfully!',
+			});
+		})
+		.catch(error => {
+			console.error(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Something went wrong!',
+			});
+		})
+		.finally(() => {
+			category.value = '';
+			title.value = '';
+			tinymce.activeEditor.setContent('');
+
+			document.getElementById('category').removeAttribute('disabled');
+
+			if (redirectToThread) {
+				navigate('pokeforum/' + slug);
+			}
+		});
+	}
+	
 	
 
 	return (
@@ -446,7 +538,7 @@ const CreateThreadModal = () => {
 					<div className="modal-footer">
 						{postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThreadLaravel()}>Post</button>)}
 						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Post</button>)} */}
-						{editFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>editedThread(threadIDToBeEdit)}>Edit</button>)}
+						{editFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>editedThreadLaravel(threadIDToBeEdit)}>Edit</button>)}
 						<button type="button" className="btn btn-dark" data-mdb-dismiss="modal">Cancel</button>
 					</div>
 

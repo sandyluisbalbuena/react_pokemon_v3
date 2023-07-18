@@ -293,7 +293,51 @@ const ForumThread = () => {
 		}
 	}
 
-	console.log(threadData);
+	function deleteThreadLaravel(deleteThreadId) {
+		// const [user1] = useAuthState(firebase.auth());
+		
+		Swal.fire({
+		title: 'Confirm Delete',
+		text: 'Are you sure you want to delete this thread?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Delete',
+		showLoaderOnConfirm: true,
+		preConfirm: () => {
+			return axios
+			// .delete(`https:pok3mon.online/api/thread/${deleteThreadId}`)
+			.delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
+				headers: {
+				  'X-User-Id': uid, // Include the user ID in the request headers
+				}
+			})
+			.then((response) => {
+				return response.data;
+			})
+			.catch((error) => {
+				throw new Error(error.response.data.message);
+			});
+		},
+		allowOutsideClick: () => !Swal.isLoading(),
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+			Swal.fire({
+				title: 'Record Deleted',
+				text: result.message,
+				icon: 'success',
+			}).then(() => {
+				fetchThreads();
+			});
+			}
+		})
+		.catch((error) => {
+			Swal.fire('Error', error.message, 'error');
+		});
+	
+		return false;
+	}
+
 
 	return (
 		<div className="container">

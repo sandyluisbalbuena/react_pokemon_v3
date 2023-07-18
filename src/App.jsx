@@ -38,12 +38,14 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	useEffect(() => {
+
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
 		setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
 		});
 
 		return () => unsubscribe();
 	}, []);
+	getToken();
 	
 
 	window.addEventListener('beforeunload', function(event) {
@@ -63,6 +65,51 @@ function App() {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
 	}, []);
+
+	function getToken(){
+		if (firebase.auth().currentUser) {
+			firebase.auth().currentUser.getIdToken(true)
+			.then(idToken => {
+				const firebaseIdToken = idToken;
+				axios.post('http://127.0.0.1:8000/api/firebase-token', { firebase_id_token: firebaseIdToken })
+				.then(response => {
+
+					const currentUser = firebase.auth().currentUser;
+					if (currentUser) {
+						const userRef = firebase.database().ref(`users/${currentUser.uid}`);
+
+						localStorage.setItem('bearerToken', response.data.bearer_token);
+				
+						userRef.once('value')
+						.then(snapshot => {
+							const userData = snapshot.val();
+			
+							const updatedData = {
+								...userData,
+								bearer_token: response.data.bearer_token,
+							};
+			
+							userRef.update(updatedData)
+						})
+						.catch(error => {
+							console.log('Error retrieving user data:', error);
+						});
+					}
+					
+					const token = response.data;
+					console.log(token);
+				})
+				.catch(error => {
+					console.error(error);
+				});
+			})
+			.catch(error => {
+				console.error(error);
+			});
+		} else {
+			console.log('No user is currently signed in.');
+		}
+	}	
 	
 
 
@@ -87,7 +134,6 @@ function App() {
 				{isLoggedIn && <CommunityChat />}
 				<Profile />
 			</BrowserRouter>
-
 		</>
 	)
 }
