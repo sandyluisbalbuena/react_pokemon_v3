@@ -71,7 +71,8 @@ function App() {
 			firebase.auth().currentUser.getIdToken(true)
 			.then(idToken => {
 				const firebaseIdToken = idToken;
-				axios.post('http://127.0.0.1:8000/api/firebase-token', { firebase_id_token: firebaseIdToken })
+				axios.post('https://pok3mon.online/api/firebase-token', { firebase_id_token: firebaseIdToken })
+				// axios.post('http://127.0.0.1:8000/api/firebase-token', { firebase_id_token: firebaseIdToken })
 				.then(response => {
 
 					const currentUser = firebase.auth().currentUser;
