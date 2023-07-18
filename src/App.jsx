@@ -97,8 +97,6 @@ function App() {
 						});
 					}
 					
-					const token = response.data;
-					console.log(token);
 				})
 				.catch(error => {
 					console.error(error);

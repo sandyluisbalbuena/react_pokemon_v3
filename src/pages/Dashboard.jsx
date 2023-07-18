@@ -3,6 +3,7 @@ import  { useAuthState } from 'react-firebase-hooks/auth';
 import firebase from 'firebase/compat/app';
 import ForumLatest from '../components/ForumLatest'
 import ForumCategories from '../components/ForumCategories';
+import ChartThreads from '../components/ChartThreads';
 
 const Dashboard = () => {
 
@@ -53,6 +54,10 @@ const Dashboard = () => {
 
 					<div id="forumLatest">
 						<ForumLatest  user={userdata} dashboard={1}/>
+					</div>
+
+					<div id="chartThread">
+						<ChartThreads />
 					</div>
 
 				</div>

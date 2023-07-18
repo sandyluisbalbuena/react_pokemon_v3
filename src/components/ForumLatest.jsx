@@ -292,6 +292,7 @@ const ForumLatest = (props) => {
 	function deleteThreadLaravel(deleteThreadId) {
 		// const [user1] = useAuthState(firebase.auth());
 
+		let currentUser = firebase.auth().currentUser;
 		let bearerToken = localStorage.getItem('bearerToken');
 		
 		Swal.fire({
