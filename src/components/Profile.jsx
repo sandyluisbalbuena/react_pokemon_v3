@@ -69,7 +69,7 @@ const Profile = () => {
 		newUserIcon = Icon;
 	}
 
-	function editProfile(){
+	function editProfileLaravel(){
 
 		let usernameToBeEdit = document.getElementById('username');
 
@@ -105,18 +105,50 @@ const Profile = () => {
 			})
 			.catch(error => {
 				console.log('Error updating user data:', error);
-				// Handle the error
 			});
 		}
-	
 		usernameToBeEdit.style.border = 'gray 1px solid';
-	
 	}
 
+	function editProfile(){
 
+		let usernameToBeEdit = document.getElementById('username');
 
+		let formData = {
+			username: usernameToBeEdit.value,
+			image: newUserIcon,
+		};
 
+		if (usernameToBeEdit.value == '') {
 
+			console.log(formData);
+			usernameToBeEdit.style.border = 'red 1px solid';
+			Swal.fire({
+				icon: 'error',
+				title: 'All fields are required!',
+			});
+			return;
+		}
+
+		const currentUser = firebase.auth().currentUser;
+		if (currentUser) {
+			axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData)
+			// axios.put(`http://pok3mon.online/api/user/${currentUser.uid}`, formData)
+			.then(() => {
+			$('#profile').modal('hide');
+
+			Swal.fire({
+				icon: 'success',
+				title: 'User data updated successfully!',
+			});
+			usernameToBeEdit.style.border = 'gray 1px solid';
+			})
+			.catch(error => {
+			console.log('Error updating user data:', error);
+			});
+		}
+		usernameToBeEdit.style.border = 'gray 1px solid';
+	}
 
 
 	return (

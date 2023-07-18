@@ -456,7 +456,7 @@ const CreateThreadModal = () => {
 		}
 	
 		// const url = 'http://127.0.0.1:8000/api/thread/'+id;
-		const url = 'https://pok3mon.online/api/thread'+id;
+		const url = 'https://pok3mon.online/api/thread/'+id;
 	
 		const formData = {
 			id: id, // Include the thread ID in the form data
