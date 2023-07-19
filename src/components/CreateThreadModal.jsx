@@ -189,98 +189,95 @@ const CreateThreadModal = () => {
 	// 	});
 	// }
 
+	const randomTitleGenerator = () => {
+		const pokemon = ['Pikachu', 'Charizard', 'Mewtwo', 'Eevee', 'Gyarados'];
+		const actions = ['Adventure', 'Battles', 'Quest', 'Journey', 'Challenges'];
+		const uniqueId = Date.now().toString(36); // Unique identifier based on the current timestamp
+		
+		const randomPokemon = pokemon[Math.floor(Math.random() * pokemon.length)];
+		const randomAction = actions[Math.floor(Math.random() * actions.length)];
+		
+		return `${randomPokemon} ${randomAction} ${uniqueId}`;
+	};
+
+	const randomContentGenerator = () => {
+		const phrases = [
+		'Pokémon are creatures with unique abilities.',
+		'Trainers catch and train Pokémon for battles.',
+		'Pikachu is one of the most famous Pokémon.',
+		'Eevee can evolve into multiple different forms.',
+		'Charizard is a powerful Fire and Flying type Pokémon.',
+		'The goal is to become a Pokémon Master.',
+		'Team Rocket is a notorious group of Pokémon thieves.',
+		'Legendary Pokémon possess extraordinary powers.',
+		'Gotta catch \'em all!',
+		'Pokémon battles take place in Pokémon Gyms.',
+		'The Pokémon League is the ultimate challenge for trainers.',
+		'Pokémon trainers use Poké Balls to catch wild Pokémon.',
+		'Pokédex is a digital encyclopedia of Pokémon species.',
+		'Ash Ketchum is the protagonist of the Pokémon anime.',
+		'Pokémon TCG is a popular trading card game.',
+		'Pokémon Go is a mobile game that uses augmented reality.',
+		'Jigglypuff is known for its lullaby that puts others to sleep.',
+		'Mewtwo is a genetically engineered Pokémon.',
+		'Gyarados is a powerful Water and Flying type Pokémon.',
+		'Bulbasaur is a Grass and Poison type starter Pokémon.',
+		'The world of Pokémon is filled with excitement and adventure.',
+		'Pokémon trainers form deep bonds with their Pokémon partners.',
+		];
+	
+		const contentLength = Math.floor(Math.random() * (50 - 20 + 1) + 20); // Random length between 20 and 50 words
+		const selectedPhrases = [];
+	
+		while (selectedPhrases.join(' ').split(' ').length < contentLength) {
+		const randomIndex = Math.floor(Math.random() * phrases.length);
+		const selectedPhrase = phrases[randomIndex];
+		if (!selectedPhrases.includes(selectedPhrase)) {
+			selectedPhrases.push(selectedPhrase);
+		}
+		}
+	
+		return selectedPhrases.join(' ');
+	};
+
+	const randomUidGenerator = () => {
+		
+	};
+	
 
 	function createThread() {
 
-		const category = document.getElementById('category');
-		const title = document.getElementById('title');
-		const slug = slugify(title.value);
-		
-
-
-		if(title.value == '' || tinymce.activeEditor.getContent() == ''){
-			Swal.fire({
-				icon: 'error',
-				title: 'All fields are required!',
-			});
-			return
-		}
-
-	
 		const threadRef = firebase.database().ref('threads');
-	
-		threadRef
-		.orderByChild('title')
-		.equalTo(title.value)
-		.once('value')
-		.then((snapshot) => {
-			if (snapshot.exists()) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Title already exists!',
-			});
-			return;
-			}
-	
-			return threadRef
-			.orderByChild('slug')
-			.equalTo(slug)
-			.once('value');
-		})
-		.then((slugSnapshot) => {
-			if (slugSnapshot.exists()) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Slug already exists!',
-			});
-			return;
-			}
-	
+		const date = new Date('July 18, 2023 13:31:43');
+		const timestamp = date.getTime();
+		let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
+		let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
+		let randomTitle = randomTitleGenerator();
+		let randomSlug = slugify(randomTitle);
+		let randomContent = randomContentGenerator();
+
+		const userRef = firebase.database().ref('users');
+		userRef.once('value')
+		.then(snapshot => {
+			const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
+			const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
+			const randomUserUid =  uids[randomIndex]; // Get the random user UID
+
 			const formData = {
-				categoryId: category.value,
-				title: title.value,
-				slug: slug,
-				content: tinymce.activeEditor.getContent(),
-				userId: user.uid,
-				createdAt: firebase.database.ServerValue.TIMESTAMP,
-				updatedAt: firebase.database.ServerValue.TIMESTAMP,
+				categoryId: randomCategory,
+				title: randomTitle,
+				slug: randomSlug,
+				content: randomContent,
+				userId: randomUserUid,
+				createdAt: timestamp,
+				updatedAt: timestamp,
 			};
-	
-			threadRef
-			.push(formData)
-			.then(() => {
-				$('#postThread').modal('hide');
-	
-				Swal.fire({
-				icon: 'success',
-				title: 'Post Created successfully!',
-				});
-			})
-			.catch((error) => {
-				console.error(error);
-				Swal.fire({
-				icon: 'error',
-				title: 'Something went wrong!',
-				});
-			})
-			.finally(() => {
-				category.value = '';
-				title.value = '';
-				tinymce.activeEditor.setContent('');
 
-				document.getElementById('category').removeAttribute('disabled');
+			threadRef.push(formData)
 
-				if(redirectToThread){
-					navigate('pokeforum/'+slug);
-				}
-			});
 		})
-		.catch((error) => {
+		.catch(error => {
 			console.error(error);
-			Swal.fire({
-			icon: 'error',
-			title: 'Something went wrong!',
-			});
 		});
 	}
 
@@ -502,8 +499,6 @@ const CreateThreadModal = () => {
 		});
 	}
 	
-	
-
 	return (
 		<div className="modal fade modal-lg" id="postThread" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div className="modal-dialog">
@@ -537,7 +532,7 @@ const CreateThreadModal = () => {
 					</div>
 					<div className="modal-footer">
 						{postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThreadLaravel()}>Post</button>)}
-						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Post</button>)} */}
+						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Random Post</button>)} */}
 						{editFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>editedThreadLaravel(threadIDToBeEdit)}>Edit</button>)}
 						<button type="button" className="btn btn-dark" data-mdb-dismiss="modal">Cancel</button>
 					</div>

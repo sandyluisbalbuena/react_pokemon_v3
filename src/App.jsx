@@ -19,6 +19,7 @@ import Profile from './components/Profile'
 import CommunityChat from './components/CommunityChat'
 import { useEffect, useState } from 'react'
 import Dashboard from './pages/Dashboard'
+import TermsAndAgreement from './components/TermsAndAgreement'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -37,8 +38,52 @@ function App() {
 
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	useEffect(() => {
+	const userAttendanceRef = firebase.database().ref('userAttendance');
 
+	// Generate dummy data for daily attendance
+	function generateAttendanceData() {
+		const attendanceData = {};
+	
+		// Get today's date and two months ago
+		const today = new Date();
+		today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+	
+		const twoMonthsAgo = new Date();
+		twoMonthsAgo.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+		twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+	
+		// Iterate through each day from two months ago to today
+		for (let date = new Date(twoMonthsAgo); date <= today; date.setDate(date.getDate() + 1)) {
+		const attendanceCount = getRandomInt(0, 5850); // Random total attendance count between 0 and 100
+	
+		attendanceData[date.getTime()] = attendanceCount;
+		}
+	
+		return attendanceData;
+	}
+	
+
+	function getRandomInt(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function seedAttendanceData() {
+		const attendanceData = generateAttendanceData();
+	
+		// Push the attendance data to the 'userAttendance' reference
+		userAttendanceRef.set(attendanceData, error => {
+		if (error) {
+			console.error('Error seeding attendance data:', error);
+		} else {
+			console.log('Attendance data seeded successfully!');
+		}
+		});
+	}
+
+	useEffect(() => {
+		// seedAttendanceData();
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
 		setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
 		});
@@ -110,8 +155,6 @@ function App() {
 		}
 	}	
 	
-
-
 	return (
 		<>
 			<BrowserRouter basename='/'>
@@ -126,6 +169,7 @@ function App() {
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
 						<Route path='/dashboard' element={<Dashboard />}/>
+						<Route path='/termsandagreements' element={<TermsAndAgreement />}/>
 					</Route>
 					<Route path='*' element={<Notfound />}/>
 				</Routes>

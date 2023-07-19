@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/database';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
 const Register = () => {
@@ -12,6 +12,11 @@ const Register = () => {
 	const [username, setUsername] = useState('');
 	const [image, setImage] = useState('pikachu');
 	const navigate = useNavigate();
+	const [agree, setAgree] = useState(false);
+
+	const handleCheckboxChange = () => {
+		setAgree(!agree);
+	};
 
 	const googleProvider = new GoogleAuthProvider();	
 	const facebookProvider = new FacebookAuthProvider();	
@@ -59,7 +64,7 @@ const Register = () => {
 	// };
 
 	const handleRegister = async () => {
-		if (!email || !password || !repassword || !username || !image) {
+		if (!email || !password || !repassword || !username || !image || !agreeCheckbox) {
 		Swal.fire({
 			icon: 'error',
 			title: 'Oops...',
@@ -70,13 +75,13 @@ const Register = () => {
 		}
 	
 		if (password !== repassword) {
-		Swal.fire({
-			icon: 'error',
-			title: 'Oops...',
-			text: 'Passwords do not match.',
-			footer: '<a href="">Why do I have this issue?</a>'
-		});
-		return;
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Passwords do not match.',
+				footer: '<a href="">Why do I have this issue?</a>'
+			});
+			return;
 		}
 	
 		try {
@@ -91,7 +96,6 @@ const Register = () => {
 		Swal.fire({
 			icon: 'success',
 			text: 'Successfully created an account.',
-			footer: '<a href="">Why do I have this issue?</a>'
 		});
 	
 		let templateParams = {
@@ -186,7 +190,7 @@ const Register = () => {
 					<div className="text-white">
 
 
-						<div className="card">
+						<div className="card mx-3 mx-lg-0">
 							<div className="card-body">
 								<h5 className="card-title">Login</h5>
 
@@ -204,6 +208,16 @@ const Register = () => {
 
 								<div className="form mb-4">
 									<input type="password" placeholder='Confirm Password' id="repassword" className="form-control" value={repassword} onChange={(e) => setRePassword(e.target.value)}/>
+								</div>
+
+								<div className="form-check mb-4">
+									<input className="form-check-input" type="checkbox" id="agreeCheckbox" checked={agree} onChange={handleCheckboxChange} />
+									<label className="form-check-label" htmlFor="agreeCheckbox">
+										<span className='text-black'>I agree to the </span>
+										<a href="/termsandagreements" target="_blank" rel="noopener noreferrer">
+											Terms and Agreements
+										</a>
+									</label>
 								</div>
 
 								<button className="btn btn-primary btn-block btn-dark"  onClick={handleRegister}>Register</button>

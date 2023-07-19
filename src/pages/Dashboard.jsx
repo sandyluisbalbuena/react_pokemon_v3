@@ -4,6 +4,8 @@ import firebase from 'firebase/compat/app';
 import ForumLatest from '../components/ForumLatest'
 import ForumCategories from '../components/ForumCategories';
 import ChartThreads from '../components/ChartThreads';
+import ChartAttendance from '../components/ChartAttendance';
+import ChartPieThreads from '../components/ChartPieThreads';
 
 const Dashboard = () => {
 
@@ -37,7 +39,7 @@ const Dashboard = () => {
 
 				<div className="col-12 col-lg-9">
 
-					<div className="d-lg-none">
+					{/* <div className="d-lg-none">
 						<div className="card my-4 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{borderRadius: '5px', height: '100%'}} id="secondCard">
 							<div className="card-body container-fluid">
 
@@ -49,16 +51,27 @@ const Dashboard = () => {
 						</div>
 
 						<ForumCategories/>
-	
-					</div>
+					</div> */}
 
-					<div id="forumLatest">
+					{/* <div id="forumLatest">
 						<ForumLatest  user={userdata} dashboard={1}/>
+					</div> */}
+
+					<div className='row my-4'>
+						<div className="col-4">
+							<ChartPieThreads />
+						</div>
+						<div className="col-8">
+							<ChartThreads />
+						</div>
 					</div>
 
-					<div id="chartThread">
-						<ChartThreads />
+					<div className='row my-4'>
+						<div id="chartAttendance">
+							<ChartAttendance />
+						</div>
 					</div>
+
 
 				</div>
 

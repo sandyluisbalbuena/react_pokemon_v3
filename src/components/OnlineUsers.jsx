@@ -77,21 +77,21 @@ useEffect(() => {
 
 return (
 	<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
-	<div className="card-body container-fluid">
-		<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#onlineUsers" aria-expanded="false" aria-controls="onlineUsers">
-		<h6 className="ms-4">Online Users</h6>
-		<i className="fas fa-angles-down"></i>
+		<div className="card-body container-fluid">
+			<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#onlineUsers" aria-expanded="false" aria-controls="onlineUsers">
+			<h6 className="ms-4">Online Users</h6>
+			<i className="fas fa-angles-down"></i>
+			</div>
+			<ul className="collapse mt-3" id="onlineUsers" style={{ listStyleType: 'none' }}>
+			{onlineUsers.map((userId) => (
+				<a key={userId}>
+				<li className="px-2 py-1 rounded threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+					{/* {userMap[userId].username.toUpperCase()} */}
+				</li>
+				</a>
+			))}
+			</ul>
 		</div>
-		<ul className="collapse mt-3" id="onlineUsers" style={{ listStyleType: 'none' }}>
-		{onlineUsers.map((userId) => (
-			<a key={userId}>
-			<li className="px-2 py-1 rounded threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-				{/* {userMap[userId].username.toUpperCase()} */}
-			</li>
-			</a>
-		))}
-		</ul>
-	</div>
 	</div>
 );
 };
