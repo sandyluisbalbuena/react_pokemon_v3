@@ -6,6 +6,9 @@ import ForumCategories from '../components/ForumCategories';
 import ChartThreads from '../components/ChartThreads';
 import ChartAttendance from '../components/ChartAttendance';
 import ChartPieThreads from '../components/ChartPieThreads';
+import ChartUserActivities from '../components/ChartUserActivities';
+import { Categories } from 'emoji-picker-react';
+import Candidates from '../components/Candidates';
 
 const Dashboard = () => {
 
@@ -28,6 +31,17 @@ const Dashboard = () => {
 		});
 		}
 	}, [user]);
+
+	function hideAndShow(element){
+		if(element == 'usersUtil'){
+			document.getElementById('usersUtilelement').style.display = 'block';
+			document.getElementById('threadsUtilelement').style.display = 'none';
+		}
+		else{
+			document.getElementById('usersUtilelement').style.display = 'none';
+			document.getElementById('threadsUtilelement').style.display = 'block';
+		}
+	}
 
 	return (
 		<div className="container">
@@ -53,22 +67,30 @@ const Dashboard = () => {
 						<ForumCategories/>
 					</div> */}
 
-					{/* <div id="forumLatest">
-						<ForumLatest  user={userdata} dashboard={1}/>
-					</div> */}
-
-					<div className='row my-4'>
-						<div className="col-4">
-							<ChartPieThreads />
+					<div id="threadsUtilelement">
+						<div className='row my-4'>
+							<div className="col-4">
+								<ChartPieThreads />
+							</div>
+							<div className="col-8">
+								<ChartThreads />
+							</div>
 						</div>
-						<div className="col-8">
-							<ChartThreads />
+
+						
+						<div id="forumLatest">
+							<ForumLatest  user={userdata} dashboard={1}/>
 						</div>
 					</div>
 
-					<div className='row my-4'>
-						<div id="chartAttendance">
-							<ChartAttendance />
+					<div id="usersUtilelement" style={{display:'none'}}>
+						<div className='row my-4'>
+							<div id="chartAttendance">
+								<ChartAttendance />
+							</div>
+							<div id="chartActivities" className='my-3'>
+								<ChartUserActivities />
+							</div>
 						</div>
 					</div>
 
@@ -92,8 +114,31 @@ const Dashboard = () => {
 							</div>
 
 
-							<div className="row">
+							{/* <div className="row">
 								<ForumCategories/>
+							</div> */}
+
+							<div className="row">
+								<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }}>
+									<div className="card-body container-fluid">
+										<div className="d-flex justify-content-between" type="button" data-mdb-toggle="collapse" data-mdb-target="#utilities" aria-expanded="true" aria-controls="utilities">
+										<h6 className="ms-4">Utilities</h6>
+										<i className="fas fa-angles-down"></i>
+										</div>
+										<ul className="collapse show mt-3" id="utilities" style={{ listStyleType: 'none' }}>
+											<li className="px-2 py-1 rounded list-group-item threads-latest my-2" type="button" id="usersUtil" onClick={()=>hideAndShow('usersUtil')} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+												Users
+											</li>
+											<li className="px-2 py-1 rounded list-group-item threads-latest my-2" type="button" id="threadsUtil" onClick={()=>hideAndShow('threadsUtil')} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+												Threads
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div className="row">
+								<Candidates />
 							</div>
 
 						</div>

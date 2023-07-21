@@ -31,12 +31,24 @@ const ForumLatest = (props) => {
 	}, [threadGroups]);
 
 	function tableInit(){
+
+		reinitializeDataTables();
+
 		threadGroups.forEach((group, index) => {
+
 			const tableId = `tableForumLatest${group.category}`;
+			const existingTable = dataTableRefs.current[index];
+
+			// Destroy the previous table instance before creating a new one
+			if (existingTable) {
+				existingTable.destroy();
+			}
+
 			const table = new DataTable(`#${tableId}`, {
-				pageLength: 4, // Limit the number of entries per page to 4
+				pageLength: 5, // Limit the number of entries per page to 4
 				lengthChange: false, // Remove the "Show [x] entries" dropdown
 				ordering: false,
+				responsive: true,
 				language: {
 				info: '', // Remove the footer text "Showing 1 to 4 of 4 entries"
 				},
@@ -68,6 +80,12 @@ const ForumLatest = (props) => {
 	};
 
 	const fetchThreads = () => {
+
+		// dataTableRefs.current.forEach((table) => {
+		// 	if (table) {
+		// 		table.clear();
+		// 	}
+		// });
 
 		const threadRef = firebase.database().ref('threads');
 		const categoryRef = firebase.database().ref('categories');
@@ -132,11 +150,21 @@ const ForumLatest = (props) => {
 				});
 	
 				setThreadGroups(sortedThreadGroups);
+
+				// tableInit();
+
 				});
 			});
 			});
 		}
 		});
+
+		// dataTableRefs.current.forEach((table) => {
+		// 	if (table) {
+		// 		table.draw();
+		// 	}
+		// });
+
 	
 		return () => {
 		threadRef.off('value', threadListener);
@@ -420,7 +448,7 @@ const ForumLatest = (props) => {
 	const reinitializeDataTables = () => {
 		// Destroy and reinitialize each DataTable instance
 		dataTableRefs.current.forEach((dataTable) => {
-		dataTable.destroy();
+			dataTable.destroy();
 		});
 	
 		// // Initialize DataTables again
@@ -438,6 +466,10 @@ const ForumLatest = (props) => {
 		// });
 	};
 
+	function redirectToThread(slug){
+		window.location.href = "/pokeforum/"+slug;
+	}
+
 	return (
 		<div>
 		{threadGroups.map((group) => (
@@ -445,7 +477,8 @@ const ForumLatest = (props) => {
 				<div className="card-body container">
 					<div className="row">
 						<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
-						<div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
+
+						{/* <div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
 							{group.threads.map((thread) => (
 
 								((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
@@ -529,9 +562,9 @@ const ForumLatest = (props) => {
 									</a>
 								)
 							))}
-						</div>
+						</div> */}
 
-						{/* <table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
+						<table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
 							<thead>
 								<tr>
 									<th scope="col"></th>
@@ -540,12 +573,12 @@ const ForumLatest = (props) => {
 									<th scope="col"></th>
 									<th scope="col"></th>
 									<th scope="col"></th>
-									<th scope="col"></th>
+									{/* <th scope="col"></th> */}
 								</tr>
 							</thead>
 							<tbody className='tableForumsLatest'>
 							{group.threads.map((thread) => (
-									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="px-3 rounded">
+								<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="px-3 rounded" onClick={() => redirectToThread(thread.slug)}>
 									<td><i className="fas fa-comments mx-3"></i></td>
 									<td>{thread.title}</td>
 									<td>
@@ -559,7 +592,7 @@ const ForumLatest = (props) => {
 									<td><img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} /></td>
 									<td><p className="ms-3">{thread.user.toUpperCase()}</p></td>
 									<td><span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span></td>
-									<td>
+									{/* <td>
 									{isAdmin && isAdmin === 'admin' && (
 										<span
 										onClick={(event) => {
@@ -571,13 +604,13 @@ const ForumLatest = (props) => {
 										<i className="fas fa-trash"></i>
 										</span>
 									)}
-									</td>
+									</td> */}
 								</tr>
 
 								
 							))}
 							</tbody>
-						</table> */}
+						</table>
 
 					</div>
 				</div>

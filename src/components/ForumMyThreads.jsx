@@ -46,7 +46,8 @@ return (
 		</h6>
 		<i className="fas fa-angles-down"></i>
 		</div>
-		<ul className="collapse mt-4 show" id="myThreads">
+
+		<ul className="collapse mt-4 show" id="myThreads" style={{overflowY:'auto', height:'200px'}}>
 		{userThreads.map((userThread) => (
 			<a key={userThread.threadId}  href={`/pokeforum/${userThread.slug}`}>
 			<li className="px-2 py-1 rounded list-group-item threads-latest my-2" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>

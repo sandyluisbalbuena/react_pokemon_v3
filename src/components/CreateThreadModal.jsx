@@ -248,7 +248,7 @@ const CreateThreadModal = () => {
 	function createThread() {
 
 		const threadRef = firebase.database().ref('threads');
-		const date = new Date('July 18, 2023 13:31:43');
+		const date = new Date('July 19, 2023 13:31:43');
 		const timestamp = date.getTime();
 		let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
 		let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
@@ -279,6 +279,46 @@ const CreateThreadModal = () => {
 		.catch(error => {
 			console.error(error);
 		});
+	}
+
+	function createThreadLaravelRandom() {
+
+		const date = new Date('July 20, 2023 13:31:43');
+		const timestamp = date.getTime();
+		let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
+		let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
+		let randomTitle = randomTitleGenerator();
+		let randomSlug = slugify(randomTitle);
+		let randomContent = randomContentGenerator();
+
+		const userRef = firebase.database().ref('users');
+		userRef.once('value')
+		.then(snapshot => {
+			const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
+			const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
+			const randomUserUid =  uids[randomIndex]; // Get the random user UID
+
+			const formData = {
+				categoryId: randomCategory,
+				title: randomTitle,
+				slug: randomSlug,
+				content: randomContent,
+				userId: randomUserUid,
+				createdAt: timestamp,
+				updatedAt: timestamp,
+			};
+
+		const url = 'http://127.0.0.1:8000/api/thread';
+
+			axios
+			.post(url, formData)
+
+		})
+
+		
+
+		
+
 	}
 
 	function createThreadLaravel() {
@@ -532,7 +572,7 @@ const CreateThreadModal = () => {
 					</div>
 					<div className="modal-footer">
 						{postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThreadLaravel()}>Post</button>)}
-						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThread()}>Random Post</button>)} */}
+						{/* {postFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>createThreadLaravelRandom()}>Random Post</button>)} */}
 						{editFunction &&(<button type="submit" className="btn btn-dark" onClick={()=>editedThreadLaravel(threadIDToBeEdit)}>Edit</button>)}
 						<button type="button" className="btn btn-dark" data-mdb-dismiss="modal">Cancel</button>
 					</div>

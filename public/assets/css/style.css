@@ -508,9 +508,10 @@ border-top:#332c2c solid 4px;
 }
 
 table.dataTable {
-    border: none !important;
+    /* border: none !important; */
+    border: white !important;
 }
 
 .tableForumsLatest {
-    border-top: none !important;
+    border: white !important;
 }

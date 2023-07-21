@@ -7,6 +7,7 @@ import ForumTrendingTopics from '../components/ForumTrendingTopics';
 import ForumLatest from '../components/ForumLatest';
 import OnlineUsers from '../components/OnlineUsers';
 import eventBus from '../eventBus';
+import ThreadsPokedex from '../components/ThreadsPokedex';
 
 
 const Pokeforum = () => {
@@ -95,6 +96,7 @@ const Pokeforum = () => {
 
 					<div id="forumLatest">
 						<ForumLatest  user={userdata} />
+						{/* <ThreadsPokedex  user={userdata} /> */}
 					</div>
 
 				</div>
