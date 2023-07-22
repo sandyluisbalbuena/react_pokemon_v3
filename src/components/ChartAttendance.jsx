@@ -26,42 +26,59 @@ const ChartAttendance = () => {
 		.get('https://pok3mon.online/api/userattendance')
 		.then(response => {
 			const attendanceData = response.data;
+
+			// Convert the timestamps in the data object to formatted dates
+			// const formattedData = Object.entries(attendanceData).map(([timestamp, value]) => ({
+			// 	date: formatTimestamp(timestamp),
+			// 	value,
+			// }));
+
+			// console.log(formattedData)
+
 			renderChart(attendanceData);
+
 		})
 		.catch(error => {
 			// Handle errors
 		});
 	}
 
+	function formatTimestamp(timestamp) {
+		const dateObj = new Date(parseInt(timestamp, 10));
+		const month = dateObj.toLocaleString('default', { month: 'short' });
+		const date = dateObj.getDate();
+		return `${month} ${date}`;
+	}
+
 	function renderChart(attendanceData) {
 		const ctx = chartRef.current.getContext('2d');
-
+	
 		// Convert the attendanceData object into an array of [date, count] pairs
 		const dataEntries = Object.entries(attendanceData);
-
+	
 		// Separate the dates and counts into separate arrays
-		const dates = dataEntries.map(([date]) => date);
-		const counts = dataEntries.map(([_, count]) => count);
-
+		const dates = dataEntries.map(([timestamp, value]) => formatTimestamp(timestamp));
+		const counts = dataEntries.map(([timestamp, value]) => value);
+	
 		new Chart(ctx, {
-			type: 'bar',
-			data: {
-				labels: dates.map(date => formatDate(date)), // Format the dates before displaying on the x-axis
-				datasets: [
-					{
-						label: 'Total Users',
-						data: counts,
-						backgroundColor: 'rgba(75, 192, 192, 0.5)',
-					},
-				],
+		type: 'bar',
+		data: {
+			labels: dates,
+			datasets: [
+			{
+				label: 'Total Users',
+				data: counts,
+				backgroundColor: 'rgba(75, 192, 192, 0.5)',
 			},
-			options: {
-				scales: {
-					y: {
-						beginAtZero: true,
-					},
-				},
+			],
+		},
+		options: {
+			scales: {
+			y: {
+				beginAtZero: true,
 			},
+			},
+		},
 		});
 	}
 

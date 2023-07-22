@@ -3,32 +3,32 @@ import firebase from 'firebase/compat/app';
 
 const ChartPieThreads = () => {
   const chartRef = useRef(null);
+  let chartInstance = useRef(null);
 
   useEffect(() => {
     fetchThreadsChartData();
 
     const threadsRef = firebase.database().ref('threads'); // Replace 'threads' with your actual reference path
-		threadsRef.on('value', handleDataChange);
-	
-		// Clean up the listener when the component unmounts
-		return () => {
-			threadsRef.off('value', handleDataChange);
-		};
+    threadsRef.on('value', handleDataChange);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      threadsRef.off('value', handleDataChange);
+    };
   }, []);
 
   function handleDataChange(snapshot) {
-		fetchThreadsChartData();
-	}
+    fetchThreadsChartData();
+  }
 
   function fetchThreadsChartData() {
     axios
-      // .get('http://127.0.0.1:8000/api/threadschartdata')
       .get('https://pok3mon.online/api/threadschartdata')
       .then(response => {
         const pokecardTotalThreadCount = getTotalThreadCount(response.data.pokecard);
         const pokedexTotalThreadCount = getTotalThreadCount(response.data.pokedex);
 
-        renderChart(pokecardTotalThreadCount, pokedexTotalThreadCount);
+        updateChart(pokecardTotalThreadCount, pokedexTotalThreadCount);
       })
       .catch(error => {
         console.error(error);
@@ -46,9 +46,20 @@ const ChartPieThreads = () => {
     return totalCount;
   }
 
-  function renderChart(pokecardTotalThreadCount, pokedexTotalThreadCount) {
-    const ctx = chartRef.current.getContext('2d');
-    new Chart(ctx, {
+  function updateChart(pokecardTotalThreadCount, pokedexTotalThreadCount) {
+    if (!chartInstance.current) {
+      createChart(pokecardTotalThreadCount, pokedexTotalThreadCount);
+    } else {
+      // Update the chart data if the chart instance exists
+      chartInstance.current.data.datasets[0].data = [pokecardTotalThreadCount, pokedexTotalThreadCount];
+      chartInstance.current.update();
+    }
+  }
+
+  function createChart(pokecardTotalThreadCount, pokedexTotalThreadCount) {
+    const ctx = chartRef.current;
+
+    chartInstance.current = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['Pokecard', 'Pokedex'],

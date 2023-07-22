@@ -34,15 +34,10 @@ const Candidates = () => {
 		// .get('http://127.0.0.1:8000/api/useractivities')
 		.then(response => {
 			const attendanceData = response.data;
-
-
 			const top10 = Object.entries(attendanceData)
 			.map(([username, activityCount]) => ({ username, activityCount }))
 			.sort((a, b) => b.activityCount - a.activityCount)
 			.slice(0, 10);
-
-			console.log(top10)
-
 
 			setCandidates(top10);
 		})

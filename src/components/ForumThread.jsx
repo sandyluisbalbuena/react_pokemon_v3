@@ -12,11 +12,12 @@ const ForumThread = () => {
 	const { slug } = useParams();
 	const [user] = useAuthState(firebase.auth());
 	const navigate = useNavigate();
+	const [upvoteUsernames, setUpvoteUsernames] = useState([]);
+	const [downvoteUsernames, setDownvoteUsernames] = useState([]);
 
 	useEffect(() => {
 		if(user){
 			setuserId(user.uid);
-			console.log(user);
 		}
 	}, [])
 	
@@ -34,6 +35,13 @@ const ForumThread = () => {
 		});
 	}, [slug]);
 
+	// useEffect(() => {
+	// 	if (threadData && threadData.upvote) {
+	// 		// fetchUsernamesUp();
+	// 		// fetchUsernamesDown();
+	// 	}
+	// }, [threadData]);
+
 	useEffect(()=>{
 		const threadsRef = firebase.database().ref('threads');
 		const messagesRef = firebase.database().ref('messages');
@@ -43,6 +51,43 @@ const ForumThread = () => {
 		usersRef.on('child_changed', handleNewMessage);
 		threadsRef.on('child_changed', handleNewMessage);
 	},[])
+
+
+	function fetchUsernamesUp() {
+		if (threadData && threadData.upvote) {
+		const fetchUsernamesUp = async () => {
+			const promises = threadData.upvote.map(async (userId) => {
+			const userSnapshot = await firebase.database().ref('users/' + userId).once('value');
+			return userSnapshot.val().username;
+			});
+	
+			const usernames = await Promise.all(promises);
+			setUpvoteUsernames(usernames);
+		};
+	
+		fetchUsernamesUp();
+		}else{
+			setUpvoteUsernames([]);
+		}
+	}
+
+	function fetchUsernamesDown() {
+		if (threadData && threadData.upvote) {
+		const fetchUsernamesDown = async () => {
+			const promises = threadData.upvote.map(async (userId) => {
+			const userSnapshot = await firebase.database().ref('users/' + userId).once('value');
+			return userSnapshot.val().username;
+			});
+	
+			const usernames = await Promise.all(promises);
+			setDownvoteUsernames(usernames);
+		};
+	
+		fetchUsernamesDown();
+		}else{
+			setDownvoteUsernames([]);
+		}
+	}
 
 	const handleNewMessage = () => {
 
@@ -345,6 +390,52 @@ const ForumThread = () => {
 		return false;
 	}
 
+	function upvote(threadId){
+		const formData = {
+			upvote: user.uid,
+		};
+
+		axios
+		.put('http://127.0.0.1:8000/api/upvote/'+threadId, formData)
+		// .put('http://pok3mon.online/api/upvote/'+user.uid)
+		.then((response)=>{
+			fetchThreadBySlug(slug);
+			// fetchUsernamesUp();
+		})
+	
+	}
+	// console.log(threadData);
+	
+	function downvote(){
+		const formData = {
+			upvote: user.uid,
+		};
+
+		axios
+		.put('http://127.0.0.1:8000/api/downvote/'+threadId, formData)
+		// .put('http://pok3mon.online/api/downvote/sampleid')
+		.then((response)=>{
+			fetchThreadBySlug(slug);
+		})
+	}
+
+	function showListUpvotes(){
+		document.getElementById('upvoteCard').style.setProperty('visibility', 'visible', 'important');
+	}
+
+	function hideListUpvotes(){
+		document.getElementById('upvoteCard').style.visibility = "hidden";
+	}
+
+	function showListDownvotes(){
+		document.getElementById('downvoteCard').style.setProperty('visibility', 'visible', 'important');
+	}
+
+	function hideListDownvotes(){
+		document.getElementById('downvoteCard').style.visibility = "hidden";
+	}
+
+
 	return (
 		<div className="container">
 			<div className="row">
@@ -381,7 +472,7 @@ const ForumThread = () => {
 							</div>
 						</div>
 						</div>
-			
+						<div className='d-flex justify-content-between'>
 						<span className="d-flex">
 						{threadData && threadData.user && (
 							<>
@@ -396,12 +487,29 @@ const ForumThread = () => {
 							</>
 						)}
 						</span>
-			
-						{/* <span className="py-3">
-						<i className="fas fa-thumbs-up ms-2"></i>
-						<i className="fas fa-thumbs-down ms-2"></i>
-						<i className="fas fa-reply ms-2"></i>
-						</span> */}
+						{threadData && (
+						<span className="py-3">
+							<i
+							className="fas fa-thumbs-up ms-2"
+							onMouseOver={() => showListUpvotes(threadData.upvote)}
+							onMouseOut={hideListUpvotes}
+							type="button"
+							onClick={() => upvote(threadData.threadId)}
+							></i>
+							<div id='upvoteCard' className="card" style={{ position: 'absolute', zIndex:'5', visibility:'hidden'}}>
+								{threadData.upvote?.map(name => (
+									<p className='mx-5 rounded my-1' key={name}>{name}</p>
+								))}
+							</div>
+							<i className="fas fa-thumbs-down ms-4" type="button" onClick={() => downvote()}></i>
+							<div id='downvoteCard' className="card" style={{ position: 'absolute', zIndex:'5', visibility:'hidden'}}>
+								{threadData.downvote?.map(name => (
+									<p className='mx-5 rounded my-1' key={name}>{name}</p>
+								))}
+							</div>
+						</span>
+						)}
+						</div>
 					</div>
 				</div>
 			</div>
