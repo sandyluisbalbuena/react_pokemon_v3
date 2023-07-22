@@ -308,8 +308,8 @@ const ForumThread = () => {
 		showLoaderOnConfirm: true,
 		preConfirm: () => {
 			return axios
-			// .delete(`https:pok3mon.online/api/thread/${deleteThreadId}`)
-			.delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
+			.delete(`https://pok3mon.online/api/thread/${deleteThreadId}`, {
+			// .delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
 				headers: {
 				  	'X-User-Id': currentUser.uid, // Include the user ID in the request headers
 					'X-User-Uid': currentUser.uid,
@@ -332,8 +332,10 @@ const ForumThread = () => {
 				text: result.message,
 				icon: 'success',
 			}).then(() => {
-				fetchThreads();
-			});
+				setTimeout(() => {
+					navigate('/pokeforum');
+				}, 500);
+			})
 			}
 		})
 		.catch((error) => {
@@ -342,7 +344,6 @@ const ForumThread = () => {
 	
 		return false;
 	}
-
 
 	return (
 		<div className="container">

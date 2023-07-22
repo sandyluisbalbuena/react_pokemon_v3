@@ -189,137 +189,137 @@ const CreateThreadModal = () => {
 	// 	});
 	// }
 
-	const randomTitleGenerator = () => {
-		const pokemon = ['Pikachu', 'Charizard', 'Mewtwo', 'Eevee', 'Gyarados'];
-		const actions = ['Adventure', 'Battles', 'Quest', 'Journey', 'Challenges'];
-		const uniqueId = Date.now().toString(36); // Unique identifier based on the current timestamp
+	// const randomTitleGenerator = () => {
+	// 	const pokemon = ['Pikachu', 'Charizard', 'Mewtwo', 'Eevee', 'Gyarados'];
+	// 	const actions = ['Adventure', 'Battles', 'Quest', 'Journey', 'Challenges'];
+	// 	const uniqueId = Date.now().toString(36); // Unique identifier based on the current timestamp
 		
-		const randomPokemon = pokemon[Math.floor(Math.random() * pokemon.length)];
-		const randomAction = actions[Math.floor(Math.random() * actions.length)];
+	// 	const randomPokemon = pokemon[Math.floor(Math.random() * pokemon.length)];
+	// 	const randomAction = actions[Math.floor(Math.random() * actions.length)];
 		
-		return `${randomPokemon} ${randomAction} ${uniqueId}`;
-	};
+	// 	return `${randomPokemon} ${randomAction} ${uniqueId}`;
+	// };
 
-	const randomContentGenerator = () => {
-		const phrases = [
-		'Pokémon are creatures with unique abilities.',
-		'Trainers catch and train Pokémon for battles.',
-		'Pikachu is one of the most famous Pokémon.',
-		'Eevee can evolve into multiple different forms.',
-		'Charizard is a powerful Fire and Flying type Pokémon.',
-		'The goal is to become a Pokémon Master.',
-		'Team Rocket is a notorious group of Pokémon thieves.',
-		'Legendary Pokémon possess extraordinary powers.',
-		'Gotta catch \'em all!',
-		'Pokémon battles take place in Pokémon Gyms.',
-		'The Pokémon League is the ultimate challenge for trainers.',
-		'Pokémon trainers use Poké Balls to catch wild Pokémon.',
-		'Pokédex is a digital encyclopedia of Pokémon species.',
-		'Ash Ketchum is the protagonist of the Pokémon anime.',
-		'Pokémon TCG is a popular trading card game.',
-		'Pokémon Go is a mobile game that uses augmented reality.',
-		'Jigglypuff is known for its lullaby that puts others to sleep.',
-		'Mewtwo is a genetically engineered Pokémon.',
-		'Gyarados is a powerful Water and Flying type Pokémon.',
-		'Bulbasaur is a Grass and Poison type starter Pokémon.',
-		'The world of Pokémon is filled with excitement and adventure.',
-		'Pokémon trainers form deep bonds with their Pokémon partners.',
-		];
+	// const randomContentGenerator = () => {
+	// 	const phrases = [
+	// 	'Pokémon are creatures with unique abilities.',
+	// 	'Trainers catch and train Pokémon for battles.',
+	// 	'Pikachu is one of the most famous Pokémon.',
+	// 	'Eevee can evolve into multiple different forms.',
+	// 	'Charizard is a powerful Fire and Flying type Pokémon.',
+	// 	'The goal is to become a Pokémon Master.',
+	// 	'Team Rocket is a notorious group of Pokémon thieves.',
+	// 	'Legendary Pokémon possess extraordinary powers.',
+	// 	'Gotta catch \'em all!',
+	// 	'Pokémon battles take place in Pokémon Gyms.',
+	// 	'The Pokémon League is the ultimate challenge for trainers.',
+	// 	'Pokémon trainers use Poké Balls to catch wild Pokémon.',
+	// 	'Pokédex is a digital encyclopedia of Pokémon species.',
+	// 	'Ash Ketchum is the protagonist of the Pokémon anime.',
+	// 	'Pokémon TCG is a popular trading card game.',
+	// 	'Pokémon Go is a mobile game that uses augmented reality.',
+	// 	'Jigglypuff is known for its lullaby that puts others to sleep.',
+	// 	'Mewtwo is a genetically engineered Pokémon.',
+	// 	'Gyarados is a powerful Water and Flying type Pokémon.',
+	// 	'Bulbasaur is a Grass and Poison type starter Pokémon.',
+	// 	'The world of Pokémon is filled with excitement and adventure.',
+	// 	'Pokémon trainers form deep bonds with their Pokémon partners.',
+	// 	];
 	
-		const contentLength = Math.floor(Math.random() * (50 - 20 + 1) + 20); // Random length between 20 and 50 words
-		const selectedPhrases = [];
+	// 	const contentLength = Math.floor(Math.random() * (50 - 20 + 1) + 20); // Random length between 20 and 50 words
+	// 	const selectedPhrases = [];
 	
-		while (selectedPhrases.join(' ').split(' ').length < contentLength) {
-		const randomIndex = Math.floor(Math.random() * phrases.length);
-		const selectedPhrase = phrases[randomIndex];
-		if (!selectedPhrases.includes(selectedPhrase)) {
-			selectedPhrases.push(selectedPhrase);
-		}
-		}
+	// 	while (selectedPhrases.join(' ').split(' ').length < contentLength) {
+	// 	const randomIndex = Math.floor(Math.random() * phrases.length);
+	// 	const selectedPhrase = phrases[randomIndex];
+	// 	if (!selectedPhrases.includes(selectedPhrase)) {
+	// 		selectedPhrases.push(selectedPhrase);
+	// 	}
+	// 	}
 	
-		return selectedPhrases.join(' ');
-	};
+	// 	return selectedPhrases.join(' ');
+	// };
 
-	const randomUidGenerator = () => {
+	// const randomUidGenerator = () => {
 		
-	};
+	// };
 	
 
-	function createThread() {
+	// function createThread() {
 
-		const threadRef = firebase.database().ref('threads');
-		const date = new Date('July 19, 2023 13:31:43');
-		const timestamp = date.getTime();
-		let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
-		let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
-		let randomTitle = randomTitleGenerator();
-		let randomSlug = slugify(randomTitle);
-		let randomContent = randomContentGenerator();
+	// 	const threadRef = firebase.database().ref('threads');
+	// 	const date = new Date('July 19, 2023 13:31:43');
+	// 	const timestamp = date.getTime();
+	// 	let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
+	// 	let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
+	// 	let randomTitle = randomTitleGenerator();
+	// 	let randomSlug = slugify(randomTitle);
+	// 	let randomContent = randomContentGenerator();
 
-		const userRef = firebase.database().ref('users');
-		userRef.once('value')
-		.then(snapshot => {
-			const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
-			const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
-			const randomUserUid =  uids[randomIndex]; // Get the random user UID
+	// 	const userRef = firebase.database().ref('users');
+	// 	userRef.once('value')
+	// 	.then(snapshot => {
+	// 		const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
+	// 		const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
+	// 		const randomUserUid =  uids[randomIndex]; // Get the random user UID
 
-			const formData = {
-				categoryId: randomCategory,
-				title: randomTitle,
-				slug: randomSlug,
-				content: randomContent,
-				userId: randomUserUid,
-				createdAt: timestamp,
-				updatedAt: timestamp,
-			};
+	// 		const formData = {
+	// 			categoryId: randomCategory,
+	// 			title: randomTitle,
+	// 			slug: randomSlug,
+	// 			content: randomContent,
+	// 			userId: randomUserUid,
+	// 			createdAt: timestamp,
+	// 			updatedAt: timestamp,
+	// 		};
 
-			threadRef.push(formData)
+	// 		threadRef.push(formData)
 
-		})
-		.catch(error => {
-			console.error(error);
-		});
-	}
+	// 	})
+	// 	.catch(error => {
+	// 		console.error(error);
+	// 	});
+	// }
 
-	function createThreadLaravelRandom() {
+	// function createThreadLaravelRandom() {
 
-		const date = new Date('July 20, 2023 13:31:43');
-		const timestamp = date.getTime();
-		let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
-		let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
-		let randomTitle = randomTitleGenerator();
-		let randomSlug = slugify(randomTitle);
-		let randomContent = randomContentGenerator();
+	// 	const date = new Date('July 20, 2023 13:31:43');
+	// 	const timestamp = date.getTime();
+	// 	let categoriespick = ['-NY09qsAZhynFQBPXtMI', '-NY09vnKnlq-rP_dYN7L'];
+	// 	let randomCategory = categoriespick[Math.floor(Math.random() * categoriespick.length)];
+	// 	let randomTitle = randomTitleGenerator();
+	// 	let randomSlug = slugify(randomTitle);
+	// 	let randomContent = randomContentGenerator();
 
-		const userRef = firebase.database().ref('users');
-		userRef.once('value')
-		.then(snapshot => {
-			const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
-			const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
-			const randomUserUid =  uids[randomIndex]; // Get the random user UID
+	// 	const userRef = firebase.database().ref('users');
+	// 	userRef.once('value')
+	// 	.then(snapshot => {
+	// 		const uids = Object.keys(snapshot.val()); // Convert user UIDs into an array
+	// 		const randomIndex = Math.floor(Math.random() * uids.length); // Generate a random index
+	// 		const randomUserUid =  uids[randomIndex]; // Get the random user UID
 
-			const formData = {
-				categoryId: randomCategory,
-				title: randomTitle,
-				slug: randomSlug,
-				content: randomContent,
-				userId: randomUserUid,
-				createdAt: timestamp,
-				updatedAt: timestamp,
-			};
+	// 		const formData = {
+	// 			categoryId: randomCategory,
+	// 			title: randomTitle,
+	// 			slug: randomSlug,
+	// 			content: randomContent,
+	// 			userId: randomUserUid,
+	// 			createdAt: timestamp,
+	// 			updatedAt: timestamp,
+	// 		};
 
-		const url = 'http://127.0.0.1:8000/api/thread';
+	// 	const url = 'http://127.0.0.1:8000/api/thread';
 
-			axios
-			.post(url, formData)
+	// 		axios
+	// 		.post(url, formData)
 
-		})
-
-		
+	// 	})
 
 		
 
-	}
+		
+
+	// }
 
 	function createThreadLaravel() {
 
@@ -328,6 +328,7 @@ const CreateThreadModal = () => {
 		const content = tinymce.activeEditor.getContent();
 		let currentUser = firebase.auth().currentUser;
 		let bearerToken = localStorage.getItem('bearerToken');
+		let slug = slugify(title);
 
 		if (title === '' || content === '') {
 			Swal.fire({
@@ -368,15 +369,16 @@ const CreateThreadModal = () => {
 		})
 		.catch((error) => {
 			// Handle error
+			console.log(error);
 			Swal.fire({
 				icon: 'error',
 				title: 'Error creating thread',
-				text: error.message,
+				text: error.response.data.message,
 			});
 		})
 		.finally(() => {
-			category.value = '';
-			title.value = '';
+			document.getElementById('category').value = '';
+			document.getElementById('title').value = '';
 			tinymce.activeEditor.setContent('');
 			document.getElementById('category').removeAttribute('disabled');
 			if(redirectToThread){

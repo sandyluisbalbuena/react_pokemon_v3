@@ -6,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 let uid;
 
 const ForumLatest = (props) => {
+
 	const [threadGroups, setThreadGroups] = useState([]);
 	// const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
@@ -80,12 +81,6 @@ const ForumLatest = (props) => {
 	};
 
 	const fetchThreads = () => {
-
-		// dataTableRefs.current.forEach((table) => {
-		// 	if (table) {
-		// 		table.clear();
-		// 	}
-		// });
 
 		const threadRef = firebase.database().ref('threads');
 		const categoryRef = firebase.database().ref('categories');
@@ -173,8 +168,6 @@ const ForumLatest = (props) => {
 
 	const updateMessageCount = (threadId) => {
 
-		// reinitializeDataTables();
-
 		setThreadGroups((prevThreadGroups) => {
 		const updatedGroups = [...prevThreadGroups];
 		const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
@@ -184,14 +177,6 @@ const ForumLatest = (props) => {
 			updatedThreads[threadIndex].messageCount += 1;
 		}
 
-		// threadGroups.forEach((group) => {
-		// const tableId = `tableForumLatest${group.category}`;
-		// const table = new DataTable(`#${tableId}`,{
-		// 		pageLength: 4,
-		// 		lengthChange: false,
-		// 	});
-		// });
-	
 		return updatedGroups.map((group) => ({
 				...group,
 				threads: updatedThreads.filter((thread) => thread.category === group.category),
@@ -199,25 +184,6 @@ const ForumLatest = (props) => {
 		});
 	};
 
-	// const updateMessageCount = (threadId) => {
-	// 	setThreadGroups((prevThreadGroups) => {
-	// 	const updatedGroups = prevThreadGroups.map((group) => ({
-	// 		...group,
-	// 		threads: group.threads.map((thread) => {
-	// 		if (thread.id === threadId) {
-	// 			return {
-	// 			...thread,
-	// 			messageCount: thread.messageCount + 1,
-	// 			};
-	// 		}
-	// 		return thread;
-	// 		}),
-	// 	}));
-	
-	// 	return updatedGroups;
-	// 	});
-	
-	// };
 
 	const updateUserData = (updatedUser) => {
 		// if(uid){
@@ -320,7 +286,6 @@ const ForumLatest = (props) => {
 	function deleteThreadLaravel(deleteThreadId) {
 		// const [user1] = useAuthState(firebase.auth());
 
-		let currentUser = firebase.auth().currentUser;
 		let bearerToken = localStorage.getItem('bearerToken');
 		
 		Swal.fire({
@@ -332,7 +297,7 @@ const ForumLatest = (props) => {
 		showLoaderOnConfirm: true,
 		preConfirm: () => {
 			return axios
-			.delete(`https:pok3mon.online/api/thread/${deleteThreadId}`, {
+			.delete(`https://pok3mon.online/api/thread/${deleteThreadId}`, {
 			// .delete(`http://127.0.0.1:8000/api/thread/${deleteThreadId}`, {
 				headers: {
 					'X-User-Id': uid, // Include the user ID in the request headers
@@ -573,12 +538,19 @@ const ForumLatest = (props) => {
 									<th scope="col"></th>
 									<th scope="col"></th>
 									<th scope="col"></th>
-									{/* <th scope="col"></th> */}
+									{dashboard ? (
+										<th scope="col"></th>
+									):('')}
+
+
 								</tr>
 							</thead>
 							<tbody className='tableForumsLatest'>
 							{group.threads.map((thread) => (
-								<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="px-3 rounded" onClick={() => redirectToThread(thread.slug)}>
+
+								
+									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={() => redirectToThread(thread.slug)}>
+
 									<td><i className="fas fa-comments mx-3"></i></td>
 									<td>{thread.title}</td>
 									<td>
@@ -592,19 +564,41 @@ const ForumLatest = (props) => {
 									<td><img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} /></td>
 									<td><p className="ms-3">{thread.user.toUpperCase()}</p></td>
 									<td><span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span></td>
-									{/* <td>
-									{isAdmin && isAdmin === 'admin' && (
+									{dashboard ? (
+									<td className='d-flex'>
 										<span
 										onClick={(event) => {
 										event.preventDefault();
-										deleteThread(thread.id);
+										deleteThreadLaravel(thread.id);
 										}}
 										className="badge badge-sm badge-danger"
 									>
 										<i className="fas fa-trash"></i>
 										</span>
-									)}
-									</td> */}
+										{thread.hide === 1 ? (
+											<span
+												onClick={(event) => {
+												event.preventDefault();
+												unhideThread(thread.id);
+												}}
+												className="badge badge-sm badge-success ms-1"
+											>
+												<i className="fas fa-eye"></i>
+											</span>
+										):(
+											<span
+											onClick={(event) => {
+											event.preventDefault();
+											hideThread(thread.id);
+											}}
+											className="badge badge-sm badge-success ms-1"
+											>
+												<i className="fas fa-eye-slash"></i>
+											</span>
+										)}
+									</td>
+									):('')}
+									
 								</tr>
 
 								

@@ -9,7 +9,8 @@ const ChartUserActivities = () => {
 
 	function fetchUserActivitiesData() {
 		axios
-		.get('http://127.0.0.1:8000/api/useractivities')
+		// .get('http://127.0.0.1:8000/api/useractivities')
+		.get('https://pok3mon.online/api/useractivities')
 		.then(response => {
 			const attendanceData = response.data;
 
@@ -17,7 +18,7 @@ const ChartUserActivities = () => {
 			const top5Data = Object.entries(attendanceData)
 			.map(([username, activityCount]) => ({ username, activityCount }))
 			.sort((a, b) => b.activityCount - a.activityCount)
-			.slice(0, 15);
+			.slice(0, 10);
 
 			createBarChart(top5Data);
 		})
@@ -35,7 +36,7 @@ const ChartUserActivities = () => {
 			datasets: [
 			{
 				label: 'Activity Count',
-				data: data.map(entry => entry.activityCount),
+				data: data.map(entry => entry.activityCount.count),
 				backgroundColor: 'rgba(75, 192, 192, 0.6)',
 				borderColor: 'rgba(75, 192, 192, 1)',
 				borderWidth: 1,
@@ -55,7 +56,7 @@ const ChartUserActivities = () => {
 	return (
 		<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
 			<div className="card-body container-fluid">
-				<h6 className="ms-4 text-center">Top 15 Users by Activity Count</h6>
+				<h6 className="ms-4 text-center">Top 10 Users by Activity Count</h6>
 				<canvas ref={chartRef}></canvas>
 			</div>
 		</div>

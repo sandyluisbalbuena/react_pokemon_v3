@@ -348,9 +348,9 @@ const Pokedex = () => {
 				<CardSplide pokemonName={pokemonNameForCard}/>
 			</section>
 
-			<section className="row mb-5">
+			{/* <section className="row mb-5">
 				<PokemonVideos pokemonName={pokemonNameForCard}/>
-			</section>
+			</section> */}
 		</div>
 	)
 }

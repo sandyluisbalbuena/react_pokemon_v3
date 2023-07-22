@@ -9,6 +9,7 @@ import ChartPieThreads from '../components/ChartPieThreads';
 import ChartUserActivities from '../components/ChartUserActivities';
 import { Categories } from 'emoji-picker-react';
 import Candidates from '../components/Candidates';
+import Moderators from '../components/Moderators';
 
 const Dashboard = () => {
 
@@ -69,10 +70,10 @@ const Dashboard = () => {
 
 					<div id="threadsUtilelement">
 						<div className='row my-4'>
-							<div className="col-4">
+							<div className="col-12 col-lg-4">
 								<ChartPieThreads />
 							</div>
-							<div className="col-8">
+							<div className="d-none d-lg-block col-lg-8">
 								<ChartThreads />
 							</div>
 						</div>
@@ -91,6 +92,19 @@ const Dashboard = () => {
 							<div id="chartActivities" className='my-3'>
 								<ChartUserActivities />
 							</div>
+						</div>
+					</div>
+
+					<div id="usersUtilelement" className='d-lg-none'>
+						<div className='row my-4'>
+
+							<div className='my-2'>
+								<Moderators />
+							</div>
+							<div className='my-2'>
+								<Candidates />
+							</div>
+
 						</div>
 					</div>
 
@@ -113,11 +127,6 @@ const Dashboard = () => {
 								</div>
 							</div>
 
-
-							{/* <div className="row">
-								<ForumCategories/>
-							</div> */}
-
 							<div className="row">
 								<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }}>
 									<div className="card-body container-fluid">
@@ -138,8 +147,14 @@ const Dashboard = () => {
 							</div>
 
 							<div className="row">
+								<Moderators />
+							</div>
+
+							<div className="row">
 								<Candidates />
 							</div>
+
+							
 
 						</div>
 					</div>

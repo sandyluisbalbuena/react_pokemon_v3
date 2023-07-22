@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import firebase from 'firebase/compat/app';
+
 
 const Candidates = () => {
-
 	const [candidates, setCandidates] = useState([]);
+	let currentUser = firebase.auth().currentUser;
+	let bearerToken = localStorage.getItem('bearerToken');
 
 	useEffect(() => {
 		fetchUserActivitiesData();
@@ -14,17 +17,45 @@ const Candidates = () => {
 		.then(response => {
 			const attendanceData = response.data;
 
-			// Convert the object to an array of objects with username and activityCount keys
-			const top5Data = Object.entries(attendanceData)
+
+			const top10 = Object.entries(attendanceData)
 			.map(([username, activityCount]) => ({ username, activityCount }))
 			.sort((a, b) => b.activityCount - a.activityCount)
-			.slice(0, 15);
+			.slice(0, 10);
 
-			setCandidates(top5Data);
+			console.log(top10)
 
-			console.log(top5Data);
+
+			setCandidates(top10);
 		})
-	
+	}
+
+	function promote(userId){
+		const formData = {
+			role: 'moderator',
+		};
+
+		axios
+		// .put('http://127.0.0.1:8000/api/user/promote/'+userId, formData, {
+		.put('https://pok3mon.online/api/user/promote/'+userId, formData, {
+			headers: {
+				'X-User-Uid': currentUser.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
+		.then(response => {
+			Swal.fire({
+				icon: 'success',
+				title: 'User promoted successfully!',
+			});
+		})
+		.catch(error => {
+			console.error(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Something went wrong!',
+			});
+		})
 	}
 
 
@@ -38,8 +69,11 @@ const Candidates = () => {
 				<ul className="collapse show mt-3" id="candidates" style={{ listStyleType: 'none' }}>
 				{candidates.map((candidate) => (
 					// <a onClick={() => wew(category.name)} key={category.id} href={'/pokeforum#' + category.name}>
-					<li className="px-2 py-1 rounded list-group-item threads-latest my-2" key={candidate.username} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-						{candidate.username.toUpperCase()}
+					<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={candidate.username} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+						<span>
+							{candidate.username.toUpperCase()}
+						</span> 
+						<span className='badge badge-primary' type='button' onClick={()=>promote(candidate.activityCount.push_key)}>PROMOTE <i className="fas fa-plus"></i></span>
 					</li>
 					// </a>
 				))}

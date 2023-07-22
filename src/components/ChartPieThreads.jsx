@@ -9,7 +9,8 @@ const ChartPieThreads = () => {
 
   function fetchThreadsChartData() {
     axios
-      .get('http://127.0.0.1:8000/api/threadschartdata')
+      // .get('http://127.0.0.1:8000/api/threadschartdata')
+      .get('https://pok3mon.online/api/threadschartdata')
       .then(response => {
         const pokecardTotalThreadCount = getTotalThreadCount(response.data.pokecard);
         const pokedexTotalThreadCount = getTotalThreadCount(response.data.pokedex);

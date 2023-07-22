@@ -9,7 +9,8 @@ const ChartAttendance = () => {
 
 	function fetchUserAttendanceData() {
 		axios
-			.get('http://127.0.0.1:8000/api/userattendance')
+			// .get('http://127.0.0.1:8000/api/userattendance')
+			.get('https://pok3mon.online/api/userattendance')
 			.then(response => {
 				const attendanceData = response.data;
 				renderChart(attendanceData);
