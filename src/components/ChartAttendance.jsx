@@ -1,23 +1,36 @@
 import React, { useEffect, useRef } from 'react';
+import firebase from 'firebase/compat/app';
 
 const ChartAttendance = () => {
 	const chartRef = useRef(null);
 
 	useEffect(() => {
 		fetchUserAttendanceData();
+
+		const userAttendanceRef = firebase.database().ref('userAttendance'); // Replace 'threads' with your actual reference path
+		userAttendanceRef.on('value', handleDataChange);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+			userAttendanceRef.off('value', handleDataChange);
+		};
 	}, []);
+
+	function handleDataChange(snapshot) {
+		fetchUserAttendanceData();
+	}
 
 	function fetchUserAttendanceData() {
 		axios
-			// .get('http://127.0.0.1:8000/api/userattendance')
-			.get('https://pok3mon.online/api/userattendance')
-			.then(response => {
-				const attendanceData = response.data;
-				renderChart(attendanceData);
-			})
-			.catch(error => {
-				// Handle errors
-			});
+		// .get('http://127.0.0.1:8000/api/userattendance')
+		.get('https://pok3mon.online/api/userattendance')
+		.then(response => {
+			const attendanceData = response.data;
+			renderChart(attendanceData);
+		})
+		.catch(error => {
+			// Handle errors
+		});
 	}
 
 	function renderChart(attendanceData) {

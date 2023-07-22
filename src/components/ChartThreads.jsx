@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import firebase from 'firebase/compat/app';
-import 'firebase/compat/database';
 
 const ChartThreads = () => {
 	const chartRef = useRef(null);

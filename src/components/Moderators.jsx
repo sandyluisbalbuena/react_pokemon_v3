@@ -9,7 +9,19 @@ const Moderators = () => {
 
 	useEffect(() => {
 		fetchModeratorsData();
+
+		const threadsRef = firebase.database().ref('users'); // Replace 'threads' with your actual reference path
+		threadsRef.on('value', handleDataChange);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+			threadsRef.off('value', handleDataChange);
+		};
 	}, []);
+
+	function handleDataChange(snapshot) {
+		fetchModeratorsData();
+	}
 
 	function fetchModeratorsData() {
 		axios

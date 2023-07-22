@@ -9,11 +9,29 @@ const Candidates = () => {
 
 	useEffect(() => {
 		fetchUserActivitiesData();
+
+		// Set up a listener for changes in the Firebase threads reference
+		const threadsRef = firebase.database().ref('threads'); // Replace 'threads' with your actual reference path
+		const usersRef = firebase.database().ref('users'); // Replace 'threads' with your actual reference path
+		threadsRef.on('value', handleDataChange);
+		usersRef.on('value', handleDataChange);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+			threadsRef.off('value', handleDataChange);
+			usersRef.off('value', handleDataChange);
+		};
 	}, []);
+
+	// Callback function to handle changes in the Firebase data
+	function handleDataChange(snapshot) {
+		fetchUserActivitiesData();
+	}
 
 	function fetchUserActivitiesData() {
 		axios
-		.get('http://127.0.0.1:8000/api/useractivities')
+		.get('https://pok3mon.online/api/useractivities')
+		// .get('http://127.0.0.1:8000/api/useractivities')
 		.then(response => {
 			const attendanceData = response.data;
 

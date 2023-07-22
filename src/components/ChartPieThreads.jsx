@@ -1,11 +1,24 @@
 import React, { useEffect, useRef } from 'react';
+import firebase from 'firebase/compat/app';
 
 const ChartPieThreads = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
     fetchThreadsChartData();
+
+    const threadsRef = firebase.database().ref('threads'); // Replace 'threads' with your actual reference path
+		threadsRef.on('value', handleDataChange);
+	
+		// Clean up the listener when the component unmounts
+		return () => {
+			threadsRef.off('value', handleDataChange);
+		};
   }, []);
+
+  function handleDataChange(snapshot) {
+		fetchThreadsChartData();
+	}
 
   function fetchThreadsChartData() {
     axios
