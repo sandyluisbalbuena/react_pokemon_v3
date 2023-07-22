@@ -4,6 +4,7 @@ import firebase from 'firebase/compat/app';
 
 const Candidates = () => {
 	const [candidates, setCandidates] = useState([]);
+	const [loading, setLoading] = useState(true);
 	let currentUser = firebase.auth().currentUser;
 	let bearerToken = localStorage.getItem('bearerToken');
 
@@ -40,6 +41,7 @@ const Candidates = () => {
 			.slice(0, 10);
 
 			setCandidates(top10);
+			setLoading(false);
 		})
 	}
 
@@ -80,16 +82,40 @@ const Candidates = () => {
 				<i className="fas fa-angles-down"></i>
 				</div>
 				<ul className="collapse show mt-3" id="candidates" style={{ listStyleType: 'none' }}>
-				{candidates.map((candidate) => (
-					// <a onClick={() => wew(category.name)} key={category.id} href={'/pokeforum#' + category.name}>
-					<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={candidate.username} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-						<span>
+					{loading ? (
+						// Show the placeholder style when loading is true
+						<>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+						</>
+					) : (
+						// Data is loaded, render the candidates
+						candidates.map((candidate) => (
+						<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={candidate.username} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<span className='rounded'>
 							{candidate.username.toUpperCase()}
-						</span> 
-						<span className='badge badge-primary' type='button' onClick={()=>promote(candidate.activityCount.push_key)}>PROMOTE <i className="fas fa-plus"></i></span>
-					</li>
-					// </a>
-				))}
+							</span> 
+							<span className='badge badge-primary' type='button' onClick={() => promote(candidate.activityCount.push_key)}>PROMOTE <i className="fas fa-plus"></i></span>
+						</li>
+						))
+					)}
 				</ul>
 			</div>
 		</div>
