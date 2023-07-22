@@ -8,18 +8,31 @@ import eventBus from '../eventBus';
 const ForumThread = () => {
 
 	const [threadData, setThreadData] = useState(null);
+	const [currentUsername, setUsername] = useState('');
 	const [userId, setuserId] = useState('');
 	const { slug } = useParams();
 	const [user] = useAuthState(firebase.auth());
 	const navigate = useNavigate();
-	const [upvoteUsernames, setUpvoteUsernames] = useState([]);
-	const [downvoteUsernames, setDownvoteUsernames] = useState([]);
-
+	
 	useEffect(() => {
 		if(user){
 			setuserId(user.uid);
+			const userRef = firebase.database().ref(`users/${user.uid}`);
+			userRef.on('value', (snapshot) => {
+				const userData = snapshot.val();
+				if (userData) {
+					setUsername(userData['username']);
+				}
+			});
+		}else{
+			console.log('wew')
 		}
-	}, [])
+	}, [user])
+
+	const fetchUsername = async (userId) => {
+		const userSnapshot = await firebase.database().ref('users/' + userId).once('value');
+		return userSnapshot.val().username;
+	};
 	
 	useEffect(() => {
 		fetchThreadBySlug(slug)
@@ -406,9 +419,9 @@ const ForumThread = () => {
 	}
 	// console.log(threadData);
 	
-	function downvote(){
+	function downvote(threadId){
 		const formData = {
-			upvote: user.uid,
+			downvote: user.uid,
 		};
 
 		axios
@@ -464,13 +477,13 @@ const ForumThread = () => {
 						</div>
 			
 						<div className="container summernote_container">
-						<div className="row text-center">
-							<div id="summernoteContent" style={{ paddingTop: '20px'}}>
-							{threadData && (
-							<div dangerouslySetInnerHTML={{ __html: threadData.content }} />
-							)}
+							<div className="row text-center">
+								<div id="summernoteContent" style={{ paddingTop: '20px'}}>
+								{threadData && (
+								<div dangerouslySetInnerHTML={{ __html: threadData.content }} />
+								)}
+								</div>
 							</div>
-						</div>
 						</div>
 						<div className='d-flex justify-content-between'>
 						<span className="d-flex">
@@ -487,21 +500,52 @@ const ForumThread = () => {
 							</>
 						)}
 						</span>
-						{threadData && (
+						{threadData && currentUsername && (
 						<span className="py-3">
-							<i
-							className="fas fa-thumbs-up ms-2"
-							onMouseOver={() => showListUpvotes(threadData.upvote)}
-							onMouseOut={hideListUpvotes}
-							type="button"
-							onClick={() => upvote(threadData.threadId)}
-							></i>
+							{threadData.upvote?.includes(currentUsername) ? (
+									<i
+									className="fas fa-thumbs-up ms-2"
+									onMouseOver={() => showListUpvotes()}
+									onMouseOut={hideListUpvotes}
+									type="button"
+									onClick={() => upvote(threadData.threadId)}
+									></i>
+								):(
+									<i
+									className="far fa-thumbs-up ms-2"
+									onMouseOver={() => showListUpvotes()}
+									onMouseOut={hideListUpvotes}
+									type="button"
+									onClick={() => upvote(threadData.threadId)}
+									></i>
+								)
+							}
+							
 							<div id='upvoteCard' className="card" style={{ position: 'absolute', zIndex:'5', visibility:'hidden'}}>
 								{threadData.upvote?.map(name => (
 									<p className='mx-5 rounded my-1' key={name}>{name}</p>
 								))}
 							</div>
-							<i className="fas fa-thumbs-down ms-4" type="button" onClick={() => downvote()}></i>
+
+							{threadData.downvote?.includes(currentUsername) ? (
+									<i
+									className="fas fa-thumbs-down ms-2"
+									onMouseOver={() => showListDownvotes()}
+									onMouseOut={hideListDownvotes}
+									type="button"
+									onClick={() => downvote(threadData.threadId)}
+									></i>
+								):(
+									<i
+									className="far fa-thumbs-down ms-3"
+									onMouseOver={() => showListDownvotes()}
+									onMouseOut={hideListDownvotes}
+									type="button"
+									onClick={() => downvote(threadData.threadId)}
+									></i>
+								)
+							}
+						
 							<div id='downvoteCard' className="card" style={{ position: 'absolute', zIndex:'5', visibility:'hidden'}}>
 								{threadData.downvote?.map(name => (
 									<p className='mx-5 rounded my-1' key={name}>{name}</p>

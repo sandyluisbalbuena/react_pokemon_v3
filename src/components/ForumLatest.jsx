@@ -547,9 +547,7 @@ const ForumLatest = (props) => {
 							</thead>
 							<tbody className='tableForumsLatest'>
 							{group.threads.map((thread) => (
-
-								
-									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={() => redirectToThread(thread.slug)}>
+								<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={!dashboard ? () => redirectToThread(thread.slug):null}>
 
 									<td><i className="fas fa-comments mx-3"></i></td>
 									<td>{thread.title}</td>
