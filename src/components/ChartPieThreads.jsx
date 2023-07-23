@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 
 const ChartPieThreads = () => {
   const chartRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   let chartInstance = useRef(null);
 
   useEffect(() => {
@@ -27,8 +28,10 @@ const ChartPieThreads = () => {
       .then(response => {
         const pokecardTotalThreadCount = getTotalThreadCount(response.data.pokecard);
         const pokedexTotalThreadCount = getTotalThreadCount(response.data.pokedex);
-
-        updateChart(pokecardTotalThreadCount, pokedexTotalThreadCount);
+        setLoading(false);
+        setTimeout(() => {
+          updateChart(pokecardTotalThreadCount, pokedexTotalThreadCount);
+        }, 100);
       })
       .catch(error => {
         console.error(error);
@@ -77,12 +80,23 @@ const ChartPieThreads = () => {
   }
 
   return (
-    <div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
-      <div className="card-body container-fluid">
-        <h6 className="ms-4 text-center">Total Thread by Category</h6>
-        <canvas ref={chartRef}></canvas>
+    <>
+    {loading ? (
+      <div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+        <div className="card-body container-fluid placeholder-wave">
+          <h6 className="ms-4 text-center placeholder col-4 offset-4 rounded"></h6>
+          <img className='placeholder col-12 rounded mt-3' style={{height:'300px'}}/>
+        </div>
       </div>
-    </div>
+    ):(
+      <div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+        <div className="card-body container-fluid">
+          <h6 className="ms-4 text-center">Total Thread by Category</h6>
+          <canvas ref={chartRef}></canvas>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

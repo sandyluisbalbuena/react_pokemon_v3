@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 
 const ChartAttendance = () => {
 	const chartRef = useRef(null);
+	const [loading, setLoading] = useState(true);
+
 
 	useEffect(() => {
 		fetchUserAttendanceData();
@@ -26,6 +28,8 @@ const ChartAttendance = () => {
 		.get('https://pok3mon.online/api/userattendance')
 		.then(response => {
 			const attendanceData = response.data;
+			setLoading(false);
+
 
 			// Convert the timestamps in the data object to formatted dates
 			// const formattedData = Object.entries(attendanceData).map(([timestamp, value]) => ({
@@ -34,9 +38,9 @@ const ChartAttendance = () => {
 			// }));
 
 			// console.log(formattedData)
-
-			renderChart(attendanceData);
-
+			setTimeout(() => {
+				renderChart(attendanceData);
+			}, 100);
 		})
 		.catch(error => {
 			// Handle errors
@@ -80,6 +84,7 @@ const ChartAttendance = () => {
 			},
 		},
 		});
+
 	}
 
 	function formatDate(dateString) {
@@ -88,12 +93,23 @@ const ChartAttendance = () => {
 	}
 
 	return (
-		<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
-			<div className="card-body container-fluid">
-				<h6 className="ms-4 text-center">Daily Logged in Users</h6>
-				<canvas ref={chartRef}></canvas>
+		<>
+		{loading ? (
+			<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+				<div className="card-body container-fluid placeholder-wave">
+					<h6 className="ms-4 text-center placeholder col-8 offset-2"></h6>
+					<img className='placeholder col-12 rounded' style={{height:'400'}}/>
+				</div>
 			</div>
-		</div>
+		):(
+			<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+				<div className="card-body container-fluid">
+					<h6 className="ms-4 text-center">Daily Logged in Users</h6>
+					<canvas ref={chartRef}></canvas>
+				</div>
+			</div>
+		)}
+		</>
 	);
 };
 

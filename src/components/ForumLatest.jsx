@@ -8,6 +8,7 @@ let uid;
 const ForumLatest = (props) => {
 
 	const [threadGroups, setThreadGroups] = useState([]);
+	const [loading, setLoading] = useState(true);
 	// const [userData, setuserData] = useState([]);
 	let isAdmin = props.user.role;
 	let dashboard = props.dashboard;
@@ -32,7 +33,6 @@ const ForumLatest = (props) => {
 	}, [threadGroups]);
 
 	function tableInit(){
-
 		reinitializeDataTables();
 
 		threadGroups.forEach((group, index) => {
@@ -57,6 +57,7 @@ const ForumLatest = (props) => {
 		
 			// Store the DataTable instance reference
 			dataTableRefs.current[index] = table;
+
 		});
 	}
 
@@ -73,6 +74,7 @@ const ForumLatest = (props) => {
 		const updatedUser = snapshot.val();
 		updateUserData(updatedUser);
 		});
+
 	
 		return () => {
 		messageRef.off('child_added', messageListener);
@@ -145,9 +147,9 @@ const ForumLatest = (props) => {
 				});
 	
 				setThreadGroups(sortedThreadGroups);
+		setLoading(false);
 
 				// tableInit();
-
 				});
 			});
 			});
@@ -429,6 +431,7 @@ const ForumLatest = (props) => {
 	
 		// dataTableRefs.current[index] = table;
 		// });
+
 	};
 
 	function redirectToThread(slug){
@@ -436,65 +439,177 @@ const ForumLatest = (props) => {
 	}
 
 	return (
-		<div>
-		{threadGroups.map((group) => (
-			<div key={group.category} className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }} id={group.category}>
-				<div className="card-body container">
-					<div className="row">
-						<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
+		<>
+		{loading ?(
+			<div>
+				<div className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }}>
+					<div className="card-body container">
+						<div className=" placeholder-wave">
+							<h2 className='placeholder col-8 rounded'></h2>
+							<img className='placeholder col-12 rounded mt-3' style={{height:'300px'}}/>
 
-						{/* <div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
-							{group.threads.map((thread) => (
+						</div>
+					</div>
+				</div>
+				<div className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }}>
+					<div className="card-body container">
+						<div className=" placeholder-wave">
+							<h2 className='placeholder col-8 rounded'></h2>
+							<img className='placeholder col-12 rounded mt-3' style={{height:'300px'}}/>
 
-								((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
-									<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
-									<div className="row">
-										<div className="col-10 col-lg-3 d-flex">
-											<i className="fas fa-comments mx-3"></i>
-											<p>{thread.title}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		):(
+			<div>
+			{threadGroups.map((group) => (
+				<div key={group.category} className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }} id={group.category}>
+					<div className="card-body container">
+						
+							<div className="row">
+							<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
+
+							{/* <div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
+								{group.threads.map((thread) => (
+
+									((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
+										<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
+										<div className="row">
+											<div className="col-10 col-lg-3 d-flex">
+												<i className="fas fa-comments mx-3"></i>
+												<p>{thread.title}</p>
+											</div>
+											{!dashboard && (
+											<div className="d-none d-lg-block col-lg-2">
+												{thread.messageCount > 1 && (
+												<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
+												)}
+												{thread.messageCount == 1 && (
+												<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
+												)}
+											</div>
+											)}
+											<div className="d-none d-lg-block col-lg-3 d-lg-flex">
+												{!dashboard && (
+												<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
+												)}
+												<p className="ms-3">{thread.user.toUpperCase()}</p>
+											</div>
+											<div className="d-none d-lg-block col-lg-3">
+												<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
+											</div>
+											
+											{dashboard ? (
+											<div className="col-2">
+												<span
+													onClick={(event) => {
+													event.preventDefault();
+													deleteThreadLaravel(thread.id);
+													}}
+													className="badge badge-sm badge-danger"
+												>
+													<i className="fas fa-trash"></i>
+												</span>
+
+												{thread.hide === 1 ? (
+												<span
+													onClick={(event) => {
+													event.preventDefault();
+													unhideThread(thread.id);
+													}}
+													className="badge badge-sm badge-success ms-1"
+												>
+													<i className="fas fa-eye"></i>
+												</span>
+												):(
+													<span
+													onClick={(event) => {
+													event.preventDefault();
+													hideThread(thread.id);
+													}}
+													className="badge badge-sm badge-success ms-1"
+													>
+														<i className="fas fa-eye-slash"></i>
+													</span>
+												)}
+
+											</div>
+											):(
+												<div className="col-1">
+													{isAdmin && isAdmin === 'admin' && (
+													<span
+														onClick={(event) => {
+														event.preventDefault();
+														deleteThreadLaravel(thread.id);
+														}}
+														className="badge badge-sm badge-danger"
+													>
+														<i className="fas fa-trash"></i>
+													</span>
+													)}
+												</div>
+											)}
 										</div>
-										{!dashboard && (
-										<div className="d-none d-lg-block col-lg-2">
+										</a>
+									)
+								))}
+							</div> */}
+
+							<table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
+								<thead>
+									<tr>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										{dashboard ? (
+											<th scope="col"></th>
+										):('')}
+
+
+									</tr>
+								</thead>
+								<tbody className='tableForumsLatest'>
+								{group.threads.map((thread) => (
+									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={!dashboard ? () => redirectToThread(thread.slug):null}>
+
+										<td><i className="fas fa-comments mx-3"></i></td>
+										<td>{thread.title}</td>
+										<td>
 											{thread.messageCount > 1 && (
 											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
 											)}
 											{thread.messageCount == 1 && (
 											<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
 											)}
-										</div>
-										)}
-										<div className="d-none d-lg-block col-lg-3 d-lg-flex">
-											{!dashboard && (
-											<img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} />
-											)}
-											<p className="ms-3">{thread.user.toUpperCase()}</p>
-										</div>
-										<div className="d-none d-lg-block col-lg-3">
-											<span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span>
-										</div>
-										
+										</td>
+										<td><img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} /></td>
+										<td><p className="ms-3">{thread.user.toUpperCase()}</p></td>
+										<td><span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span></td>
 										{dashboard ? (
-										<div className="col-2">
+										<td className='d-flex'>
 											<span
-												onClick={(event) => {
-												event.preventDefault();
-												deleteThreadLaravel(thread.id);
-												}}
-												className="badge badge-sm badge-danger"
-											>
-												<i className="fas fa-trash"></i>
+											onClick={(event) => {
+											event.preventDefault();
+											deleteThreadLaravel(thread.id);
+											}}
+											className="badge badge-sm badge-danger"
+										>
+											<i className="fas fa-trash"></i>
 											</span>
-
 											{thread.hide === 1 ? (
-											<span
-												onClick={(event) => {
-												event.preventDefault();
-												unhideThread(thread.id);
-												}}
-												className="badge badge-sm badge-success ms-1"
-											>
-												<i className="fas fa-eye"></i>
-											</span>
+												<span
+													onClick={(event) => {
+													event.preventDefault();
+													unhideThread(thread.id);
+													}}
+													className="badge badge-sm badge-success ms-1"
+												>
+													<i className="fas fa-eye"></i>
+												</span>
 											):(
 												<span
 												onClick={(event) => {
@@ -506,110 +621,24 @@ const ForumLatest = (props) => {
 													<i className="fas fa-eye-slash"></i>
 												</span>
 											)}
+										</td>
+										):('')}
+										
+									</tr>
 
-										</div>
-										):(
-											<div className="col-1">
-												{isAdmin && isAdmin === 'admin' && (
-												<span
-													onClick={(event) => {
-													event.preventDefault();
-													deleteThreadLaravel(thread.id);
-													}}
-													className="badge badge-sm badge-danger"
-												>
-													<i className="fas fa-trash"></i>
-												</span>
-												)}
-											</div>
-										)}
-									</div>
-									</a>
-								)
-							))}
-						</div> */}
-
-						<table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
-							<thead>
-								<tr>
-									<th scope="col"></th>
-									<th scope="col"></th>
-									<th scope="col"></th>
-									<th scope="col"></th>
-									<th scope="col"></th>
-									<th scope="col"></th>
-									{dashboard ? (
-										<th scope="col"></th>
-									):('')}
-
-
-								</tr>
-							</thead>
-							<tbody className='tableForumsLatest'>
-							{group.threads.map((thread) => (
-								<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={!dashboard ? () => redirectToThread(thread.slug):null}>
-
-									<td><i className="fas fa-comments mx-3"></i></td>
-									<td>{thread.title}</td>
-									<td>
-										{thread.messageCount > 1 && (
-										<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Messages</span>
-										)}
-										{thread.messageCount == 1 && (
-										<span className="badge badge-secondary pill-rounded">{thread.messageCount}&nbsp;Message</span>
-										)}
-									</td>
-									<td><img width="35px" height="35px" src={`../assets/images/userIconsV2/${thread.userImage}.png`} alt={thread.user} /></td>
-									<td><p className="ms-3">{thread.user.toUpperCase()}</p></td>
-									<td><span className="badge badge-secondary pill-rounded">{new Date(thread.createdAt).toLocaleString()}</span></td>
-									{dashboard ? (
-									<td className='d-flex'>
-										<span
-										onClick={(event) => {
-										event.preventDefault();
-										deleteThreadLaravel(thread.id);
-										}}
-										className="badge badge-sm badge-danger"
-									>
-										<i className="fas fa-trash"></i>
-										</span>
-										{thread.hide === 1 ? (
-											<span
-												onClick={(event) => {
-												event.preventDefault();
-												unhideThread(thread.id);
-												}}
-												className="badge badge-sm badge-success ms-1"
-											>
-												<i className="fas fa-eye"></i>
-											</span>
-										):(
-											<span
-											onClick={(event) => {
-											event.preventDefault();
-											hideThread(thread.id);
-											}}
-											className="badge badge-sm badge-success ms-1"
-											>
-												<i className="fas fa-eye-slash"></i>
-											</span>
-										)}
-									</td>
-									):('')}
 									
-								</tr>
+								))}
+								</tbody>
+							</table>
 
-								
-							))}
-							</tbody>
-						</table>
-
+						</div>
+						
 					</div>
 				</div>
+			))}
 			</div>
-		))}
-		{/* <button onClick={() => updateMessageCount(threadId)}>Update Thread Count</button> */}
-		</div>
+		)}
+		</>
 	);
 };
 

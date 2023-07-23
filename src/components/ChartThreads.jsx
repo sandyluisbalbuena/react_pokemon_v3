@@ -1,14 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 
 const ChartThreads = () => {
 	const chartRef = useRef(null);
+	const [loading, setLoading] = useState(true);
 	const threadsRef = firebase.database().ref('threads');
 	let chartInstance = null; // Reference to the chart instance
 
 	useEffect(() => {
+
 		fetchThreadsChartData().then(([pokecardCounts, pokedexCounts]) => {
-		renderChart(pokecardCounts, pokedexCounts);
+			setLoading(false);
+			setTimeout(() => {
+				renderChart(pokecardCounts, pokedexCounts);
+			}, 100);
 		});
 
 		// Listen for changes in threads data
@@ -106,12 +111,23 @@ const ChartThreads = () => {
 	}
 
 	return (
-		<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
-			<div className="card-body container-fluid">
-				<h6 className="ms-4 text-center">Daily thread count for pokedex and pokecard<br/>Year 2023</h6>
-				<canvas ref={chartRef}></canvas>
-			</div>
-		</div>
+		<>
+			{loading ? (
+				<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+					<div className="card-body container-fluid placeholder-wave">
+						<h6 className="ms-4 placeholder col-4 offset-4 rounded"></h6>
+						<img className='placeholder col-12 rounded mt-3' height={300}/>
+					</div>
+				</div>
+			):(
+				<div className="card mb-2 px-1 animate__animated animate__fadeIn animate__delay-1s" style={{ borderRadius: '5px', height: '100%' }} id="secondCard">
+					<div className="card-body container-fluid">
+						<h6 className="ms-4 text-center">Daily thread count for pokedex and pokecard<br/>Year 2023</h6>
+						<canvas ref={chartRef}></canvas>
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
 
