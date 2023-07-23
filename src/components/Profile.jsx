@@ -69,7 +69,7 @@ const Profile = () => {
 		newUserIcon = Icon;
 	}
 
-	function editProfileLaravel(){
+	function editProfile(){
 
 		let usernameToBeEdit = document.getElementById('username');
 
@@ -110,7 +110,7 @@ const Profile = () => {
 		usernameToBeEdit.style.border = 'gray 1px solid';
 	}
 
-	function editProfile(){
+	function editProfileLaravel(){
 
 		let usernameToBeEdit = document.getElementById('username');
 
@@ -134,8 +134,8 @@ const Profile = () => {
 		let bearerToken = localStorage.getItem('bearerToken');
 
 		if (currentUser) {
-			axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData, {
-			// axios.put(`https://pok3mon.online/api/user/${currentUser.uid}`, formData, {
+			// axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData, {
+			axios.put(`https://pok3mon.online/api/user/${currentUser.uid}`, formData, {
 				headers: {
 					'X-User-Uid': currentUser.uid,
 					'Authorization': `Bearer ${bearerToken}`,
@@ -189,7 +189,7 @@ const Profile = () => {
 							
 						</div>
 						<div className="modal-footer">
-							<button type="submit" className="btn btn-dark" onClick={()=>editProfile()}>Edit</button>
+							<button type="submit" className="btn btn-dark" onClick={()=>editProfileLaravel()}>Edit</button>
 							<button type="button" className="btn btn-dark" data-mdb-dismiss="modal">Cancel</button>
 						</div>
 				</div>
