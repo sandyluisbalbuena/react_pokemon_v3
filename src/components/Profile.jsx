@@ -135,7 +135,7 @@ const Profile = () => {
 
 		if (currentUser) {
 			axios.put(`http://127.0.0.1:8000/api/user/${currentUser.uid}`, formData, {
-			// axios.put(`http://pok3mon.online/api/user/${currentUser.uid}`, formData, {
+			// axios.put(`https://pok3mon.online/api/user/${currentUser.uid}`, formData, {
 				headers: {
 					'X-User-Uid': currentUser.uid,
 					'Authorization': `Bearer ${bearerToken}`,

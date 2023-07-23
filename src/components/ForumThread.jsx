@@ -404,14 +404,21 @@ const ForumThread = () => {
 	}
 
 	function muteThreadLaravel(threadId){
+		let bearerToken = localStorage.getItem('bearerToken');
+
 		const formData = {
 			mute: true,
 			userId: user.uid,
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/mute/'+threadId, formData)
-		// .put('https://pok3mon.online/api/thread/mute/'+user.uid)
+		.put('http://127.0.0.1:8000/api/thread/mute/'+threadId, formData, {
+		// .put('https://pok3mon.online/api/thread/mute/'+user.uid, formData, {
+			headers: {
+				'X-User-Uid': user.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 			Swal.fire({
@@ -423,14 +430,21 @@ const ForumThread = () => {
 	}
 
 	function unmuteThreadLaravel(threadId){
+		let bearerToken = localStorage.getItem('bearerToken');
+
 		const formData = {
 			mute: false,
 			userId: user.uid,
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/unmute/'+threadId, formData)
-		// .put('https://pok3mon.online/api/thread/unmute/'+user.uid)
+		.put('http://127.0.0.1:8000/api/thread/unmute/'+threadId, formData, {
+		// .put('https://pok3mon.online/api/thread/unmute/'+user.uid, formData, {
+			headers: {
+				'X-User-Uid': user.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 			Swal.fire({
@@ -442,13 +456,20 @@ const ForumThread = () => {
 	}
 
 	function upvote(threadId){
+		let bearerToken = localStorage.getItem('bearerToken');
+
 		const formData = {
 			upvote: user.uid,
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/upvote/'+threadId, formData)
-		// .put('https://pok3mon.online/api/thread/upvote/'+user.uid)
+		.put('http://127.0.0.1:8000/api/thread/upvote/'+threadId, formData, {
+		// .put('https://pok3mon.online/api/thread/upvote/'+user.uid, formData, {
+			headers: {
+				'X-User-Uid': user.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 			// fetchUsernamesUp();
@@ -457,13 +478,20 @@ const ForumThread = () => {
 	// console.log(threadData);
 	
 	function downvote(threadId){
+		let bearerToken = localStorage.getItem('bearerToken');
+
 		const formData = {
 			downvote: user.uid,
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/downvote/'+threadId, formData)
-		// .put('https://pok3mon.online/api/thread/downvote/sampleid')
+		.put('http://127.0.0.1:8000/api/thread/downvote/'+threadId, formData, {
+		// .put('https://pok3mon.online/api/thread/downvote/sampleid', formData, {
+			headers: {
+				'X-User-Uid': user.uid,
+				'Authorization': `Bearer ${bearerToken}`,
+			},
+		})
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 		})
@@ -571,7 +599,7 @@ const ForumThread = () => {
 
 							{threadData.downvote?.includes(currentUsername) ? (
 									<i
-									className="fas fa-thumbs-down ms-2"
+									className="fas fa-thumbs-down ms-3"
 									onMouseOver={() => showListDownvotes()}
 									onMouseOut={hideListDownvotes}
 									type="button"
@@ -609,7 +637,7 @@ const ForumThread = () => {
 					
 					<div id="replies" className="collapse">
 					{threadData?.mute && (
-						<div className='alert alert-info text-center'>
+						<div className='alert alert-secondary text-center'>
 						This thread comment section is disabled.
 						</div>
 					)}
