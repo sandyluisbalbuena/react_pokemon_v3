@@ -76,18 +76,20 @@ const Moderators = () => {
 				<i className="fas fa-angles-down"></i>
 				</div>
 				<ul className="collapse mt-3" id="moderators" style={{ listStyleType: 'none' }}>
-				{moderators.map((moderator) => (
-					<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={moderator.firebase_id} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
-						<span>
-							{moderator.username?.toUpperCase()}
-						</span> 
-						{demoting ? (
-							<div class="spinner-border spinner-border-sm text-danger text-sm" role="status"></div>
-						):(
-							<span className='badge badge-danger' type='button' onClick={()=>demote(moderator.firebase_id)}>DEMOTE <i className="fas fa-minus"></i></span>
-						)}
-					</li>
-				))}
+					<div style={{overflowY:'auto', height:'400px'}}>
+						{moderators.map((moderator) => (
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={moderator.firebase_id} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span>
+									{moderator.username?.toUpperCase()}
+								</span> 
+								{demoting ? (
+									<div class="spinner-border spinner-border-sm text-danger text-sm" role="status"></div>
+								):(
+									<span className='badge badge-danger' type='button' onClick={()=>demote(moderator.firebase_id)}>DEMOTE <i className="fas fa-minus"></i></span>
+								)}
+							</li>
+						))}
+					</div>
 				</ul>
 			</div>
 		</div>
