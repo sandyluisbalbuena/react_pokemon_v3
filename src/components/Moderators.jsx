@@ -40,8 +40,8 @@ const Moderators = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/user/demote/'+userId, formData, {
-			// .put('https://pok3mon.online/api/user/demote/'+userId, formData, {
+		// .put('http://127.0.0.1:8000/api/user/demote/'+userId, formData, {
+		.put('https://pok3mon.online/api/user/demote/'+userId, formData, {
 			headers: {
 				'X-User-Uid': currentUser.uid,
 				'Authorization': `Bearer ${bearerToken}`,
