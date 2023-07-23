@@ -91,42 +91,42 @@ const Candidates = () => {
 					{loading ? (
 						// Show the placeholder style when loading is true
 						<>
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
 
-							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-wave" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useLocation } from 'react-router-dom';
 
 let uid;
 
@@ -14,6 +15,9 @@ const ForumLatest = (props) => {
 	let dashboard = props.dashboard;
 	const [user, isLoading] = useAuthState(firebase.auth());
 	const dataTableRefs = useRef([]);
+	const location = useLocation();
+	let currentLocation = location.pathname;
+
 
 	useEffect(() => {
 		if (!isLoading && user) {
@@ -147,7 +151,8 @@ const ForumLatest = (props) => {
 				});
 	
 				setThreadGroups(sortedThreadGroups);
-		setLoading(false);
+
+				setLoading(false);
 
 				// tableInit();
 				});
@@ -192,6 +197,7 @@ const ForumLatest = (props) => {
 
 			// reinitializeDataTables();
 
+
 			setThreadGroups((prevThreadGroups) => {
 			const updatedGroups = [...prevThreadGroups];
 			const updatedThreads = updatedGroups.flatMap((group) => group.threads.map((thread) => ({ ...thread })));
@@ -199,13 +205,15 @@ const ForumLatest = (props) => {
 	
 	
 			// if(uid){
+			if(window.location.pathname == '/pokeforum'){
 				updatedThreads.forEach((thread) => {
 					if (uid === thread.userId) {
-		
 						thread.userImage = updatedUser.image;
-						thread.user = updatedUser.username;
+						thread.user = updatedUser.username;	
 					}
 				});
+			}
+
 			// }
 			
 		
@@ -466,13 +474,10 @@ const ForumLatest = (props) => {
 			{threadGroups.map((group) => (
 				<div key={group.category} className="card my-4 px-1 animate__animated animate__fadeInUp" style={{ borderRadius: '5px' }} id={group.category}>
 					<div className="card-body container">
-						
 							<div className="row">
 							<h2>{group.category.charAt(0).toUpperCase() + group.category.slice(1)} Discussions</h2>
-
 							{/* <div className="list-group list-group-light" style={{ height: '400px', overflowY: 'auto' }}>
 								{group.threads.map((thread) => (
-
 									((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
 										<a key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} className="forumItems list-group-item list-group-item-action px-3 border-0">
 										<div className="row">
@@ -511,7 +516,6 @@ const ForumLatest = (props) => {
 												>
 													<i className="fas fa-trash"></i>
 												</span>
-
 												{thread.hide === 1 ? (
 												<span
 													onClick={(event) => {
@@ -533,7 +537,6 @@ const ForumLatest = (props) => {
 														<i className="fas fa-eye-slash"></i>
 													</span>
 												)}
-
 											</div>
 											):(
 												<div className="col-1">
@@ -555,7 +558,6 @@ const ForumLatest = (props) => {
 									)
 								))}
 							</div> */}
-
 							<table className='table table-hover table-borderless' id={`tableForumLatest${group.category}`}>
 								<thead>
 									<tr>
@@ -568,14 +570,12 @@ const ForumLatest = (props) => {
 										{dashboard ? (
 											<th scope="col"></th>
 										):('')}
-
-
 									</tr>
 								</thead>
 								<tbody className='tableForumsLatest'>
 								{group.threads.map((thread) => (
+									((dashboard !== 0 && (!thread.hide || thread.hide === '' || thread.hide === '0')) || dashboard === 1) && (
 									<tr key={thread.id} data-slug={thread.slug} id={thread.id} href={`/pokeforum/${thread.slug}`} style={{justifyContent:'center'}} className="px-3 rounded" onClick={!dashboard ? () => redirectToThread(thread.slug):null}>
-
 										<td><i className="fas fa-comments mx-3"></i></td>
 										<td>{thread.title}</td>
 										<td>
@@ -625,12 +625,11 @@ const ForumLatest = (props) => {
 										):('')}
 										
 									</tr>
-
+									)
 									
 								))}
 								</tbody>
 							</table>
-
 						</div>
 						
 					</div>

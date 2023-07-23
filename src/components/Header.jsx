@@ -10,8 +10,8 @@ const Header = () => {
   const navigate = useNavigate();
   let [activeLink, setActiveLink] = useState('');
   const location = useLocation();
-  const [username, setUsername] = useState('');
-  const [userimage, setUserimage] = useState('');
+  const [usernameHeader, setUsernameHeader] = useState('');
+  const [userimageHeader, setUserimageHeader] = useState('');
 	let [userdata,setuserdata] = useState([]);
 
 
@@ -47,8 +47,8 @@ const Header = () => {
       userRef.on('value', (snapshot) => {
         const userData = snapshot.val();
         if (userData) {
-          setUsername(userData.username || '');
-          setUserimage(userData.image || 'pikachu');
+          setUsernameHeader(userData.username || '');
+          setUserimageHeader(userData.image || 'pikachu');
   				setuserdata(userData);
         }
       });
@@ -182,7 +182,7 @@ const Header = () => {
                   </Link>
                 </li>
 
-                {userdata.role == 'admin' ? (    
+                {userdata.role == 'admin' || userdata.role == 'moderator' ? (    
                 <li className="nav-item">
                   <Link
                     to="/dashboard"
@@ -282,13 +282,13 @@ const Header = () => {
                         activeLink === 'login' ? 'active' : ''
                       }`}
                     >
-                      {username !== '' && username.toUpperCase()}
+                      {username !== '' && usernameHeader.toUpperCase()}
                     </span>
                     <div className="rounded-circle bg-secondary ms-3">
                       <img
                         className="m-1"
                         width="30px"
-                        src={`../assets/images/userIcons/${userimage}.png`}
+                        src={`../assets/images/userIcons/${userimageHeader}.png`}
                       />
                     </div>
                   </a>

@@ -403,19 +403,56 @@ const ForumThread = () => {
 		return false;
 	}
 
+	function muteThreadLaravel(threadId){
+		const formData = {
+			mute: true,
+			userId: user.uid,
+		};
+
+		axios
+		.put('http://127.0.0.1:8000/api/thread/mute/'+threadId, formData)
+		// .put('https://pok3mon.online/api/thread/mute/'+user.uid)
+		.then((response)=>{
+			fetchThreadBySlug(slug);
+			Swal.fire({
+				title: 'Thread succesfully muted',
+				text: result.message,
+				icon: 'success',
+			})
+		})
+	}
+
+	function unmuteThreadLaravel(threadId){
+		const formData = {
+			mute: false,
+			userId: user.uid,
+		};
+
+		axios
+		.put('http://127.0.0.1:8000/api/thread/unmute/'+threadId, formData)
+		// .put('https://pok3mon.online/api/thread/unmute/'+user.uid)
+		.then((response)=>{
+			fetchThreadBySlug(slug);
+			Swal.fire({
+				title: 'Thread succesfully unmuted',
+				text: result.message,
+				icon: 'success',
+			})
+		})
+	}
+
 	function upvote(threadId){
 		const formData = {
 			upvote: user.uid,
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/upvote/'+threadId, formData)
-		// .put('http://pok3mon.online/api/upvote/'+user.uid)
+		.put('http://127.0.0.1:8000/api/thread/upvote/'+threadId, formData)
+		// .put('https://pok3mon.online/api/thread/upvote/'+user.uid)
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 			// fetchUsernamesUp();
 		})
-	
 	}
 	// console.log(threadData);
 	
@@ -425,8 +462,8 @@ const ForumThread = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/downvote/'+threadId, formData)
-		// .put('http://pok3mon.online/api/downvote/sampleid')
+		.put('http://127.0.0.1:8000/api/thread/downvote/'+threadId, formData)
+		// .put('https://pok3mon.online/api/thread/downvote/sampleid')
 		.then((response)=>{
 			fetchThreadBySlug(slug);
 		})
@@ -463,8 +500,13 @@ const ForumThread = () => {
 										<i className="fas fa-ellipsis-vertical"></i>
 										</button>
 										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
-											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadLaravel(threadData.slug)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
+											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadLaravel(threadData.threadId)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
 											<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
+											{threadData?.mute ? (
+												<li><a className="dropdown-item" href="#" onClick={() => unmuteThreadLaravel(threadData.threadId)}><i className="fas fa-check"></i>&nbsp;&nbsp;Enable Comment</a></li>
+											):(
+												<li><a className="dropdown-item" href="#" onClick={() => muteThreadLaravel(threadData.threadId)}><i className="fas fa-close"></i>&nbsp;&nbsp;Disable Comment</a></li>
+											)}
 										</ul>
 									</>
 								)}
@@ -558,60 +600,69 @@ const ForumThread = () => {
 				</div>
 			</div>
 	
-		<div className="row my-3">
-			<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
-			<div className="p-2 py-3 px-lg-5">
-				<h6 type="button" data-mdb-toggle="collapse" data-mdb-target="#replies" aria-expanded="false" aria-controls="replies">
-				Comments&nbsp;&nbsp;<i className="fas fa-angles-down"></i>
-				</h6>
-				<div id="replies" className="collapse">
-				{threadData && threadData.messages && threadData.messages.map((comment) => (
-					<div className="rounded my-3" key={comment.messageId}>
-					<div className="d-flex">
-						<div className="me-3">
-						<img src={`../assets/images/userIconsV2/${comment.user.image}.png`} style={{ width: '40px' }} alt={comment.user.username} />
+			<div className="row my-3">
+				<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
+				<div className="p-2 py-3 px-lg-5">
+					<h6 type="button" data-mdb-toggle="collapse" data-mdb-target="#replies" aria-expanded="false" aria-controls="replies">
+					Comments&nbsp;&nbsp;<i className="fas fa-angles-down"></i>
+					</h6>
+					
+					<div id="replies" className="collapse">
+					{threadData?.mute && (
+						<div className='alert alert-info text-center'>
+						This thread comment section is disabled.
 						</div>
-						<div>
-						<span className="d-flex">
-							<div style={{ fontSize: '12px', fontWeight: 'bolder' }}>{comment.user.username.toUpperCase()}</div>&nbsp;&nbsp;
-							<div style={{ fontSize: '10px' }}>{getCommentAge(comment.createdAt)}</div>
-						</span>
-						<div style={{ fontSize: '11px' }}>{comment.content}</div>
-						{/* <div className="mt-2 d-flex">
-							<i className="fas fa-thumbs-up ms-2" style={{ width: '15px', height: '15px' }}></i>
-							<i className="fas fa-thumbs-down ms-2" style={{ width: '15px', height: '15px' }}></i>
-							<i className="fas fa-reply ms-2" style={{ width: '15px', height: '15px' }} data-mdb-toggle="collapse" href={`#repliesToThreadInput${comment.id}`} role="button" aria-expanded="false" aria-controls={`repliesToThreadInput${comment.id}`}></i>
-						</div> */}
-						<div className="collapse mt-1" id={`repliesToThreadInput${comment.messageId}`}>
-							<div className="d-flex">
-							<div id={`replyCommentError${comment.id}`} className="text-danger text-sm"></div>
-							<input type="text" id={`replyToComment${comment.messageId}`} name={`replyToComment${comment.messageId}`} className="form-control" />
-							<form className="formReplyToComment">
-								<div className="btn-group ms-1 btn-dark" role="group" aria-label="Basic example">
-								{/* <button type="submit" onClick={() => sendFormReplyToComment(comment.id)} className="btn btn-dark"><i className="fas fa-paper-plane"></i></button> */}
-								{/* <button type="button" className="btn btn-dark" data-mdb-toggle="collapse" data-mdb-target={`#repliesToThreadInput${comment.id}`} aria-expanded="false" aria-controls={`repliesToThreadInput${comment.id}`}><i className="fas fa-xmark"></i></button> */}
+					)}
+					{threadData && threadData.messages && threadData.messages.map((comment) => (
+						<div className="rounded my-3" key={comment.messageId}>
+						<div className="d-flex">
+							<div className="me-3">
+							<img src={`../assets/images/userIconsV2/${comment.user.image}.png`} style={{ width: '40px' }} alt={comment.user.username} />
+							</div>
+							<div>
+							<span className="d-flex">
+								<div style={{ fontSize: '12px', fontWeight: 'bolder' }}>{comment.user.username.toUpperCase()}</div>&nbsp;&nbsp;
+								<div style={{ fontSize: '10px' }}>{getCommentAge(comment.createdAt)}</div>
+							</span>
+							<div style={{ fontSize: '11px' }}>{comment.content}</div>
+							{/* <div className="mt-2 d-flex">
+								<i className="fas fa-thumbs-up ms-2" style={{ width: '15px', height: '15px' }}></i>
+								<i className="fas fa-thumbs-down ms-2" style={{ width: '15px', height: '15px' }}></i>
+								<i className="fas fa-reply ms-2" style={{ width: '15px', height: '15px' }} data-mdb-toggle="collapse" href={`#repliesToThreadInput${comment.id}`} role="button" aria-expanded="false" aria-controls={`repliesToThreadInput${comment.id}`}></i>
+							</div> */}
+							<div className="collapse mt-1" id={`repliesToThreadInput${comment.messageId}`}>
+								<div className="d-flex">
+								<div id={`replyCommentError${comment.id}`} className="text-danger text-sm"></div>
+								<input type="text" id={`replyToComment${comment.messageId}`} name={`replyToComment${comment.messageId}`} className="form-control" />
+								<form className="formReplyToComment">
+									<div className="btn-group ms-1 btn-dark" role="group" aria-label="Basic example">
+									{/* <button type="submit" onClick={() => sendFormReplyToComment(comment.id)} className="btn btn-dark"><i className="fas fa-paper-plane"></i></button> */}
+									{/* <button type="button" className="btn btn-dark" data-mdb-toggle="collapse" data-mdb-target={`#repliesToThreadInput${comment.id}`} aria-expanded="false" aria-controls={`repliesToThreadInput${comment.id}`}><i className="fas fa-xmark"></i></button> */}
+									</div>
+								</form>
 								</div>
-							</form>
+							</div>
 							</div>
 						</div>
 						</div>
+					))}
 					</div>
-					</div>
-				))}
+				</div>
 				</div>
 			</div>
-			</div>
-		</div>
 	
-			<div className="row my-3">
-				<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
-					<div className="p-2 py-3 px-lg-5">
-						<div id="commentError" className="text-danger text-sm"></div>
-						<textarea placeholder='Comment' className="form-control" id="commentArea" rows="4"></textarea>
-						<button onClick={()=>sendCommentToThread()} className="btn btn-dark my-2 col-12"><i className="fas fa-paper-plane"></i></button>
+			{!threadData?.mute && (
+				<div className="row my-3">
+					<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
+						<div className="p-2 py-3 px-lg-5">
+							<div id="commentError" className="text-danger text-sm"></div>
+							<textarea placeholder='Comment' className="form-control" id="commentArea" rows="4"></textarea>
+							<button onClick={()=>sendCommentToThread()} className="btn btn-dark my-2 col-12"><i className="fas fa-paper-plane"></i></button>
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
+			
 		</div>
 	);
 }

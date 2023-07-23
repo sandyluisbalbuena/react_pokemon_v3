@@ -16,6 +16,7 @@ const Dashboard = () => {
 	let [userdata,setuserdata] = useState([]);
 	const [username, setUsername] = useState('');
 	const [userimage, setUserimage] = useState('');
+	const [currentRole, setCurrentRole] = useState('');
 
 	const [user] = useAuthState(firebase.auth());
 
@@ -28,6 +29,7 @@ const Dashboard = () => {
 				setUsername(userData.username.toUpperCase() || '');
 				setUserimage(userData.image || 'pikachu');
 				setuserdata(userData);
+				setCurrentRole(userData.role);
 			}
 		});
 		}
@@ -98,9 +100,14 @@ const Dashboard = () => {
 					<div id="usersUtilelement" className='d-lg-none'>
 						<div className='row my-4'>
 
-							<div className='my-2'>
-								<Moderators />
-							</div>
+							{currentRole == 'admin' && (
+								<div className='my-2'>
+									<Moderators />
+								</div>
+							)}
+						
+
+
 							<div className='my-2'>
 								<Candidates />
 							</div>
@@ -146,9 +153,12 @@ const Dashboard = () => {
 								</div>
 							</div>
 
-							<div className="row">
-								<Moderators />
-							</div>
+							
+							{currentRole == 'admin' && (
+								<div className='row my-2'>
+									<Moderators />
+								</div>
+							)}
 
 							<div className="row">
 								<Candidates />

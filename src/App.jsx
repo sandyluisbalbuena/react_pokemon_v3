@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Template from './layout/Template'
 import Home from './pages/Home'
@@ -20,6 +19,7 @@ import CommunityChat from './components/CommunityChat'
 import { useEffect, useState } from 'react'
 import Dashboard from './pages/Dashboard'
 import TermsAndAgreement from './components/TermsAndAgreement'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -37,8 +37,8 @@ firebase.initializeApp(firebaseConfig);
 function App() {
 
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 	const userAttendanceRef = firebase.database().ref('userAttendance');
+	const [userData, setUserData] = useState(null);
 
 	// Generate dummy data for daily attendance
 	function generateAttendanceData() {
@@ -85,11 +85,25 @@ function App() {
 	useEffect(() => {
 		// seedAttendanceData();
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-		setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
+			setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
+			if (user) {
+				// If the user is logged in, fetch their data from the "users" collection
+				const usersRef = firebase.database().ref('users');
+				usersRef.child(user.uid).once('value')
+				  .then((snapshot) => {
+					const userDataFromFirebase = snapshot.val();
+					setUserData(userDataFromFirebase);
+				  })
+				  .catch((error) => {
+					console.error('Error fetching user data:', error);
+				  });
+			  }
 		});
 
 		return () => unsubscribe();
 	}, []);
+
+
 	getToken();
 	
 
@@ -154,6 +168,39 @@ function App() {
 			console.log('No user is currently signed in.');
 		}
 	}	
+
+	const handleUnauthenticatedAccess = () => {
+		window.location.href = '/login';
+		console.log(window.location.pathname);
+	};
+
+	const handleUnauthenticatedAccessAdmin = async() => {
+
+		try {
+			await firebase.auth().signOut();
+	
+			Swal.fire({
+			icon: 'warning',
+			text: 'Unauthorized Access!',
+			footer: '<a href="">Why do I have this issue?</a>',
+			});
+	
+			const userRef = firebase.database().ref(`onlineUsers`);
+			userRef.child(user.uid).set(false);
+	
+		} catch (error) {
+			Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: error,
+			footer: '<a href="">Why do I have this issue?</a>',
+			});
+		}
+
+		window.location.href = '/login';
+		console.log(window.location.pathname);
+	};
+
 	
 	return (
 		<>
@@ -163,13 +210,34 @@ function App() {
 						<Route path='/' element={<Home />}/>
 						<Route path='/pokedex' element={<Pokedex />}/>
 						<Route path='/pokecard' element={<Pokecard />}/>
-						<Route path='/pokeforum' element={<Pokeforum />}/>
-						<Route path='/pokeforum/:slug' element={<Thread />}/>
 						<Route path='/about' element={<About />}/>
+						<Route path='/termsandagreements' element={<TermsAndAgreement />}/>
+						{/* {user ? (
+							<>
+								{isLoggedIn ? (
+									<> */}
+										<Route path='/pokeforum' element={<Pokeforum />}/>
+										<Route path='/pokeforum/:slug' element={<Thread />}/>
+										{/* {userData && userData?.role == 'admin' || userData?.role == 'moderator' ? ( */}
+											<Route path='/dashboard' element={<Dashboard />}/>
+										{/* ):(
+											<>
+											{ window.location.pathname == '/dashboard'?handleUnauthenticatedAccessAdmin():null}
+											</>
+										)}
+									</>
+								):(
+									<>
+										{(!isLoggedIn && window.location.pathname == '/pokeforum')|| (!isLoggedIn && window.location.pathname) == '/dashboard'?handleUnauthenticatedAccess():null}
+									</>
+								)}
+							</>
+						):(null)} */}
+						
+
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
-						<Route path='/dashboard' element={<Dashboard />}/>
-						<Route path='/termsandagreements' element={<TermsAndAgreement />}/>
+
 					</Route>
 					<Route path='*' element={<Notfound />}/>
 				</Routes>
