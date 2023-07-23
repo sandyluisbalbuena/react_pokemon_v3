@@ -74,15 +74,15 @@ const ForumLatest = (props) => {
 		updateMessageCount(newMessage.threadId);
 		});
 	
-		const userListener = userRef.on('child_changed', (snapshot) => {
-		const updatedUser = snapshot.val();
-		updateUserData(updatedUser);
-		});
+		// const userListener = userRef.on('child_changed', (snapshot) => {
+		// const updatedUser = snapshot.val();
+		// updateUserData(updatedUser);
+		// });
 
 	
 		return () => {
 		messageRef.off('child_added', messageListener);
-		userRef.off('child_changed', userListener);
+		// userRef.off('child_changed', userListener);
 		};
 	};
 
