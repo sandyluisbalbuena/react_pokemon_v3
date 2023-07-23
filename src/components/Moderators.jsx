@@ -3,6 +3,7 @@ import firebase from 'firebase/compat/app';
 
 const Moderators = () => {
 	const [moderators, setModerators] = useState([]);
+	const [demoting, setDemoting] = useState(false);
 	let currentUser = firebase.auth().currentUser;
 	let bearerToken = localStorage.getItem('bearerToken');
 
@@ -33,6 +34,7 @@ const Moderators = () => {
 	}
 
 	function demote(userId){
+		setDemoting(true);
 		const formData = {
 			role: 'user',
 		};
@@ -46,10 +48,14 @@ const Moderators = () => {
 			},
 		})
 		.then(response => {
-			Swal.fire({
-				icon: 'success',
-				title: 'User demoted successfully!',
-			});
+			setTimeout(() => {
+				setDemoting(false);
+				Swal.fire({
+					icon: 'success',
+					title: 'User demoted successfully!',
+				});
+			}, 500);
+			
 		})
 		.catch(error => {
 			console.error(error);
@@ -75,7 +81,11 @@ const Moderators = () => {
 						<span>
 							{moderator.username?.toUpperCase()}
 						</span> 
-						<span className='badge badge-danger' type='button' onClick={()=>demote(moderator.firebase_id)}>DEMOTE <i className="fas fa-minus"></i></span>
+						{demoting ? (
+							<div class="spinner-border spinner-border-sm text-danger text-sm" role="status"></div>
+						):(
+							<span className='badge badge-danger' type='button' onClick={()=>demote(moderator.firebase_id)}>DEMOTE <i className="fas fa-minus"></i></span>
+						)}
 					</li>
 				))}
 				</ul>

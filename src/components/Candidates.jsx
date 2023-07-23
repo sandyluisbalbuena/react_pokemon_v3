@@ -5,6 +5,7 @@ import firebase from 'firebase/compat/app';
 const Candidates = () => {
 	const [candidates, setCandidates] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [promoting, setPromoting] = useState(false);
 	let currentUser = firebase.auth().currentUser;
 	let bearerToken = localStorage.getItem('bearerToken');
 
@@ -46,6 +47,7 @@ const Candidates = () => {
 	}
 
 	function promote(userId){
+		setPromoting(true);
 		const formData = {
 			role: 'moderator',
 		};
@@ -59,10 +61,14 @@ const Candidates = () => {
 			},
 		})
 		.then(response => {
-			Swal.fire({
-				icon: 'success',
-				title: 'User promoted successfully!',
-			});
+			setTimeout(() => {
+				setPromoting(false)
+				Swal.fire({
+					icon: 'success',
+					title: 'User promoted successfully!',
+				});
+			}, 500);
+			
 		})
 		.catch(error => {
 			console.error(error);
@@ -104,6 +110,26 @@ const Candidates = () => {
 								<span className='placeholder col-7 rounded'></span>
 								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
 							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
+
+							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex placeholder-glow" style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
+								<span className='placeholder col-7 rounded'></span>
+								<span className='placeholder bg-primary col-1 offset-4 rounded' type='button'></span>
+							</li>
 						</>
 					) : (
 						// Data is loaded, render the candidates
@@ -111,8 +137,12 @@ const Candidates = () => {
 						<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={candidate.username} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 							<span className='rounded'>
 							{candidate.username.toUpperCase()}
-							</span> 
-							<span className='badge badge-primary' type='button' onClick={() => promote(candidate.activityCount.push_key)}>PROMOTE <i className="fas fa-plus"></i></span>
+							</span>
+							{promoting ? (
+								<div class="spinner-border spinner-border-sm text-primary text-sm" role="status"></div>
+							):(
+								<span className='badge badge-primary' type='button' onClick={() => promote(candidate.activityCount.push_key)}>PROMOTE <i className="fas fa-plus"></i></span>
+							)}
 						</li>
 						))
 					)}
