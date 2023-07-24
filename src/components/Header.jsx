@@ -13,12 +13,13 @@ const Header = () => {
   const [usernameHeader, setUsernameHeader] = useState('');
   const [userimageHeader, setUserimageHeader] = useState('');
 	let [userdata,setuserdata] = useState([]);
+	const currentPath = window.location.pathname;
+
 
 
   let handleNavLinkClick = (link) => {
     setActiveLink(link);
-    localStorage.setItem('activeLink', link);
-    // Close the navbar when a link is clicked on mobile
+    localStorage.setItem('activeLink', link);   
     let navbarToggler = document.querySelector('.navbar-toggler');
     let navbarCollapse = document.querySelector('.navbar-collapse');
     if (navbarToggler && navbarCollapse) {
@@ -26,6 +27,28 @@ const Header = () => {
       navbarCollapse.classList.remove('show');
     }
   };
+
+  useEffect(() => {
+		console.log(localStorage.getItem('log'));
+		// let userState = localStorage.getItem('log');
+		setTimeout(() => {
+		console.log(localStorage.getItem('log'),currentPath);
+		console.log(userdata.length === 0);
+
+			if(localStorage.getItem('log') == false){
+				console.log('wew');
+
+				if (
+					currentPath == '/pokeforum' ||
+					currentPath == '/dashboard' ||
+					currentPath.startsWith('/pokeforum/')
+				) {
+
+					window.location.href = '/login';
+				}
+			}
+		}, 2000);
+	}, [ currentPath,userdata]);
 
   useEffect(() => {
     const storedActiveLink = localStorage.getItem('activeLink');

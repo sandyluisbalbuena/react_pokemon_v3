@@ -40,7 +40,6 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const userAttendanceRef = firebase.database().ref('userAttendance');
 	const [userData, setUserData] = useState(null);
-	const currentPath = window.location.pathname;
 
 	
 	
@@ -91,29 +90,30 @@ function App() {
 		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
 			setIsLoggedIn(!!user); // Update isLoggedIn based on user authentication
 			if (user) {
+				localStorage.setItem('log', true);
 				// If the user is logged in, fetch their data from the "users" collection
 				const usersRef = firebase.database().ref('users');
 				usersRef.child(user.uid).once('value')
 				.then((snapshot) => {
 					const userDataFromFirebase = snapshot.val();
 					setUserData(userDataFromFirebase);
+
+					
 				})
 				.catch((error) => {
 					console.error('Error fetching user data:', error);
 				});
+			}else{
+				localStorage.setItem('log', false);
 			}
 		});
 
 		return () => unsubscribe();
 	}, []);
 
-	useEffect(()=>{
-		if(!isLoggedIn){
-			if (currentPath === '/pokeforum'||currentPath === '/dashboard') {
-				window.location.href = '/login';
-			}
-		}
-	},[isLoggedIn])
+	
+	
+
 	
 
 	getToken();

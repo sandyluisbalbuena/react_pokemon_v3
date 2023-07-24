@@ -412,8 +412,8 @@ const ForumThread = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/mute/'+threadId, formData, {
-		// .put('https://pok3mon.online/api/thread/mute/'+user.uid, formData, {
+		// .put('http://127.0.0.1:8000/api/thread/mute/'+threadId, formData, {
+		.put('https://pok3mon.online/api/thread/mute/'+threadId, formData, {
 			headers: {
 				'X-User-Uid': user.uid,
 				'Authorization': `Bearer ${bearerToken}`,
@@ -438,8 +438,8 @@ const ForumThread = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/unmute/'+threadId, formData, {
-		// .put('https://pok3mon.online/api/thread/unmute/'+user.uid, formData, {
+		// .put('http://127.0.0.1:8000/api/thread/unmute/'+threadId, formData, {
+		.put('https://pok3mon.online/api/thread/unmute/'+threadId, formData, {
 			headers: {
 				'X-User-Uid': user.uid,
 				'Authorization': `Bearer ${bearerToken}`,
@@ -463,8 +463,8 @@ const ForumThread = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/upvote/'+threadId, formData, {
-		// .put('https://pok3mon.online/api/thread/upvote/'+user.uid, formData, {
+		// .put('http://127.0.0.1:8000/api/thread/upvote/'+threadId, formData, {
+		.put('https://pok3mon.online/api/thread/upvote/'+threadId, formData, {
 			headers: {
 				'X-User-Uid': user.uid,
 				'Authorization': `Bearer ${bearerToken}`,
@@ -485,8 +485,8 @@ const ForumThread = () => {
 		};
 
 		axios
-		.put('http://127.0.0.1:8000/api/thread/downvote/'+threadId, formData, {
-		// .put('https://pok3mon.online/api/thread/downvote/sampleid', formData, {
+		// .put('http://127.0.0.1:8000/api/thread/downvote/'+threadId, formData, {
+		.put('https://pok3mon.online/api/thread/downvote/'+threadId, formData, {
 			headers: {
 				'X-User-Uid': user.uid,
 				'Authorization': `Bearer ${bearerToken}`,
@@ -518,15 +518,13 @@ const ForumThread = () => {
 		<div className="container">
 			<div className="row">
 				<div className="card" style={{ borderRadius: '5px' }} id="firstCard">
-					<div className="p-2 py-3 px-lg-5">
-						<div className="row">
 							<div style={{textAlign: 'right'}}>
 								
 								{threadData && user && user?.uid === threadData?.userId && (
 									<>
-										<button className='btn' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
-										<i className="fas fa-ellipsis-vertical"></i>
-										</button>
+										<div className='btn my-2' id="dropdownMenuButtonThread" data-mdb-toggle="dropdown" aria-expanded="false">
+											<i className="fas fa-ellipsis-vertical"></i>
+										</div>
 										<ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonThread">
 											<li><a className="dropdown-item" href="#" onClick={() => deleteThreadLaravel(threadData.threadId)}><i className="fas fa-trash"></i>&nbsp;&nbsp;Delete Thread</a></li>
 											<li><a className="dropdown-item" href="#" data-mdb-toggle="modal" data-mdb-target="#postThread" onClick={() => updateThread(threadData)}><i className="fas fa-edit"></i>&nbsp;&nbsp;Edit Thread</a></li>
@@ -541,6 +539,9 @@ const ForumThread = () => {
 								
 
 							</div>
+					<div className="p-2 py-3 px-lg-5">
+						<div className="row">
+							
 						</div>
 						<div className="row text-center">
 						{threadData && <h2 id="threadTitle">{threadData.title}</h2>}
@@ -578,7 +579,7 @@ const ForumThread = () => {
 									onMouseOver={() => showListUpvotes()}
 									onMouseOut={hideListUpvotes}
 									type="button"
-									onClick={() => upvote(threadData.threadId)}
+									onClick={() => upvote(threadData?.threadId)}
 									></i>
 								):(
 									<i
@@ -586,7 +587,7 @@ const ForumThread = () => {
 									onMouseOver={() => showListUpvotes()}
 									onMouseOut={hideListUpvotes}
 									type="button"
-									onClick={() => upvote(threadData.threadId)}
+									onClick={() => upvote(threadData?.threadId)}
 									></i>
 								)
 							}

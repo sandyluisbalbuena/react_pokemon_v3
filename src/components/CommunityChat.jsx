@@ -196,7 +196,7 @@ const CommunityChat = () => {
 	const playNotificationSound = () => {
 		const notificationSound = new Audio('../assets/notif/sound/notification.mp3');
 		if(isUnMuted){
-			notificationSound.play();
+			// notificationSound.play();
 		}
 	};
 

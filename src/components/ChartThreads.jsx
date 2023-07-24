@@ -38,6 +38,8 @@ const ChartThreads = () => {
 			const pokecardCounts = countThreadsByDate(response.data.pokecard);
 			const pokedexCounts = countThreadsByDate(response.data.pokedex);
 
+			console.log(pokecardCounts, pokedexCounts);
+
 			resolve([pokecardCounts, pokedexCounts]);
 			})
 			.catch(error => {

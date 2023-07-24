@@ -55,7 +55,6 @@ const CreateThreadModal = () => {
 			image_dimensions: true,
 		});
 
-
 		eventBus.subscribe('pokeforumCreateThread', pokeforumCreateThread);
 		eventBus.subscribe('pokedexCreateThread', pokedexCreateThread);
 		eventBus.subscribe('pokecardCreateThread', pokecardCreateThread);
