@@ -88,7 +88,7 @@ const Candidates = () => {
 				<i className="fas fa-angles-down"></i>
 				</div>
 				<ul className="collapse show mt-3" id="candidates" style={{ listStyleType: 'none' }}>
-					<div style={{overflowY:'auto', height:'400px'}}>
+					<div style={{overflowY:'auto', height:'300px'}}>
 						{loading ? (
 							// Show the placeholder style when loading is true
 							<>

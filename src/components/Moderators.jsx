@@ -76,7 +76,7 @@ const Moderators = () => {
 				<i className="fas fa-angles-down"></i>
 				</div>
 				<ul className="collapse mt-3" id="moderators" style={{ listStyleType: 'none' }}>
-					<div style={{overflowY:'auto', height:'400px'}}>
+					<div style={{overflowY:'auto', height:'300px'}}>
 						{moderators.map((moderator) => (
 							<li className="px-2 py-1 rounded list-group-item threads-latest my-2 justify-content-between d-flex" key={moderator.firebase_id} style={{ fontSize: '12px', textDecoration: 'none', color: 'black' }}>
 								<span>

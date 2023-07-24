@@ -195,25 +195,25 @@ const Register = () => {
 								<h5 className="card-title">Login</h5>
 
 								<div className="form mb-4">
-									<input type="email" placeholder='Email' id="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)}/>
+									<input type="email" placeholder='Email' id="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required/>
 								</div>
 
 								<div className="form mb-4">
-									<input type="text" placeholder='Username' id="username" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
+									<input type="text" placeholder='Username' id="username" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} required/>
 								</div>
 
 								<div className="form mb-4">
-									<input type="password" placeholder='Password' id="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
+									<input type="password" placeholder='Password' id="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required/>
 								</div>
 
 								<div className="form mb-4">
-									<input type="password" placeholder='Confirm Password' id="repassword" className="form-control" value={repassword} onChange={(e) => setRePassword(e.target.value)}/>
+									<input type="password" placeholder='Confirm Password' id="repassword" className="form-control" value={repassword} onChange={(e) => setRePassword(e.target.value)} required/>
 								</div>
 
 								<div className="form-check mb-4">
-									<input className="form-check-input" type="checkbox" id="agreeCheckbox" checked={agree} onChange={handleCheckboxChange} />
+									<input className="form-check-input" type="checkbox" id="agreeCheckbox" checked={agree} onChange={handleCheckboxChange} required/>
 									<label className="form-check-label" htmlFor="agreeCheckbox">
-										<span className='text-black'>I agree to the </span>
+										<span className='text-black'>I agree to this </span>
 										<a href="/termsandagreements" target="_blank" rel="noopener noreferrer">
 											Terms and Agreements
 										</a>

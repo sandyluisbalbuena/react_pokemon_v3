@@ -7,7 +7,7 @@ import Notfound from './pages/Notfound'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/database';
-import 'firebase/compat/firestore';
+// import 'firebase/compat/firestore';
 import Register from './components/Register';
 import Login from './components/Login';
 import Pokeforum from './pages/Pokeforum'
@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react'
 import Dashboard from './pages/Dashboard'
 import TermsAndAgreement from './components/TermsAndAgreement'
 import ProtectedRoute from './components/ProtectedRoute'
+import PokemonRelated from './components/PokemonRelated'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyAkcEiOtDBFQEqFYyIoFHN8Ahtx_iWK0Dk",
@@ -39,6 +40,10 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const userAttendanceRef = firebase.database().ref('userAttendance');
 	const [userData, setUserData] = useState(null);
+	const currentPath = window.location.pathname;
+
+	
+	
 
 	// Generate dummy data for daily attendance
 	function generateAttendanceData() {
@@ -61,7 +66,6 @@ function App() {
 	
 		return attendanceData;
 	}
-	
 
 	function getRandomInt(min, max) {
 		min = Math.ceil(min);
@@ -90,19 +94,27 @@ function App() {
 				// If the user is logged in, fetch their data from the "users" collection
 				const usersRef = firebase.database().ref('users');
 				usersRef.child(user.uid).once('value')
-				  .then((snapshot) => {
+				.then((snapshot) => {
 					const userDataFromFirebase = snapshot.val();
 					setUserData(userDataFromFirebase);
-				  })
-				  .catch((error) => {
+				})
+				.catch((error) => {
 					console.error('Error fetching user data:', error);
-				  });
-			  }
+				});
+			}
 		});
 
 		return () => unsubscribe();
 	}, []);
 
+	useEffect(()=>{
+		if(!isLoggedIn){
+			if (currentPath === '/pokeforum'||currentPath === '/dashboard') {
+				window.location.href = '/login';
+			}
+		}
+	},[isLoggedIn])
+	
 
 	getToken();
 	
@@ -169,10 +181,7 @@ function App() {
 		}
 	}	
 
-	const handleUnauthenticatedAccess = () => {
-		window.location.href = '/login';
-		console.log(window.location.pathname);
-	};
+	
 
 	const handleUnauthenticatedAccessAdmin = async() => {
 
@@ -212,32 +221,11 @@ function App() {
 						<Route path='/pokecard' element={<Pokecard />}/>
 						<Route path='/about' element={<About />}/>
 						<Route path='/termsandagreements' element={<TermsAndAgreement />}/>
-						{/* {user ? (
-							<>
-								{isLoggedIn ? (
-									<> */}
-										<Route path='/pokeforum' element={<Pokeforum />}/>
-										<Route path='/pokeforum/:slug' element={<Thread />}/>
-										{/* {userData && userData?.role == 'admin' || userData?.role == 'moderator' ? ( */}
-											<Route path='/dashboard' element={<Dashboard />}/>
-										{/* ):(
-											<>
-											{ window.location.pathname == '/dashboard'?handleUnauthenticatedAccessAdmin():null}
-											</>
-										)}
-									</>
-								):(
-									<>
-										{(!isLoggedIn && window.location.pathname == '/pokeforum')|| (!isLoggedIn && window.location.pathname) == '/dashboard'?handleUnauthenticatedAccess():null}
-									</>
-								)}
-							</>
-						):(null)} */}
-						
-
+						<Route path='/pokeforum' element={<Pokeforum />}/>
+						<Route path='/pokeforum/:slug' element={<Thread />}/>
+						<Route path='/dashboard' element={<Dashboard />}/>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/register' element={<Register />}/>
-
 					</Route>
 					<Route path='*' element={<Notfound />}/>
 				</Routes>
